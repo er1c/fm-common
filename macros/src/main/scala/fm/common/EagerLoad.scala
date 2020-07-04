@@ -1,5 +1,7 @@
 /*
- * Copyright 2018 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
-import scala.language.experimental.macros
 import scala.reflect.macros.blackbox.Context
 
 object EagerLoad {
@@ -24,7 +26,7 @@ object EagerLoad {
   def eagerLoadNestedObjectsMacro(c: Context): c.Tree = {
     import c.universe._
 
-    val enclosingModule: ModuleDef = c.enclosingClass match {
+    val enclosingModule: ModuleDef = c.internal.enclosingOwner match {
       case mod: ModuleDef => mod
       case _ => c.abort(c.enclosingPosition, "Eager Loading of nested objects only works inside of an object")
     }
@@ -38,7 +40,8 @@ object EagerLoad {
     q"..$nestedModuleExprs"
   }
 
-  private def getNestedModuleExprs(c: Context)(module: c.universe.ModuleDef, path: List[c.universe.Symbol]): Seq[c.Tree] = {
+  private def getNestedModuleExprs(
+    c: Context)(module: c.universe.ModuleDef, path: List[c.universe.Symbol]): Seq[c.Tree] = {
     import c.universe._
 
     def makeTree(path: List[Symbol]): c.Tree = {
@@ -49,7 +52,7 @@ object EagerLoad {
       }
     }
 
-    module.impl.body.flatMap{
+    module.impl.body.flatMap {
       case mod: ModuleDef =>
         val newPath: List[Symbol] = mod.symbol :: path
         makeTree(newPath) +: getNestedModuleExprs(c)(mod, newPath)

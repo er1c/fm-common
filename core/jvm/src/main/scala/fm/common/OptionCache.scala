@@ -1,5 +1,7 @@
 /*
- * Copyright 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 /**
@@ -31,24 +34,24 @@ object OptionCache extends OptionCacheBase {
 
   // Cache all ASCII Chars
   private val charCache: Array[Some[Char]] = {
-    (0 to ASCIIUtil.MaxASCIICodePoint).map{ i: Int => Some(i.toChar) }.toArray
+    (0 to ASCIIUtil.MaxASCIICodePoint).map { i: Int => Some(i.toChar) }.toArray
   }
 
   // Cache all Byte values
   private val byteCache: Array[Some[Byte]] = {
-    (0 to 255).map{ i: Int => Some(i.toByte) }.toArray
+    (0 to 255).map { i: Int => Some(i.toByte) }.toArray
   }
 
   private val shortCache: Array[Some[Short]] = {
-    (IntegerCacheUtil.low to IntegerCacheUtil.high).filter{ _.isValidShort }.map{ i: Int => Some(i.toShort) }.toArray
+    (IntegerCacheUtil.low to IntegerCacheUtil.high).filter { _.isValidShort }.map { i: Int => Some(i.toShort) }.toArray
   }
 
   private val intCache: Array[Some[Int]] = {
-    (IntegerCacheUtil.low to IntegerCacheUtil.high).map{ i: Int => Some(i) }.toArray
+    (IntegerCacheUtil.low to IntegerCacheUtil.high).map { i: Int => Some(i) }.toArray
   }
 
   private val longCache: Array[Some[Long]] = {
-    (IntegerCacheUtil.low to IntegerCacheUtil.high).map{ i: Int => Some(i.toLong) }.toArray
+    (IntegerCacheUtil.low to IntegerCacheUtil.high).map { i: Int => Some(i.toLong) }.toArray
   }
 
   private def intOrLongIdxOf(i: Int): Int = {
@@ -69,7 +72,7 @@ object OptionCache extends OptionCacheBase {
   override def valueOf(v: Byte): Some[Byte] = byteCache(java.lang.Byte.toUnsignedInt(v))
 
   override def valueOf(v: Short): Some[Short] = {
-    val idx: Int = shortIdxOf(v)
+    val idx: Int = shortIdxOf(v.toInt)
     if (-1 === idx) Some(v)
     else shortCache(idx)
   }

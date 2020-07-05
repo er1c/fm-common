@@ -1,5 +1,7 @@
 /*
- * Copyright 2018 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.nio.charset.Charset
 
 object CharsetUtil {
   /**
-    * Same as java.nio.charset.Charset.forName except includes matching for UTF-8-BOM
-    */
+   * Same as java.nio.charset.Charset.forName except includes matching for UTF-8-BOM
+   */
   def forName(name: String): Charset = {
     if (name === UTF_8_BOM.name() || UTF_8_BOM.aliases().contains(name)) UTF_8_BOM
     else Charset.forName(name)

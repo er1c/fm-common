@@ -1,5 +1,7 @@
 /*
- * Copyright 2015 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import org.scalatest.funsuite.AnyFunSuite
@@ -20,12 +23,12 @@ import org.scalatest.matchers.should.Matchers
 
 class TestRichAnyRef extends AnyFunSuite with Matchers {
   import fm.common.Implicits._
-  
+
   test("tryCast") {
     val a: AnyRef = "Foo"
-    
+
     require(a.tryCast[String].isDefined)
-    
+
     """
     val b: String = "asd"
     b.tryCast[java.math.BigDecimal]

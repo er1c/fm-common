@@ -1,5 +1,7 @@
 /*
- * Copyright 2016 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import fm.common.rich._
@@ -25,9 +28,11 @@ import scala.math.{BigDecimal => ScalaBigDecimal, BigInt => ScalaBigInt}
 /**
  * These are the Implicits that are shared between both the JVM and JS Implicits trait/object
  */
-protected trait ImplicitsBase extends OrderingImplicits with RichCrossImplicitsBase {
+protected trait ImplicitsBase extends OrderingImplicits with RichCrossImplicitsBase with typesafeequals.Implicits {
+  /** Used to swallow unused warnings. */
+  @inline def void(as: Any*): Unit = (as, ())._2
+
   implicit def toRichAnyRef[A <: AnyRef](ref: A): RichAnyRef[A] = new RichAnyRef[A](ref)
-  implicit def toAnyRefNullChecks[A <: AnyRef](ref: A): AnyRefNullChecks[A] = new AnyRefNullChecks[A](ref)
 
   implicit def toRichChar(ch: Char): RichChar = new RichChar(ch)
 
@@ -45,26 +50,25 @@ protected trait ImplicitsBase extends OrderingImplicits with RichCrossImplicitsB
 
   implicit def toRichOptional[T](opt: Optional[T]): RichOptional[T] = new RichOptional[T](opt)
 
-  implicit def toTypeSafeEquals[L](left: L): TypeSafeEquals[L] = new TypeSafeEquals(left)
-  
   implicit def bigIntegerOrdering: Ordering[JavaBigInteger] = RichBigInteger
   implicit def toRichBigInteger(i: JavaBigInteger): RichBigInteger = new RichBigInteger(i)
   implicit def toRichBigInteger(i: ScalaBigInt): RichBigInteger = new RichBigInteger(i.bigInteger)
-  
+
   implicit def bigDecimalOrdering: Ordering[JavaBigDecimal] = RichBigDecimal
   implicit def toRichBigDecimal(d: JavaBigDecimal): RichBigDecimal = new RichBigDecimal(d)
   implicit def toRichBigDecimal(d: ScalaBigDecimal): RichBigDecimal = new RichBigDecimal(d.bigDecimal)
-  
-  implicit def toRichAtomicInteger(int: AtomicInteger): RichAtomicInteger =  new RichAtomicInteger(int)
-  implicit def toRichAtomicLong(long: AtomicLong): RichAtomicLong =  new RichAtomicLong(long)
-  
+
+  implicit def toRichAtomicInteger(int: AtomicInteger): RichAtomicInteger = new RichAtomicInteger(int)
+  implicit def toRichAtomicLong(long: AtomicLong): RichAtomicLong = new RichAtomicLong(long)
+
   implicit def toRichInstant(instant: Instant): RichInstant = new RichInstant(instant)
   implicit def toRichLocalDate(date: LocalDate): RichLocalDate = new RichLocalDate(date)
-  
-  implicit def toRichConcurrentMap[K,V](m: java.util.concurrent.ConcurrentMap[K,V]): RichConcurrentMap[K,V] = new RichConcurrentMap(m)
-  
+
+  implicit def toRichConcurrentMap[K, V](m: java.util.concurrent.ConcurrentMap[K, V]): RichConcurrentMap[K, V] =
+    new RichConcurrentMap(m)
+
   implicit def toRichPattern(pattern: java.util.regex.Pattern): RichPattern = new RichPattern(pattern)
   implicit def toRichPattern(regex: scala.util.matching.Regex): RichRegex = new RichRegex(regex)
-  
+
   implicit def toRichURI(uri: URI): RichURI = new RichURI(uri)
 }

@@ -15,3 +15,5 @@ addSbtPlugin("org.scalameta"             % "sbt-mdoc"                      % "2.
 addSbtPlugin("org.scalameta"             % "sbt-scalafmt"                  % "2.4.0")
 addSbtPlugin("org.scoverage"             % "sbt-scoverage"                 % "1.6.1")
 addSbtPlugin("pl.project13.scala"        % "sbt-jmh"                       % "0.3.7")
+
+libraryDependencies += "org.scala-js" %% "scalajs-env-jsdom-nodejs" % "1.0.0"

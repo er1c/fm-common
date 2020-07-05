@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +15,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 object IPSubnets {
-  val Private: IPSubnets = new IPSubnets(Vector(
-    "10.0.0.0/8",     // private
-    "172.16.0.0/12",  // private
-    "192.168.0.0/16", // private
-    "127.0.0.0/8",    // localhost
-    "169.254.0.0/16"  // link-local
-  ))
+  val Private: IPSubnets = new IPSubnets(
+    Vector(
+      "10.0.0.0/8", // private
+      "172.16.0.0/12", // private
+      "192.168.0.0/16", // private
+      "127.0.0.0/8", // localhost
+      "169.254.0.0/16" // link-local
+    ))
 }
 
 final case class IPSubnets(subnets: Vector[IPSubnet]) {
-  def this(nets: Seq[String]) = this(nets.map{IPSubnet.parse(_)}.toVector)
-  
-  def contains(ip: IP): Boolean = subnets.exists{ _.contains(ip) }
-  
-  def hasDefaultRoute: Boolean = subnets.exists{ _.isDefaultRoute }
-  def hasQuadZero: Boolean = subnets.exists{ _.isQuadZero }
+  def this(nets: Seq[String]) = this(nets.map { IPSubnet.parse(_) }.toVector)
+
+  def contains(ip: IP): Boolean = subnets.exists { _.contains(ip) }
+
+  def hasDefaultRoute: Boolean = subnets.exists { _.isDefaultRoute }
+  def hasQuadZero: Boolean = subnets.exists { _.isQuadZero }
 }

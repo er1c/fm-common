@@ -1,5 +1,7 @@
 /*
- * Copyright 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.io.Reader
@@ -39,7 +42,7 @@ final class ReaderCodePointReader(reader: Reader, mode: ReaderCodePointReader.Mo
   override def close(): Unit = reader.close()
 
   override def read(buf: Array[Int], off: Int, len: Int): Int = {
-    if (off < 0  || off > buf.length || len < 0 || off + len > buf.length || off + len < 0) {
+    if (off < 0 || off > buf.length || len < 0 || off + len > buf.length || off + len < 0) {
       throw new IndexOutOfBoundsException()
     }
 
@@ -100,7 +103,7 @@ final class ReaderCodePointReader(reader: Reader, mode: ReaderCodePointReader.Mo
             mode match {
               case GarbageInGarbageOut =>
                 // Write out the unmatched High Surrogate
-                addToOut(previousHighSurrogate)
+                addToOut(previousHighSurrogate.toInt)
 
                 // Try again with the next High Surrogate
                 previousHighSurrogate = ch
@@ -110,7 +113,8 @@ final class ReaderCodePointReader(reader: Reader, mode: ReaderCodePointReader.Mo
                 previousHighSurrogate = ch
 
               case Strict =>
-                throw new IllegalArgumentException(s"Previous Character was a high surrogate but this character is also a high surrogate.  Previous Character: ${previousHighSurrogate.toInt}  This Character:  ${ch.toInt}")
+                throw new IllegalArgumentException(
+                  s"Previous Character was a high surrogate but this character is also a high surrogate.  Previous Character: ${previousHighSurrogate.toInt}  This Character:  ${ch.toInt}")
             }
 
           } else {
@@ -119,21 +123,22 @@ final class ReaderCodePointReader(reader: Reader, mode: ReaderCodePointReader.Mo
             mode match {
               case GarbageInGarbageOut =>
                 // Write out the original character
-                addToOut(previousHighSurrogate)
+                addToOut(previousHighSurrogate.toInt)
 
                 // If we still have space then write out the second character (otherwise save it in hd)
                 if (remaining > 1) {
-                  addToOut(ch)
+                  addToOut(ch.toInt)
                 } else {
-                  setHd(ch)
+                  setHd(ch.toInt)
                 }
 
               case SkipInvalid =>
                 // Ignore the previous high surrogate but write out this valid character
-                addToOut(ch)
+                addToOut(ch.toInt)
 
               case Strict =>
-                throw new IllegalArgumentException(s"Previous Character was a high surrogate but this character is not a low (or high) surrogate.  Previous Character: ${previousHighSurrogate.toInt}  This Character:  ${ch.toInt}")
+                throw new IllegalArgumentException(
+                  s"Previous Character was a high surrogate but this character is not a low (or high) surrogate.  Previous Character: ${previousHighSurrogate.toInt}  This Character:  ${ch.toInt}")
             }
 
             // This is a normal character so we can also zero out the previousHighSurrogate
@@ -146,13 +151,14 @@ final class ReaderCodePointReader(reader: Reader, mode: ReaderCodePointReader.Mo
             previousHighSurrogate = ch
           } else if (Character.isLowSurrogate(ch)) {
             mode match {
-              case GarbageInGarbageOut => addToOut(ch)
+              case GarbageInGarbageOut => addToOut(ch.toInt)
               case SkipInvalid => // Skip this character
-              case Strict => throw new IllegalArgumentException(s"Found a low surrogate without a high surrogate: ${ch.toInt}")
+              case Strict =>
+                throw new IllegalArgumentException(s"Found a low surrogate without a high surrogate: ${ch.toInt}")
             }
           } else {
             // Normal character
-            addToOut(ch)
+            addToOut(ch.toInt)
           }
         }
 
@@ -170,12 +176,14 @@ final class ReaderCodePointReader(reader: Reader, mode: ReaderCodePointReader.Mo
       // Note: remaining > 0 means we are at the end of the Reader stream
       if (remaining > 0) {
         mode match {
-          case GarbageInGarbageOut => addToOut(previousHighSurrogate)
+          case GarbageInGarbageOut => addToOut(previousHighSurrogate.toInt)
           case SkipInvalid => // Skip the previousHighSurrogate since we are at the EOF
-          case Strict => throw new IllegalArgumentException(s"Found a high surrogate without a low surrogate at the EOF: ${previousHighSurrogate.toInt}")
+          case Strict =>
+            throw new IllegalArgumentException(
+              s"Found a high surrogate without a low surrogate at the EOF: ${previousHighSurrogate.toInt}")
         }
       } else {
-        setHd(previousHighSurrogate)
+        setHd(previousHighSurrogate.toInt)
       }
     }
 
@@ -193,7 +201,7 @@ final class ReaderCodePointReader(reader: Reader, mode: ReaderCodePointReader.Mo
       reader.read()
     }
 
-    if (Character.isSurrogate(ch.toChar)) handlePossibleSurrogate(ch.toChar)
+    if (Character.isSurrogate(ch.toChar)) handlePossibleSurrogate(ch)
     else ch
   }
 
@@ -212,21 +220,25 @@ final class ReaderCodePointReader(reader: Reader, mode: ReaderCodePointReader.Mo
         mode match {
           case GarbageInGarbageOut => ch
           case SkipInvalid => -1
-          case Strict => throw new IllegalArgumentException(s"Found an un-paired high surrogate character at the EOF: ${ch.toInt}")
+          case Strict =>
+            throw new IllegalArgumentException(s"Found an un-paired high surrogate character at the EOF: ${ch.toInt}")
         }
       } else if (Character.isHighSurrogate(next.toChar)) {
         mode match {
           case GarbageInGarbageOut => setHd(next); ch
-          case SkipInvalid => handlePossibleSurrogate(next) // Skip the current character and try again with the next character
-          case Strict => throw new IllegalArgumentException(s"Found an un-paired high surrogate character at the EOF: ${ch.toInt}")
+          case SkipInvalid =>
+            handlePossibleSurrogate(next) // Skip the current character and try again with the next character
+          case Strict =>
+            throw new IllegalArgumentException(s"Found an un-paired high surrogate character at the EOF: ${ch.toInt}")
         }
-      } else if (Character.isLowSurrogate(next.toChar)){
+      } else if (Character.isLowSurrogate(next.toChar)) {
         Character.toCodePoint(ch.toChar, next.toChar)
       } else {
         mode match {
           case GarbageInGarbageOut => setHd(next); ch
           case SkipInvalid => next
-          case Strict => throw new IllegalArgumentException(s"Found an un-paired high surrogate character at the EOF: ${ch.toInt}")
+          case Strict =>
+            throw new IllegalArgumentException(s"Found an un-paired high surrogate character at the EOF: ${ch.toInt}")
         }
       }
 

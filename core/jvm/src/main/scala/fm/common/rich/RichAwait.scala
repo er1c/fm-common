@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import java.util.concurrent.{CancellationException, TimeoutException}
@@ -23,10 +26,11 @@ final class RichAwait(val await: Await.type) extends AnyVal {
   /**
    * Like Await.result but returns Some(...) on success and None on Timeout or Cancellation
    */
-  def getResult[T](awaitable: Awaitable[T], atMost: Duration): Option[T] = try {
-    Some(await.result(awaitable, atMost))
-  } catch {
-    case _: CancellationException => None
-    case _: TimeoutException => None
-  }
+  def getResult[T](awaitable: Awaitable[T], atMost: Duration): Option[T] =
+    try {
+      Some(await.result(awaitable, atMost))
+    } catch {
+      case _: CancellationException => None
+      case _: TimeoutException => None
+    }
 }

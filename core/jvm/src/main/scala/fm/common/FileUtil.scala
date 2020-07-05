@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.io._
@@ -21,10 +24,10 @@ import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.{Files, StandardCopyOption}
 
 object FileUtil extends Logging {
-  def md5(f: File)    : Array[Byte] = Resource.using(new FileInputStream(f)){ DigestUtils.md5(_) }
-  def md5Hex(f: File) : String      = Resource.using(new FileInputStream(f)){ DigestUtils.md5Hex(_) }
-  def sha1(f: File)   : Array[Byte] = Resource.using(new FileInputStream(f)){ DigestUtils.sha1(_) }
-  def sha1Hex(f: File): String      = Resource.using(new FileInputStream(f)){ DigestUtils.sha1Hex(_) }
+  def md5(f: File): Array[Byte] = Resource.using(new FileInputStream(f)) { DigestUtils.md5(_) }
+  def md5Hex(f: File): String = Resource.using(new FileInputStream(f)) { DigestUtils.md5Hex(_) }
+  def sha1(f: File): Array[Byte] = Resource.using(new FileInputStream(f)) { DigestUtils.sha1(_) }
+  def sha1Hex(f: File): String = Resource.using(new FileInputStream(f)) { DigestUtils.sha1Hex(_) }
 
   def detectCharset(f: File): Option[Charset] = InputStreamResource.forFileOrResource(f).detectCharset()
   def detectCharsetName(f: File): Option[String] = InputStreamResource.forFileOrResource(f).detectCharsetName()
@@ -38,35 +41,41 @@ object FileUtil extends Logging {
   def writeRawFile(f: File, overwrite: Boolean)(fun: OutputStream => Unit): Unit = {
     FileOutputStreamResource(f, overwrite = overwrite, autoCompress = false).use(fun)
   }
-  
-  def writeRawFile(f: File, is: InputStream, overwrite: Boolean): Unit = writeRawFile(f, overwrite){ os: OutputStream =>
-    IOUtils.copy(is, os)
-  }
-  
+
+  def writeRawFile(f: File, is: InputStream, overwrite: Boolean): Unit =
+    writeRawFile(f, overwrite) { os: OutputStream =>
+      IOUtils.copy(is, os)
+      ()
+    }
+
   def writeFile[T](f: File, overwrite: Boolean)(fun: OutputStream => T): T = {
     FileOutputStreamResource(f, overwrite = overwrite).use(fun)
   }
 
   def writeFile(f: File, contents: String, overwrite: Boolean): Unit = {
     writeFile(f, contents.getBytes(UTF_8), overwrite)
+    ()
   }
-  
+
   def writeFile(f: File, bytes: Array[Byte], overwrite: Boolean): Unit = {
     writeFile(f, overwrite) { os: OutputStream =>
       os.write(bytes)
     }
+    ()
   }
-  
-  def writeFile(f: File, is: InputStream, overwrite: Boolean): Unit = writeFile(f, overwrite){ os: OutputStream =>
-    IOUtils.copy(is, os)
-  }
-  
+
+  def writeFile(f: File, is: InputStream, overwrite: Boolean): Unit =
+    writeFile(f, overwrite) { os: OutputStream =>
+      IOUtils.copy(is, os)
+      ()
+    }
+
   /**
    * Creates a tmp file that can be written to and then will be atomically renamed to the target
    */
   def writeFileWithTemp[T](target: File)(f: File => T): T = {
     val tmp: File = File.createTempFile(".fm_tmp", target.getName, getDirectoryForFile(target))
-    
+
     try {
       val res: T = f(tmp)
       Files.move(tmp.toPath, target.toPath, StandardCopyOption.ATOMIC_MOVE)
@@ -100,28 +109,30 @@ object FileUtil extends Logging {
       f(file)
     } finally {
       if (file.isFile) file.delete()
+      ()
     }
   }
-  
+
   def copy(src: File, dst: File, overwrite: Boolean = true): Unit = {
     def bothEndWith(s: String): Boolean = src.getName.endsWith(s) && dst.getName.endsWith(s)
-    
-    // Only enable autoDecompress/autoCompress if the compression formats don't already match 
+
+    // Only enable autoDecompress/autoCompress if the compression formats don't already match
     val compression: Boolean = if (bothEndWith(".gz") || bothEndWith(".zip") || bothEndWith(".snappy")) false else true
-    
+
     InputStreamResource.forFile(src, autoDecompress = compression).use { is =>
-      FileOutputStreamResource(dst, autoCompress = compression).use { os =>
+      FileOutputStreamResource(dst, autoCompress = compression, overwrite = overwrite).use { os =>
         IOUtils.copy(is, os)
+        ()
       }
     }
   }
-  
+
   def fileExists(file: String): Boolean = fileExists(new File(file))
   def fileExists(file: File): Boolean = file.isFile
-  
+
   def resourceExists(file: String): Boolean = ClassUtil.classpathFileExists(file)
   def resourceExists(file: File): Boolean = ClassUtil.classpathFileExists(file)
-  
+
   def fileOrResourceExists(file: String): Boolean = fileExists(file) || resourceExists(file)
   def fileOrResourceExists(file: File): Boolean = fileExists(file) || resourceExists(file)
 
@@ -160,31 +171,32 @@ object FileUtil extends Logging {
   def readFileOrResource(f: File, encoding: Charset): String = {
     InputStreamResource.forFileOrResource(f).readToString(encoding)
   }
-  
+
   def readLines(file: File)(f: String => Unit): Unit = {
     readLines(InputStreamResource.forFile(file).bufferedReader())(f)
   }
-  
+
   def readLines(is: InputStream)(f: String => Unit): Unit = {
     readLines(InputStreamResource.forInputStream(is).bufferedReader())(f)
   }
-  
-  def readLines(resource: Resource[BufferedReader])(f: String => Unit): Unit = resource.use{ reader: BufferedReader =>
-    var line: String = reader.readLine
-    while (null != line) {
-      f(line)
-      line = reader.readLine
+
+  def readLines(resource: Resource[BufferedReader])(f: String => Unit): Unit =
+    resource.use { reader: BufferedReader =>
+      var line: String = reader.readLine
+      while (null != line) {
+        f(line)
+        line = reader.readLine
+      }
     }
-  }
 
   def readBytes(file: String): Array[Byte] = readBytes(new File(file))
 
   def readBytes(f: File): Array[Byte] = InputStreamResource.forFile(f).readBytes()
 
   def readInputStream(is: InputStream): String = readInputStream(is, UTF_8)
-  
+
   def readInputStream(is: InputStream, encoding: String): String = readInputStream(is, CharsetUtil.forName(encoding))
-  
+
   def readInputStream(is: InputStream, charset: Charset): String = {
     val reader: BufferedReader = new BufferedReader(new InputStreamReader(is, charset))
     val writer: StringWriter = new StringWriter()
@@ -211,4 +223,3 @@ object FileUtil extends Logging {
   }
 
 }
-

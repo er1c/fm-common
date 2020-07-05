@@ -1,5 +1,7 @@
 /*
- * Copyright 2016 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import fm.common.rich._
@@ -26,17 +29,17 @@ trait JVMImplicitsBase extends ImplicitsBase {
   implicit def toRichTry[T](t: Try[T]): RichTry[T] = new RichTry(t)
   implicit def toRichFuture[V](f: Future[V]): RichFuture[V] = RichFuture(f)
   implicit def toRichAwait[V](await: Await.type): RichAwait = new RichAwait(await)
-  
+
   implicit def toRichFile(f: File): RichFile = new RichFile(f)
   implicit def toRichJVMString(s: String): RichJVMString = new RichJVMString(s)
   implicit def toRichPath(p: Path): RichPath = new RichPath(p)
   implicit def toRichInputStream(is: InputStream): RichInputStream = new RichInputStream(is)
-  
+
   implicit def toRichLocale(locale: Locale): RichLocale = new RichLocale(locale)
-  
+
   implicit def toRichURL(url: URL): RichURL = new RichURL(url)
-  
-  implicit def toRichQueryParamsObject(obj: QueryParams.type): RichQueryParams.type = RichQueryParams
-  
+
+  implicit def toRichQueryParamsObject(obj: QueryParams.type): RichQueryParams.type = { void(obj); RichQueryParams }
+
   implicit def toRichImmutableArray[A](arr: ImmutableArray[A]): RichImmutableArray[A] = new RichImmutableArray(arr)
 }

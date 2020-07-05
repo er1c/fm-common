@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import fm.common.{ASCIIUtil, ImmutableArray, ImmutableArrayBuilder}
@@ -28,14 +31,14 @@ final class RichCharSequence(val s: CharSequence) extends AnyVal {
    */
   def isNullOrBlank: Boolean = {
     if (null == s) return true
-    
+
     var i: Int = 0
     val len: Int = s.length()
     while (i < len) {
-      if (!Character.isWhitespace(s.charAt(i))) return false 
+      if (!Character.isWhitespace(s.charAt(i))) return false
       i += 1
     }
-    
+
     true
   }
 
@@ -43,7 +46,7 @@ final class RichCharSequence(val s: CharSequence) extends AnyVal {
    * Opposite of isBlank
    */
   def isNotNullOrBlank: Boolean = !isNullOrBlank
-  
+
   /**
    * Opposite of isBlank (alias for isNotBlank)
    */
@@ -57,7 +60,7 @@ final class RichCharSequence(val s: CharSequence) extends AnyVal {
     if (null == target || target.length == 0) return false
 
     var i: Int = 0
-    while (i < target.length && i+idx < s.length && target.charAt(i) == s.charAt(i+idx)) {
+    while (i < target.length && i + idx < s.length && target.charAt(i) == s.charAt(i + idx)) {
       i += 1
     }
 
@@ -68,31 +71,31 @@ final class RichCharSequence(val s: CharSequence) extends AnyVal {
    * Same as String.startsWith(prefix) but for a CharSequence
    */
   def startsWith(target: CharSequence): Boolean = nextCharsMatch(target)
-  
+
   /**
    * Count the occurrences of the character
    */
   def countOccurrences(ch: Char): Int = {
     var count: Int = 0
     var i: Int = 0
-    
+
     while (i < s.length) {
       if (s.charAt(i) == ch) count += 1
       i += 1
     }
-    
+
     count
   }
-  
+
   def indexesOf(target: CharSequence, withOverlaps: Boolean): IndexedSeq[Int] = indexesOf(target, 0, withOverlaps)
-  
+
   def indexesOf(target: CharSequence, fromIdx: Int, withOverlaps: Boolean): IndexedSeq[Int] = {
     if (target == null) return ImmutableArray.empty[Int]
-    
+
     val builder = new ImmutableArrayBuilder[Int](0)
-    
+
     var i: Int = fromIdx
-    
+
     while (i < s.length) {
       if (nextCharsMatch(target, i)) {
         builder += i
@@ -101,15 +104,18 @@ final class RichCharSequence(val s: CharSequence) extends AnyVal {
         i += 1
       }
     }
-   
-    builder.result
+
+    builder.result()
   }
-  
+
   def matches(pattern: java.util.regex.Pattern): Boolean = pattern.matcher(s).matches()
   def matches(regex: scala.util.matching.Regex): Boolean = regex.pattern.matcher(s).matches()
 
   def containsNormalized(target: CharSequence): Boolean = {
-    containsWithTransform(target, Character.isLetterOrDigit(_), (c: Char) => Character.toLowerCase(ASCIIUtil.toASCIIChar(c)))
+    containsWithTransform(
+      target,
+      Character.isLetterOrDigit(_),
+      (c: Char) => Character.toLowerCase(ASCIIUtil.toASCIIChar(c)))
   }
 
   def containsIgnoreCase(target: CharSequence): Boolean = {
@@ -121,7 +127,10 @@ final class RichCharSequence(val s: CharSequence) extends AnyVal {
   }
 
   def indexOfNormalized(target: CharSequence): Int = {
-    indexOfWithTransform(target, Character.isLetterOrDigit(_), (c: Char) => Character.toLowerCase(ASCIIUtil.toASCIIChar(c)))
+    indexOfWithTransform(
+      target,
+      Character.isLetterOrDigit(_),
+      (c: Char) => Character.toLowerCase(ASCIIUtil.toASCIIChar(c)))
   }
 
   def indexOfIgnoreCase(target: CharSequence): Int = {
@@ -157,7 +166,12 @@ final class RichCharSequence(val s: CharSequence) extends AnyVal {
     -1
   }
 
-  @inline private def indexOfWithTransformImpl(target: CharSequence, targetStartIdx: Int, sourceStartIdx: Int, filter: Char => Boolean, map: Char => Char): Int = {
+  @inline private def indexOfWithTransformImpl(
+    target: CharSequence,
+    targetStartIdx: Int,
+    sourceStartIdx: Int,
+    filter: Char => Boolean,
+    map: Char => Char): Int = {
     var targetIdx: Int = targetStartIdx
     var sourceIdx: Int = sourceStartIdx
 
@@ -192,7 +206,10 @@ final class RichCharSequence(val s: CharSequence) extends AnyVal {
   }
 
   def equalsNormalized(target: CharSequence): Boolean = {
-    equalsWithTransform(target, Character.isLetterOrDigit(_), (c: Char) => Character.toLowerCase(ASCIIUtil.toASCIIChar(c)))
+    equalsWithTransform(
+      target,
+      Character.isLetterOrDigit(_),
+      (c: Char) => Character.toLowerCase(ASCIIUtil.toASCIIChar(c)))
   }
 
   @inline def equalsWithTransform(target: CharSequence, filter: Char => Boolean, map: Char => Char): Boolean = {

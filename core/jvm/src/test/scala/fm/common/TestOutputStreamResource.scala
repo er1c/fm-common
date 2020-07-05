@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.io.ByteArrayInputStream
@@ -31,22 +34,22 @@ final class TestOutputStreamResource extends AnyFunSuite with Matchers {
 //  test(".tbz")    { check("hello_world.txt.tbz") }
 //  test(".tar.xz")    { check("hello_world.txt.tar.xz") }
 //  test(".tar")    { check("hello_world.txt.tar") }
-  test(".txt")    { check("hello_world.txt") }
-  test(".gz")     { check("hello_world.txt.gz") }
-  test(".bzip2")  { check("hello_world.txt.bzip2") }
-  test(".bz2")    { check("hello_world.txt.bz2") }
-  test(".bz")     { check("hello_world.txt.bz") }
+  test(".txt") { check("hello_world.txt") }
+  test(".gz") { check("hello_world.txt.gz") }
+  test(".bzip2") { check("hello_world.txt.bzip2") }
+  test(".bz2") { check("hello_world.txt.bz2") }
+  test(".bz") { check("hello_world.txt.bz") }
   test(".snappy") { check("hello_world.txt.snappy") }
-  test(".xz")     { check("hello_world.txt.xz") }
-  test(".zip")    { check("hello_world.txt.zip") }
-  test(".jar")    { check("hello_world.txt.jar") }
+  test(".xz") { check("hello_world.txt.xz") }
+  test(".zip") { check("hello_world.txt.zip") }
+  test(".jar") { check("hello_world.txt.jar") }
 
   test("UTF-8-BOM Charset") {
     val bytes: Array[Byte] = writeBytes("foo.txt", UTF_8_BOM)
 
-    bytes(0) shouldBe 0xEF.toByte
-    bytes(1) shouldBe 0xBB.toByte
-    bytes(2) shouldBe 0xBF.toByte
+    bytes(0) shouldBe 0xef.toByte
+    bytes(1) shouldBe 0xbb.toByte
+    bytes(2) shouldBe 0xbf.toByte
 
     readToString("foo.txt", UTF_8_BOM, bytes) shouldBe testString
     readToString("foo.txt", StandardCharsets.UTF_8, bytes) shouldBe testString
@@ -56,16 +59,17 @@ final class TestOutputStreamResource extends AnyFunSuite with Matchers {
   test("UTF-8-BOM Encoding") {
     val bytes: Array[Byte] = writeBytes("foo.txt", "UTF-8-BOM")
 
-    bytes(0) shouldBe 0xEF.toByte
-    bytes(1) shouldBe 0xBB.toByte
-    bytes(2) shouldBe 0xBF.toByte
+    bytes(0) shouldBe 0xef.toByte
+    bytes(1) shouldBe 0xbb.toByte
+    bytes(2) shouldBe 0xbf.toByte
 
     readToString("foo.txt", "UTF-8-BOM", bytes) shouldBe testString
     readToString("foo.txt", "UTF-8", bytes) shouldBe testString
     new String(bytes, StandardCharsets.UTF_8).head shouldBe '\uFEFF'
   }
 
-  private val testString: String = "Hello World!\n oneByte: \u0024 twoByte: \u00A2 threeByte: \u20AC fourByteSupplementary: \uD83D\uDCA5"
+  private val testString: String =
+    "Hello World!\n oneByte: \u0024 twoByte: \u00A2 threeByte: \u20AC fourByteSupplementary: \uD83D\uDCA5"
 
   private def check(fileName: String): Unit = {
     checkCharset(fileName, StandardCharsets.UTF_8)
@@ -104,5 +108,7 @@ final class TestOutputStreamResource extends AnyFunSuite with Matchers {
 
   private def checkString(s: String): Unit = {
     s shouldBe testString
+
+    ()
   }
 }

@@ -1,5 +1,7 @@
 /*
- * Copyright 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import java.time.LocalDate
@@ -45,12 +48,14 @@ class TestRichLocalDate extends AnyFunSuite with Matchers {
 
     strOpt match {
       case Some(str) => date.toYYYYMMDD shouldBe str
-      case None => an [IllegalArgumentException] should be thrownBy date.toYYYYMMDD
+      case None => an[IllegalArgumentException] should be thrownBy date.toYYYYMMDD
     }
 
     intOpt match {
       case Some(int) => date.toYYYYMMDDInt shouldBe int
-      case None => an [IllegalArgumentException] should be thrownBy date.toYYYYMMDDInt
+      case None => an[IllegalArgumentException] should be thrownBy date.toYYYYMMDDInt
     }
+
+    ()
   }
 }

@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import fm.common.Normalize
@@ -24,7 +27,7 @@ final class RichTraversableOnce[A](val self: TraversableOnce[A]) extends AnyVal 
   def foreachWithIndex[U](f: (A, Int) => U): Unit = {
     var i: Int = 0
 
-    self.foreach{ elem: A =>
+    self.foreach { elem: A =>
       f(elem, i)
       i += 1
     }
@@ -33,7 +36,7 @@ final class RichTraversableOnce[A](val self: TraversableOnce[A]) extends AnyVal 
   def foreachWithLongIndex[U](f: (A, Long) => U): Unit = {
     var i: Long = 0L
 
-    self.foreach{ elem: A =>
+    self.foreach { elem: A =>
       f(elem, i)
       i += 1
     }
@@ -98,9 +101,12 @@ final class RichTraversableOnce[A](val self: TraversableOnce[A]) extends AnyVal 
     }
 
     // Perform the sorting which will give us an idxs array that has the sorted indexes for the result
-    java.util.Arrays.sort(idxs.asInstanceOf[Array[Object]], new java.util.Comparator[Integer]{
-      def compare(a: Integer, b: Integer): Int = ord.compare(keys(a).asInstanceOf[K], keys(b).asInstanceOf[K])
-    }.asInstanceOf[java.util.Comparator[Object]])
+    java.util.Arrays.sort(
+      idxs.asInstanceOf[Array[Object]],
+      new java.util.Comparator[Integer] {
+        def compare(a: Integer, b: Integer): Int = ord.compare(keys(a).asInstanceOf[K], keys(b).asInstanceOf[K])
+      }.asInstanceOf[java.util.Comparator[Object]]
+    )
 
     val b = Vector.newBuilder[A]
     b.sizeHint(len)
@@ -117,10 +123,10 @@ final class RichTraversableOnce[A](val self: TraversableOnce[A]) extends AnyVal 
   /**
    * Like groupBy but returns the count of each key instead of the actual values
    */
-  def countBy[K](f: A => K): Map[K,Int] = {
+  def countBy[K](f: A => K): Map[K, Int] = {
     var m = immutable.HashMap.empty[K, Int]
 
-    for(value <- self) {
+    for (value <- self) {
       val key: K = f(value)
       m = m.updated(key, m.getOrElse(key, 0) + 1)
     }
@@ -131,12 +137,16 @@ final class RichTraversableOnce[A](val self: TraversableOnce[A]) extends AnyVal 
   /**
    * Collapse records that are next to each other by a key
    *
-   * e.g.: This groups evens and odds together:
+    * Example:
    *
-   * scala> Vector(2,4,6,1,3,2,5,7).collapseBy{ _ % 2 == 0 }
-   * res1: IndexedSeq[(Boolean, Seq[Int])] = Vector((true,Vector(2, 4, 6)), (false,Vector(1, 3)), (true,Vector(2)), (false,Vector(5, 7)))
+    * This groups evens and odds together:
+   *
+    * {{{
+   * Vector(2,4,6,1,3,2,5,7).collapseBy{ _ % 2 == 0 }
+   * // res1: IndexedSeq[(Boolean, Seq[Int])] = Vector((true,Vector(2, 4, 6)), (false,Vector(1, 3)), (true,Vector(2)), (false,Vector(5, 7)))
+   * }}}
    */
-  def collapseBy[K](f: A => K): IndexedSeq[(K,Seq[A])] = {
+  def collapseBy[K](f: A => K): IndexedSeq[(K, Seq[A])] = {
     val resBuilder = Vector.newBuilder[(K, Seq[A])]
 
     var isFirst: Boolean = true
@@ -161,7 +171,8 @@ final class RichTraversableOnce[A](val self: TraversableOnce[A]) extends AnyVal 
       curBuilder += a
     }
 
-    if (isFirst) Vector.empty else {
+    if (isFirst) Vector.empty
+    else {
       resBuilder += ((curKey, curBuilder.result))
     }
 
@@ -176,7 +187,9 @@ final class RichTraversableOnce[A](val self: TraversableOnce[A]) extends AnyVal 
 
     for (x <- self) {
       val key: K = f(x)
-      require(!m.contains(key), s"Map already contains key: $key   Existing Value: ${m(key)}  Trying to add value: ${x}")
+      require(
+        !m.contains(key),
+        s"Map already contains key: $key   Existing Value: ${m(key)}  Trying to add value: ${x}")
       m = m.updated(key, x)
     }
 
@@ -188,9 +201,9 @@ final class RichTraversableOnce[A](val self: TraversableOnce[A]) extends AnyVal 
    * after applying the map operation.
    */
   def findMapped[B](f: A => Option[B]): Option[B] = {
-    self.foreach{ a: A =>
+    self.foreach { a: A =>
       val b: Option[B] = f(a)
-      if(b.isDefined) return b
+      if (b.isDefined) return b
     }
 
     None
@@ -201,8 +214,8 @@ final class RichTraversableOnce[A](val self: TraversableOnce[A]) extends AnyVal 
    * until one with a defined result is found.
    */
   def findMappedFuture[B](f: A => Future[Option[B]])(implicit ec: ExecutionContext): Future[Option[B]] = {
-    self.foldLeft[Future[Option[B]]](Future.successful(None)){ (prev: Future[Option[B]], next: A) =>
-      prev.flatMap{ res: Option[B] =>
+    self.foldLeft[Future[Option[B]]](Future.successful(None)) { (prev: Future[Option[B]], next: A) =>
+      prev.flatMap { res: Option[B] =>
         if (res.isDefined) Future.successful(res) else f(next)
       }
     }
@@ -241,7 +254,10 @@ final class RichTraversableOnce[A](val self: TraversableOnce[A]) extends AnyVal 
 
     for (x <- self) {
       val key: K = x._1
-      require(!m.contains(key), s"RichTraversableOnce.toUniqueHashMap - Map already contains key: $key   Existing Value: ${m(key)}  Trying to add value: ${x._2}")
+      require(
+        !m.contains(key),
+        s"RichTraversableOnce.toUniqueHashMap - Map already contains key: $key   Existing Value: ${m(
+          key)}  Trying to add value: ${x._2}")
       m += x
     }
 
@@ -283,13 +299,16 @@ final class RichTraversableOnce[A](val self: TraversableOnce[A]) extends AnyVal 
   /**
    * Same as toUniqueHashMap but allows you to specify transform functions for the key and value
    */
-  def toUniqueHashMapWithTransforms[K, V, K2, V2](keyTransform: K => K2, valueTransform: V => V2)(implicit ev: A <:< (K, V)): immutable.HashMap[K2, V2] = {
+  def toUniqueHashMapWithTransforms[K, V, K2, V2](keyTransform: K => K2, valueTransform: V => V2)(implicit
+    ev: A <:< (K, V)): immutable.HashMap[K2, V2] = {
     var m = immutable.HashMap.empty[K2, V2]
 
     for (x <- self) {
       val key: K2 = keyTransform(x._1)
       val value: V2 = valueTransform(x._2)
-      require(!m.contains(key), s"RichTraversableOnce.toUniqueHashMap - Map already contains key: $key   Existing Value: ${m(key)}  Trying to add value: $value")
+      require(
+        !m.contains(key),
+        s"RichTraversableOnce.toUniqueHashMap - Map already contains key: $key   Existing Value: ${m(key)}  Trying to add value: $value")
       m += ((key, value))
     }
 
@@ -301,7 +320,8 @@ final class RichTraversableOnce[A](val self: TraversableOnce[A]) extends AnyVal 
   /**
    * Same as toUniqueHashMap but allows you to specify a transform function for the key
    */
-  def toUniqueHashMapWithKeyTransform[K, V, K2](keyTransform: K => K2)(implicit ev: A <:< (K, V)): immutable.HashMap[K2, V] = {
+  def toUniqueHashMapWithKeyTransform[K, V, K2](keyTransform: K => K2)(implicit
+    ev: A <:< (K, V)): immutable.HashMap[K2, V] = {
     toUniqueHashMapWithTransforms(keyTransform, identityTransform[V])
   }
 
@@ -371,7 +391,8 @@ final class RichTraversableOnce[A](val self: TraversableOnce[A]) extends AnyVal 
    *
    * TODO: Change this to IndexedSeq so we can switch to ImmutableArray (if we want to)
    */
-  def toMultiValuedMapWithTransforms[K, V, K2, V2](keyTransform: K => K2, valueTransform: V => V2)(implicit ev: A <:< (K, V)): immutable.HashMap[K2, Vector[V2]] = {
+  def toMultiValuedMapWithTransforms[K, V, K2, V2](keyTransform: K => K2, valueTransform: V => V2)(implicit
+    ev: A <:< (K, V)): immutable.HashMap[K2, Vector[V2]] = {
     var m = immutable.HashMap.empty[K2, Vector[V2]]
 
     for (x <- self) {
@@ -394,7 +415,8 @@ final class RichTraversableOnce[A](val self: TraversableOnce[A]) extends AnyVal 
    *
    * TODO: Change this to IndexedSeq so we can switch to ImmutableArray (if we want to)
    */
-  def toMultiValuedMapWithKeyTransform[K, V, K2](keyTransform: K => K2)(implicit ev: A <:< (K, V)): immutable.HashMap[K2, Vector[V]] = {
+  def toMultiValuedMapWithKeyTransform[K, V, K2](keyTransform: K => K2)(implicit
+    ev: A <:< (K, V)): immutable.HashMap[K2, Vector[V]] = {
     toMultiValuedMapWithTransforms(keyTransform, identityTransform[V])
   }
 
@@ -406,58 +428,62 @@ final class RichTraversableOnce[A](val self: TraversableOnce[A]) extends AnyVal 
   /**
    * Like .toSet but creates an immutable.HashSet
    */
-  def toHashSet: immutable.HashSet[A] = self match {
-    case hashSet: immutable.HashSet[_] => hashSet.asInstanceOf[immutable.HashSet[A]]
-    case _ =>
-      val builder = immutable.HashSet.newBuilder[A]
-      builder ++= self
-      builder.result
-  }
+  def toHashSet: immutable.HashSet[A] =
+    self match {
+      case hashSet: immutable.HashSet[_] => hashSet.asInstanceOf[immutable.HashSet[A]]
+      case _ =>
+        val builder = immutable.HashSet.newBuilder[A]
+        builder ++= self
+        builder.result
+    }
 
   /**
    * Like .toHashSet but makes sure there are no duplicates
    */
-  def toUniqueHashSet: immutable.HashSet[A] = self match {
-    case hashSet: immutable.HashSet[_] => hashSet.asInstanceOf[immutable.HashSet[A]]
-    case _ =>
-      var set = immutable.HashSet.empty[A]
+  def toUniqueHashSet: immutable.HashSet[A] =
+    self match {
+      case hashSet: immutable.HashSet[_] => hashSet.asInstanceOf[immutable.HashSet[A]]
+      case _ =>
+        var set = immutable.HashSet.empty[A]
 
-      for (x <- self) {
-        require(!set.contains(x), "RichTraversableOnce.toUniqueHashSet - HashSet already contains value: "+x)
-        set += x
-      }
+        for (x <- self) {
+          require(!set.contains(x), "RichTraversableOnce.toUniqueHashSet - HashSet already contains value: " + x)
+          set += x
+        }
 
-      set
-  }
+        set
+    }
 
   /**
    * Like .toSet but makes sure there are no duplicates
    */
-  def toUniqueSet: immutable.Set[A] = self match {
-    case hashSet: immutable.Set[_] => hashSet.asInstanceOf[immutable.Set[A]]
-    case _ =>
-      var set = immutable.Set.empty[A]
+  def toUniqueSet: immutable.Set[A] =
+    self match {
+      case hashSet: immutable.Set[_] => hashSet.asInstanceOf[immutable.Set[A]]
+      case _ =>
+        var set = immutable.Set.empty[A]
 
-      for (x <- self) {
-        require(!set.contains(x), "RichTraversableOnce.toUniqueSet - HashSet already contains value: "+x)
-        set += x
-      }
+        for (x <- self) {
+          require(!set.contains(x), "RichTraversableOnce.toUniqueSet - HashSet already contains value: " + x)
+          set += x
+        }
 
-      set
-  }
+        set
+    }
 
   /**
    * Like .toSet but returns a scala.collection.immutable.SortedSet instead
    */
-  def toSortedSet(implicit ord: Ordering[A]): immutable.SortedSet[A] = self match {
-    case sortedSet: immutable.HashSet[_] => sortedSet.asInstanceOf[immutable.SortedSet[A]]
-    case _ =>
-      val builder = immutable.SortedSet.newBuilder[A]
-      builder ++= self
-      builder.result
-  }
+  def toSortedSet(implicit ord: Ordering[A]): immutable.SortedSet[A] =
+    self match {
+      case sortedSet: immutable.HashSet[_] => sortedSet.asInstanceOf[immutable.SortedSet[A]]
+      case _ =>
+        val builder = immutable.SortedSet.newBuilder[A]
+        builder ++= self
+        builder.result
+    }
 
-  def distinctUsing[B](f: A => B)(implicit ord: Ordering[B]): IndexedSeq[A] = {
+  def distinctUsing[B](f: A => B): IndexedSeq[A] = {
     val seen: mutable.HashSet[B] = new mutable.HashSet[B]
     val res = Vector.newBuilder[A]
 
@@ -472,12 +498,16 @@ final class RichTraversableOnce[A](val self: TraversableOnce[A]) extends AnyVal 
     res.result
   }
 
-  def toUniqueLowerAlphaNumericMap[V](implicit ev: A <:< (String,V)): immutable.HashMap[String, V] = toUniqueHashMapWithKeyTransform(Normalize.lowerAlphanumeric)
-  def toUniqueURLNameMap[V](implicit ev: A <:< (String,V)): immutable.HashMap[String, V] = toUniqueHashMapWithKeyTransform(Normalize.urlName)
+  def toUniqueLowerAlphaNumericMap[V](implicit ev: A <:< (String, V)): immutable.HashMap[String, V] =
+    toUniqueHashMapWithKeyTransform(Normalize.lowerAlphanumeric)
+  def toUniqueURLNameMap[V](implicit ev: A <:< (String, V)): immutable.HashMap[String, V] =
+    toUniqueHashMapWithKeyTransform(Normalize.urlName)
 
   // TODO: Change this to IndexedSeq so we can switch to ImmutableArray (if we want to)
-  def toMultiValuedLowerAlphaNumericMap[V](implicit ev: A <:< (String,V)): immutable.HashMap[String, Vector[V]] = toMultiValuedMapWithKeyTransform(Normalize.lowerAlphanumeric)
+  def toMultiValuedLowerAlphaNumericMap[V](implicit ev: A <:< (String, V)): immutable.HashMap[String, Vector[V]] =
+    toMultiValuedMapWithKeyTransform(Normalize.lowerAlphanumeric)
 
   // TODO: Change this to IndexedSeq so we can switch to ImmutableArray (if we want to)
-  def toMultiValuedURLNameMap[V](implicit ev: A <:< (String,V)): immutable.HashMap[String, Vector[V]] = toMultiValuedMapWithKeyTransform(Normalize.urlName)
+  def toMultiValuedURLNameMap[V](implicit ev: A <:< (String, V)): immutable.HashMap[String, Vector[V]] =
+    toMultiValuedMapWithKeyTransform(Normalize.urlName)
 }

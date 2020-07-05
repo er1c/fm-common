@@ -1,14 +1,13 @@
 /*
- * This was originally from: https://github.com/bitcoinj/bitcoinj/blob/master/core/src/main/java/org/bitcoinj/core/Base58.java
- *
- * Copyright 2011 Google Inc.
- * Copyright 2018 Andreas Schildbach
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.util.Arrays
@@ -25,7 +25,7 @@ import java.util.Arrays
  * <p>
  * Note that this is not the same base58 as used by Flickr, which you may find referenced around the Internet.
  * <p>
- * You may want to consider working with {@link PrefixedChecksummedBytes} instead, which
+ * You may want to consider working with `PrefixedChecksummedBytes` instead, which
  * adds support for testing the prefix and suffix bytes commonly found in addresses.
  * <p>
  * Satoshi explains: why base-58 instead of standard base-64 encoding?
@@ -56,7 +56,7 @@ object Base58 extends BaseEncoding {
     var i: Int = 0
 
     while (i < ALPHABET.length) {
-      arr(ALPHABET(i)) = i
+      arr(ALPHABET(i).toInt) = i
       i += 1
     }
 
@@ -78,9 +78,10 @@ object Base58 extends BaseEncoding {
     }
 
     def benchmark(iter: Int): Unit = {
-      val (time: Long, res: String) = Util.time{ go(iter) }
+      val (time: Long, res: String) = Util.time { go(iter) }
 
-      println(s"ENCODING - Res: $res  Time (ms): $time  ops/ms: ${iter.toDouble/time.toDouble}  ms/op: ${time.toDouble/iter.toDouble}")
+      println(
+        s"ENCODING - Res: $res  Time (ms): $time  ops/ms: ${iter.toDouble / time.toDouble}  ms/op: ${time.toDouble / iter.toDouble}")
     }
 
     // Warmup
@@ -122,7 +123,7 @@ object Base58 extends BaseEncoding {
 
     while (inputStart < input.length) {
       outputStart -= 1
-      encoded(outputStart) = ALPHABET(divmodForEncode(input, inputStart))
+      encoded(outputStart) = ALPHABET(divmodForEncode(input, inputStart).toInt)
       if (input(inputStart) == 0) inputStart += 1
     }
 
@@ -198,8 +199,8 @@ object Base58 extends BaseEncoding {
 
     while (i < input.length()) {
       val c: Char = input.charAt(i)
-      val digit: Int = if (c < 128) INDEXES(c) else -1
-      if (digit < 0) throw new IllegalArgumentException("Invalid Character: "+c+" at idx: "+i)
+      val digit: Int = if (c < 128) INDEXES(c.toInt) else -1
+      if (digit < 0) throw new IllegalArgumentException("Invalid Character: " + c + " at idx: " + i)
       input58(i) = digit.toByte
 
       i += 1
@@ -259,7 +260,7 @@ object Base58 extends BaseEncoding {
     var i: Int = firstDigit
 
     while (i < number.length) {
-      val digit: Int = number(i) & 0xFF
+      val digit: Int = number(i) & 0xff
       val temp: Int = remainder * 256 + digit
       number(i) = (temp / 58).toByte
       remainder = temp % 58
@@ -281,7 +282,7 @@ object Base58 extends BaseEncoding {
     var i: Int = firstDigit
 
     while (i < number.length) {
-      val digit: Int = number(i) & 0xFF
+      val digit: Int = number(i) & 0xff
       val temp: Int = remainder * 58 + digit
       number(i) = (temp / 256).toByte
       remainder = temp % 256

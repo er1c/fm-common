@@ -1,5 +1,7 @@
 /*
- * Copyright 2016 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import org.scalatest.funsuite.AnyFunSuite
@@ -27,13 +30,13 @@ final class TestTypeSafeEquals extends AnyFunSuite with Matchers {
 
     "foo" ≡ "bar" shouldBe false
     "foo" ≠ "bar" shouldBe true
-    
+
     "1d ≡ 1" shouldNot compile
     "1 ≡ 1d" shouldNot compile
-    
+
     "1 ≡ Option(1)" shouldNot compile
     "Option(1) ≡ 1" shouldNot compile
-    
+
     """"foo" ≡ Option("foo")""" shouldNot compile
     """Option("foo") ≡ "foo""" shouldNot compile
   }
@@ -61,30 +64,30 @@ final class TestTypeSafeEquals extends AnyFunSuite with Matchers {
     """1 ≡ null""" shouldNot compile
     """1 ≠ null""" shouldNot compile
   }
-  
+
   test("Subtypes") {
     """1 ≡ Foo("foo")""" shouldNot compile
     """Foo("foo") ≡ 1""" shouldNot compile
-    
+
     Foo("foo") ≡ Foo("bar") shouldBe false
     Foo("foo") ≠ Foo("bar") shouldBe true
-    
+
     val fooAsBase: Base = Foo("foo")
     val foo: Foo = Foo("foo")
-    
+
     val barAsBase: Base = Bar(123)
     val bar: Bar = Bar(123)
-    
+
     fooAsBase ≡ foo shouldBe true
     foo ≡ fooAsBase shouldBe true
-    
+
     fooAsBase ≠ barAsBase shouldBe true
     fooAsBase ≠ bar shouldBe true
-    
+
     "foo ≡ bar" shouldNot compile
     "bar ≡ foo" shouldNot compile
   }
-  
+
   sealed trait Base
   case class Foo(foo: String) extends Base
   case class Bar(bar: Int) extends Base

@@ -1,28 +1,21 @@
 /*
- * The MIT License (MIT)
- * 
- * Copyright (c) 2016 by Lloyd Chan
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- * 
- * This is from: https://github.com/lloydmeta/enumeratum
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package fm.common
 
 import fm.common.{EnumContextUtils => ContextUtils}
@@ -50,7 +43,7 @@ object EnumMacros {
    */
   def materializeEnumImpl[A: c.WeakTypeTag](c: Context) = {
     import c.universe._
-    val symbol          = weakTypeOf[A].typeSymbol
+    val symbol = weakTypeOf[A].typeSymbol
     val companionSymbol = ContextUtils.companion(c)(symbol)
     if (companionSymbol == NoSymbol) {
       c.abort(
@@ -114,32 +107,33 @@ object EnumMacros {
     typeSymbol: c.universe.Symbol
   ): Seq[c.universe.ModuleDef] = {
     import c.universe._
-    val enclosingBodySubClassTrees: List[Tree] = try {
-      val enclosingModule = c.enclosingClass match {
-        case md @ ModuleDef(_, _, _) => md
-        case _ =>
-          c.abort(
-            c.enclosingPosition,
-            "The enum (i.e. the class containing the case objects and the call to `findValues`) must be an object"
-          )
-      }
-      enclosingModule.impl.body.filter { x =>
-        try {
-          x.symbol.isModule &&
-            x.symbol.asModule.moduleClass.asClass.baseClasses.contains(typeSymbol)
-        } catch {
-          case NonFatal(e) =>
-            c.warning(
+    val enclosingBodySubClassTrees: List[Tree] =
+      try {
+        val enclosingModule = c.internal.enclosingOwner match {
+          case md @ ModuleDef(_, _, _) => md
+          case _ =>
+            c.abort(
               c.enclosingPosition,
-              s"Got an exception, indicating a possible bug in Enumeratum. Message: ${e.getMessage}"
+              "The enum (i.e. the class containing the case objects and the call to `findValues`) must be an object"
             )
-            false
         }
+        enclosingModule.impl.body.filter { x =>
+          try {
+            x.symbol.isModule &&
+            x.symbol.asModule.moduleClass.asClass.baseClasses.contains(typeSymbol)
+          } catch {
+            case NonFatal(e) =>
+              c.warning(
+                c.enclosingPosition,
+                s"Got an exception, indicating a possible bug in Enumeratum. Message: ${e.getMessage}"
+              )
+              false
+          }
+        }
+      } catch {
+        case NonFatal(e) =>
+          c.abort(c.enclosingPosition, s"Unexpected error: ${e.getMessage}")
       }
-    } catch {
-      case NonFatal(e) =>
-        c.abort(c.enclosingPosition, s"Unexpected error: ${e.getMessage}")
-    }
     if (isDocCompiler(c))
       enclosingBodySubClassTrees.flatMap {
         /*
@@ -153,7 +147,8 @@ object EnumMacros {
           }
         }
         case moduleDef: ModuleDef => List(moduleDef)
-      } else
+      }
+    else
       enclosingBodySubClassTrees.collect {
         case m: ModuleDef => m
       }

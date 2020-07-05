@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import java.math.BigDecimal
@@ -22,17 +25,19 @@ object RichBigDecimal extends Ordering[BigDecimal] {
 }
 
 final class RichBigDecimal(val self: BigDecimal) extends AnyVal with Ordered[BigDecimal] {
-  def isZero: Boolean = 0 == self.compareTo(BigDecimal.ZERO) // 0.00 != 0 so we have to use compareTo and check if the result is zero
+  def isZero: Boolean =
+    0 == self.compareTo(BigDecimal.ZERO) // 0.00 != 0 so we have to use compareTo and check if the result is zero
   def isNotZero: Boolean = !isZero
   def isPositive: Boolean = this > BigDecimal.ZERO
   def isPositiveOrZero: Boolean = this >= BigDecimal.ZERO
   def isNegative: Boolean = this < BigDecimal.ZERO
   def isNegativeOrZero: Boolean = this <= BigDecimal.ZERO
-  
-  def isOne: Boolean = 0 == self.compareTo(BigDecimal.ONE) // 1.00 != 1 so we have to use compareTo and check if the result is zero
+
+  def isOne: Boolean =
+    0 == self.compareTo(BigDecimal.ONE) // 1.00 != 1 so we have to use compareTo and check if the result is zero
   def isNotOne: Boolean = !isOne
-  
+
   def compare(that: BigDecimal): Int = self.compareTo(that)
-  
+
   def +(other: BigDecimal): BigDecimal = self.add(other)
 }

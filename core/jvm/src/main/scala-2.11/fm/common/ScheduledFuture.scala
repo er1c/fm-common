@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.util.concurrent.CancellationException
@@ -26,14 +29,14 @@ object ScheduledFuture {
 
 final class ScheduledFuture[T](promise: Promise[T], task: ScheduledTask) extends Future[T] with ScheduledTask {
   private def self: Future[T] = promise.future
-  
+
   /**
-   * Attempts to cancel execution of this task. This attempt will fail if the task has already 
-   * completed, has already been cancelled, or could not be cancelled for some other reason. 
-   * If successful, and this task has not started when cancel is called, this task should 
-   * never run. If the task has already started, then the mayInterruptIfRunning parameter 
-   * determines whether the thread executing this task should be interrupted in an attempt 
-   * to stop the task. 
+   * Attempts to cancel execution of this task. This attempt will fail if the task has already
+   * completed, has already been cancelled, or could not be cancelled for some other reason.
+   * If successful, and this task has not started when cancel is called, this task should
+   * never run. If the task has already started, then the mayInterruptIfRunning parameter
+   * determines whether the thread executing this task should be interrupted in an attempt
+   * to stop the task.
    */
   def cancel(): Boolean = {
     val res: Boolean = task.cancel()
@@ -45,7 +48,7 @@ final class ScheduledFuture[T](promise: Promise[T], task: ScheduledTask) extends
    * Returns true if this task was cancelled before it completed normally.
    */
   def isCancelled(): Boolean = task.isCancelled()
-  
+
   //
   // Scala Future implementation
   //

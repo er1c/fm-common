@@ -1,5 +1,7 @@
 /*
- * Copyright 2016 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import org.scalatest.funsuite.AnyFunSuite
@@ -20,23 +23,23 @@ import org.scalatest.matchers.should.Matchers
 
 class TestRichIndexSeq extends AnyFunSuite with Matchers {
   import fm.common.Implicits._
-  
+
   test("takeWhile") {
-    Vector.empty[Int].countWhile{ _ == 0 } shouldBe 0
-    Vector(1,1,1,2,2,3,3,3,3,3).countWhile{ _ == 0 } shouldBe 0
-    Vector(1,1,1,2,2,3,3,3,3,3).countWhile{ _ == 1 } shouldBe 3
-    Vector(1,1,1,2,2,3,3,3,3,3).countWhile{ _ == 2 } shouldBe 0
+    Vector.empty[Int].countWhile { _ == 0 } shouldBe 0
+    Vector(1, 1, 1, 2, 2, 3, 3, 3, 3, 3).countWhile { _ == 0 } shouldBe 0
+    Vector(1, 1, 1, 2, 2, 3, 3, 3, 3, 3).countWhile { _ == 1 } shouldBe 3
+    Vector(1, 1, 1, 2, 2, 3, 3, 3, 3, 3).countWhile { _ == 2 } shouldBe 0
   }
-  
+
   test("takeWhile with starting idx") {
-    Vector.empty[Int].countWhile(0){ _ == 0 } shouldBe 0
-    Vector.empty[Int].countWhile(5){ _ == 0 } shouldBe 0
-    Vector(1,1,1,2,2,3,3,3,3,3).countWhile(0){ _ == 0 } shouldBe 0
-    Vector(1,1,1,2,2,3,3,3,3,3).countWhile(0){ _ == 1 } shouldBe 3
-    Vector(1,1,1,2,2,3,3,3,3,3).countWhile(0){ _ == 2 } shouldBe 0
-    
-    Vector(1,1,1,2,2,3,3,3,3,3).countWhile(100){ _ == 0 } shouldBe 0
-    Vector(1,1,1,2,2,3,3,3,3,3).countWhile(3){ _ == 1 } shouldBe 0
-    Vector(1,1,1,2,2,3,3,3,3,3).countWhile(4){ _ == 2 } shouldBe 1
+    Vector.empty[Int].countWhile(0) { _ == 0 } shouldBe 0
+    Vector.empty[Int].countWhile(5) { _ == 0 } shouldBe 0
+    Vector(1, 1, 1, 2, 2, 3, 3, 3, 3, 3).countWhile(0) { _ == 0 } shouldBe 0
+    Vector(1, 1, 1, 2, 2, 3, 3, 3, 3, 3).countWhile(0) { _ == 1 } shouldBe 3
+    Vector(1, 1, 1, 2, 2, 3, 3, 3, 3, 3).countWhile(0) { _ == 2 } shouldBe 0
+
+    Vector(1, 1, 1, 2, 2, 3, 3, 3, 3, 3).countWhile(100) { _ == 0 } shouldBe 0
+    Vector(1, 1, 1, 2, 2, 3, 3, 3, 3, 3).countWhile(3) { _ == 1 } shouldBe 0
+    Vector(1, 1, 1, 2, 2, 3, 3, 3, 3, 3).countWhile(4) { _ == 2 } shouldBe 1
   }
 }

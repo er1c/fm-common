@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
+import fm.common.JavaConverters._
 import java.util.concurrent.{ConcurrentHashMap => JavaConcurrentHashMap}
-import scala.collection.JavaConverters._
 
 /**
  * EXPERIMENTAL - A Scala mutable map that wraps a java ConcurrentHashMap and allows null values
  */
-final class ConcurrentHashMap[A,B](map: JavaConcurrentHashMap[A,Option[B]]) extends ConcurrentHashMapBase[A, B] {
-  def this(initialCapacity: Int, loadFactor: Float, concurrencyLevel: Int) = this(new JavaConcurrentHashMap[A,Option[B]](initialCapacity, loadFactor, concurrencyLevel))
+final class ConcurrentHashMap[A, B](map: JavaConcurrentHashMap[A, Option[B]]) extends ConcurrentHashMapBase[A, B] {
+  def this(initialCapacity: Int, loadFactor: Float, concurrencyLevel: Int) =
+    this(new JavaConcurrentHashMap[A, Option[B]](initialCapacity, loadFactor, concurrencyLevel))
   def this(initialCapacity: Int, loadFactor: Float) = this(initialCapacity, loadFactor, 16)
   def this(initialCapacity: Int) = this(initialCapacity, 0.75f)
   def this() = this(16)
-  
+
   def get(key: A): Option[B] = {
     val v: Option[B] = map.get(key)
-    if (v eq null) None else Some(v.getOrElse{ null.asInstanceOf[B] })
+    if (v eq null) None else Some(v.getOrElse { null.asInstanceOf[B] })
   }
-  
-  def iterator: Iterator[(A,B)] = map.entrySet.iterator.asScala.map{ e => (e.getKey, e.getValue.getOrElse{ null.asInstanceOf[B] }) }
+
+  def iterator: Iterator[(A, B)] =
+    map.entrySet.iterator.asScala.map { e => (e.getKey, e.getValue.getOrElse { null.asInstanceOf[B] }) }
 
   // Note: Growable trait changed += to final, and addOne() as implementation method in 2.13,
   //       implement correct one in ConcurrentHashMapBase
@@ -49,9 +54,10 @@ final class ConcurrentHashMap[A,B](map: JavaConcurrentHashMap[A,Option[B]]) exte
     map.remove(key)
     this
   }
-  
+
   override def update(key: A, value: B): Unit = {
     require(null != key, "Key cannot be null")
     map.put(key, Option(value))
+    ()
   }
 }

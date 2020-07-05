@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import fm.common.rich._
@@ -20,5 +23,6 @@ import fm.common.rich._
 trait RichCrossImplicitsBase extends Any {
   implicit def toRichTraversableOnce[T](t: scala.collection.TraversableOnce[T]) = new RichTraversableOnce(t)
   implicit def toRichIndexedSeq[T](t: scala.collection.IndexedSeq[T]) = new RichIndexedSeq(t)
-  implicit def toRichMap[A,B,This <: scala.collection.MapLike[A,B,This] with Map[A,B]](m: scala.collection.MapLike[A,B,This]) = new RichMap(m)
+  implicit def toRichMap[A, B, This <: scala.collection.MapLike[A, B, This] with Map[A, B]](
+    m: scala.collection.MapLike[A, B, This]) = new RichMap(m)
 }

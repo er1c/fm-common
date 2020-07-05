@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import fm.common.rich._
 import scala.collection.{IterableOps, MapOps}
 
-object RichCrossImplicitsBase {
-
-}
+object RichCrossImplicitsBase {}
 
 trait RichCrossImplicitsBase extends Any {
   implicit def toRichIterableOnce[T](t: IterableOnce[T]) = new RichIterableOnce(t)
   implicit def toRichIndexedSeq[T](t: IndexedSeq[T]) = new RichIndexedSeq(t)
-  implicit def toRichMap[K, V, CC[_, _] <: IterableOps[_, Any, _], This <: Map[K, V]](m: MapOps[K, V, CC, This]) = new RichMap[K, V, CC, This](m)
+  implicit def toRichMap[K, V, CC[_, _] <: IterableOps[_, Any, _], This <: Map[K, V]](m: MapOps[K, V, CC, This]) =
+    new RichMap[K, V, CC, This](m)
 }

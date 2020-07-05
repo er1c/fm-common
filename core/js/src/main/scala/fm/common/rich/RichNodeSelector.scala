@@ -1,5 +1,7 @@
 /*
- * Copyright 2016 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import fm.common.Implicits._
@@ -22,28 +25,41 @@ import scala.reflect.{classTag, ClassTag}
 
 final class RichNodeSelector(val self: NodeSelector) extends AnyVal {
   /** Typesafe helper on top of querySelector */
-  def selectFirst[T : NodeType : ClassTag](selector: String): T = selectFirstOption[T](selector).getOrElse{ throw new NoSuchElementException(s"No Such Element: $selector") }
-  
+  def selectFirst[T: NodeType: ClassTag](selector: String): T =
+    selectFirstOption[T](selector).getOrElse { throw new NoSuchElementException(s"No Such Element: $selector") }
+
   /** Alias for selectFirst[T]("*") */
-  def selectFirst[T : NodeType : ClassTag]: T = selectFirst[T]("*")
-  
+  def selectFirst[T: NodeType: ClassTag]: T = selectFirst[T]("*")
+
   /** Typesafe helper on top of querySelector */
-  def selectFirstOption[T : NodeType : ClassTag](selector: String): Option[T] = {
+  def selectFirstOption[T: NodeType: ClassTag](selector: String): Option[T] = {
     val targetClass: Class[_] = classTag[T].runtimeClass
-    val elem: Element = try{ self.querySelector(selector) } catch { case ex: Exception => throw new IllegalArgumentException("Invalid Selector for querySelector: "+selector) }
-    Option(elem).filter{ targetClass.isInstance }.map{ _.asInstanceOf[T] }
+    val elem: Element =
+      try {
+        self.querySelector(selector)
+      } catch {
+        case _: Exception => throw new IllegalArgumentException("Invalid Selector for querySelector: " + selector)
+      }
+
+    Option(elem).filter { targetClass.isInstance }.map { _.asInstanceOf[T] }
   }
-  
+
   /** Alias for selectFirstOption[T]("*") */
-  def selectFirstOption[T : NodeType : ClassTag]: Option[T] = selectFirstOption[T]("*")
-  
+  def selectFirstOption[T: NodeType: ClassTag]: Option[T] = selectFirstOption[T]("*")
+
   /** Typesafe helper on top of querySelectorAll */
-  def selectAll[T : NodeType : ClassTag](selector: String): IndexedSeq[T] = {
+  def selectAll[T: NodeType: ClassTag](selector: String): IndexedSeq[T] = {
     val targetClass: Class[_] = classTag[T].runtimeClass
-    val results: NodeList = try{ self.querySelectorAll(selector) } catch { case ex: Exception => throw new IllegalArgumentException("Invalid Selector for querySelectorAll: "+selector) }
-    results.filter{ targetClass.isInstance }.map{ _.asInstanceOf[T] }
+    val results: NodeList =
+      try {
+        self.querySelectorAll(selector)
+      } catch {
+        case _: Exception => throw new IllegalArgumentException("Invalid Selector for querySelectorAll: " + selector)
+      }
+
+    results.filter { targetClass.isInstance }.map { _.asInstanceOf[T] }
   }
-  
+
   /** Alias for selectAll[T]("*") */
-  def selectAll[T : NodeType : ClassTag]: IndexedSeq[T] = selectAll[T]("*")
+  def selectAll[T: NodeType: ClassTag]: IndexedSeq[T] = selectAll[T]("*")
 }

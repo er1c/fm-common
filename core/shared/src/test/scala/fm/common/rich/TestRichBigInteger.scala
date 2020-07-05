@@ -1,5 +1,7 @@
 /*
- * Copyright 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import java.lang.NumberFormatException
@@ -46,15 +49,15 @@ class TestRichBigInteger extends AnyFunSuite with Matchers {
   }
 
   test("intValueExactOption") {
-    bi("1").intValueExactOption shouldBe Some(1)
-    bi("123").intValueExactOption shouldBe Some(123)
-    null.asInstanceOf[BigInteger].intValueExactOption shouldBe None
+    bi("1").intValueExactOption() shouldBe Some(1)
+    bi("123").intValueExactOption() shouldBe Some(123)
+    null.asInstanceOf[BigInteger].intValueExactOption() shouldBe None
 
-    BigInteger.valueOf(Int.MaxValue).intValueExactOption shouldBe Some(Int.MaxValue)
-    BigInteger.valueOf(Int.MinValue).intValueExactOption shouldBe Some(Int.MinValue)
+    BigInteger.valueOf(Int.MaxValue).intValueExactOption() shouldBe Some(Int.MaxValue)
+    BigInteger.valueOf(Int.MinValue).intValueExactOption() shouldBe Some(Int.MinValue)
 
-    BigInteger.valueOf(Long.MaxValue).intValueExactOption shouldBe None
-    BigInteger.valueOf(Long.MinValue).intValueExactOption shouldBe None
+    BigInteger.valueOf(Long.MaxValue).intValueExactOption() shouldBe None
+    BigInteger.valueOf(Long.MinValue).intValueExactOption() shouldBe None
   }
 
 }

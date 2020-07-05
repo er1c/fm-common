@@ -1,5 +1,7 @@
 /*
- * Copyright 2018 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.io.ByteArrayInputStream
@@ -44,7 +47,8 @@ final class TestDigestUtils extends AnyFunSuite with Matchers {
     )
 
     check(
-      msg = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pretium semper pellentesque. Interdum et malesuada fames ac ante ipsum primis in faucibus. Vestibulum vitae nisl faucibus, luctus nisl eget, aliquam enim. Integer risus odio, vehicula a hendrerit eu, lacinia feugiat tellus. Vestibulum nisi nisi, blandit id dapibus et, hendrerit sed massa. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus tincidunt interdum nibh, eu hendrerit ex rhoncus non. Nam ornare magna quis augue ultrices, non lobortis urna venenatis. Aliquam rutrum placerat aliquam. Fusce pellentesque ultrices justo sed vehicula. Mauris vel varius ligula, a condimentum enim. Fusce ornare tellus ac magna.",
+      msg =
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pretium semper pellentesque. Interdum et malesuada fames ac ante ipsum primis in faucibus. Vestibulum vitae nisl faucibus, luctus nisl eget, aliquam enim. Integer risus odio, vehicula a hendrerit eu, lacinia feugiat tellus. Vestibulum nisi nisi, blandit id dapibus et, hendrerit sed massa. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus tincidunt interdum nibh, eu hendrerit ex rhoncus non. Nam ornare magna quis augue ultrices, non lobortis urna venenatis. Aliquam rutrum placerat aliquam. Fusce pellentesque ultrices justo sed vehicula. Mauris vel varius ligula, a condimentum enim. Fusce ornare tellus ac magna.",
       md5Hex = "b53e2bd16a8dafd617a617bcbbdfc3b5",
       sha1Hex = "4a442ca99bf7779f595c7777c8ee15ef50e1e269",
       sha256Hex = "d3a7a726f1ca2a8f37d8137f55a56a4f2be0a413d6f524695219fb1d41d2e197"
@@ -83,5 +87,7 @@ final class TestDigestUtils extends AnyFunSuite with Matchers {
     DigestUtils.sha256(msg) shouldBe Base16.decode(sha256Hex)
     DigestUtils.sha256(msg.getBytes(UTF_8)) shouldBe Base16.decode(sha256Hex)
     DigestUtils.sha256(new ByteArrayInputStream(msg.getBytes(UTF_8))) shouldBe Base16.decode(sha256Hex)
+
+    ()
   }
 }

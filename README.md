@@ -17,7 +17,7 @@ Add this to your `build.sbt`:
 libraryDependencies += "io.github.er1c" %% "fm-common" % "1.0.0-RC1"
 ```
 
-Cross-builds are available for Scala 2.11.12, 2.12.11 and 2.13.3.  Scala.js 0.6.x and 1.x supported.
+Cross-builds are available for Scala 2.11.12, 2.12.11 and 2.13.3.  Scala.js 1.x supported.
 
 Find out more in the [microsite](https://er1c.github.io/fm-common/).
 

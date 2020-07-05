@@ -1,32 +1,24 @@
 /*
- * The MIT License (MIT)
- * 
- * Copyright (c) 2016 by Lloyd Chan
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- * 
- * This is from: https://github.com/lloydmeta/enumeratum
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package fm.common
 
 import scala.collection.immutable._
-import scala.language.experimental.macros
 
 /**
  * Base trait for a Value-based enums.
@@ -34,27 +26,25 @@ import scala.language.experimental.macros
  * Example:
  *
  * {{{
- * scala> sealed abstract class Greeting(val value: Int) extends IntEnumEntry
+ * sealed abstract class Greeting(val value: Int) extends IntEnumEntry
  *
- * scala> object Greeting extends IntEnum[Greeting] {
- *      |   val values = findValues
- *      |   case object Hello   extends Greeting(1)
- *      |   case object GoodBye extends Greeting(2)
- *      |   case object Hi      extends Greeting(3)
- *      |   case object Bye     extends Greeting(4)
- *      | }
+ * object Greeting extends IntEnum[Greeting] {
+ *   val values = findValues
+ *   case object Hello   extends Greeting(1)
+ *   case object GoodBye extends Greeting(2)
+ *   case object Hi      extends Greeting(3)
+ *   case object Bye     extends Greeting(4)
+ * }
  *
- * scala> Greeting.withValueOpt(1)
- * res0: Option[Greeting] = Some(Hello)
+ * Greeting.withValueOpt(1) == Some(GreetingHello)
  *
- * scala> Greeting.withValueOpt(6)
- * res1: Option[Greeting] = None
+ * Greeting.withValueOpt(6) ==  None
  * }}}
  */
 sealed trait ValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
 
   /**
-   * Map of [[ValueType]] to [[EntryType]] members
+   * Map of `ValueType` to `EntryType` members
    */
   final lazy val valuesToEntriesMap: Map[ValueType, EntryType] =
     values.map(v => v.value -> v).toMap
@@ -70,18 +60,17 @@ sealed trait ValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
   def values: IndexedSeq[EntryType]
 
   /**
-   * Tries to get an [[EntryType]] by the supplied value. The value corresponds to the .value
-   * of the case objects implementing [[EntryType]]
+   * Tries to get an `EntryType` by the supplied value. The value corresponds to the .value
+   * of the case objects implementing `EntryType`
    *
-   * Like [[Enumeration]]'s `withValue`, this method will throw if the value does not match any of the values'
+   * Like [[withValue]], this method will throw if the value does not match any of the values'
    * `.value` values.
    */
-  @SuppressWarnings(Array("org.wartremover.warts.Throw"))
   def withValue(i: ValueType): EntryType =
     withValueOpt(i).getOrElse(throw new NoSuchElementException(buildNotFoundMessage(i)))
 
   /**
-   * Optionally returns an [[EntryType]] for a given value.
+   * Optionally returns an `EntryType` for a given value.
    */
   def withValueOpt(i: ValueType): Option[EntryType] = valuesToEntriesMap.get(i)
 
@@ -107,7 +96,7 @@ object IntEnum {
    * Materializes an IntEnum for a given IntEnumEntry
    */
   implicit def materialiseIntValueEnum[EntryType <: IntEnumEntry]: IntEnum[EntryType] =
-  macro EnumMacros.materializeEnumImpl[EntryType]
+    macro EnumMacros.materializeEnumImpl[EntryType]
 
 }
 
@@ -117,7 +106,7 @@ object IntEnum {
 trait IntEnum[A <: IntEnumEntry] extends ValueEnum[Int, A] {
 
   /**
-   * Method that returns a Seq of [[A]] objects that the macro was able to find.
+   * Method that returns an `IndexedSeq` of `A` objects that the macro was able to find.
    *
    * You will want to use this in some way to implement your [[values]] method. In fact,
    * if you aren't using this method...why are you even bothering with this lib?
@@ -132,7 +121,7 @@ object LongEnum {
    * Materializes a LongEnum for an scope LongEnumEntry
    */
   implicit def materialiseLongValueEnum[EntryType <: LongEnumEntry]: LongEnum[EntryType] =
-  macro EnumMacros.materializeEnumImpl[EntryType]
+    macro EnumMacros.materializeEnumImpl[EntryType]
 
 }
 
@@ -142,7 +131,7 @@ object LongEnum {
 trait LongEnum[A <: LongEnumEntry] extends ValueEnum[Long, A] {
 
   /**
-   * Method that returns a Seq of [[A]] objects that the macro was able to find.
+   * Method that returns an `IndexedSeq` of `A` objects that the macro was able to find.
    *
    * You will want to use this in some way to implement your [[values]] method. In fact,
    * if you aren't using this method...why are you even bothering with this lib?
@@ -156,7 +145,7 @@ object ShortEnum {
    * Materializes a ShortEnum for an in-scope ShortEnumEntry
    */
   implicit def materialiseShortValueEnum[EntryType <: ShortEnumEntry]: ShortEnum[EntryType] =
-  macro EnumMacros.materializeEnumImpl[EntryType]
+    macro EnumMacros.materializeEnumImpl[EntryType]
 
 }
 
@@ -166,13 +155,13 @@ object ShortEnum {
 trait ShortEnum[A <: ShortEnumEntry] extends ValueEnum[Short, A] {
 
   /**
-   * Method that returns a Seq of [[A]] objects that the macro was able to find.
+   * Method that returns an `IndexedSeq` of `A` objects that the macro was able to find.
    *
    * You will want to use this in some way to implement your [[values]] method. In fact,
    * if you aren't using this method...why are you even bothering with this lib?
    */
   final protected def findValues: IndexedSeq[A] =
-  macro ValueEnumMacros.findShortValueEntriesImpl[A]
+    macro ValueEnumMacros.findShortValueEntriesImpl[A]
 }
 
 object StringEnum {
@@ -181,14 +170,14 @@ object StringEnum {
    * Materializes a StringEnum for an in-scope StringEnumEntry
    */
   implicit def materialiseStringValueEnum[EntryType <: StringEnumEntry]: StringEnum[EntryType] =
-  macro EnumMacros.materializeEnumImpl[EntryType]
+    macro EnumMacros.materializeEnumImpl[EntryType]
 
 }
 
 /**
  * Value enum with [[StringEnumEntry]] entries
  *
- * This is similar to [[enumeratum.Enum]], but different in that values must be
+ * This is similar to [[Enum]], but different in that values must be
  * literal values. This restraint allows us to enforce uniqueness at compile time.
  *
  * Note that uniqueness is only guaranteed if you do not do any runtime string manipulation on values.
@@ -196,13 +185,13 @@ object StringEnum {
 trait StringEnum[A <: StringEnumEntry] extends ValueEnum[String, A] {
 
   /**
-   * Method that returns a Seq of [[A]] objects that the macro was able to find.
+   * Method that returns an `IndexedSeq` of `A` objects that the macro was able to find.
    *
    * You will want to use this in some way to implement your [[values]] method. In fact,
    * if you aren't using this method...why are you even bothering with this lib?
    */
   final protected def findValues: IndexedSeq[A] =
-  macro ValueEnumMacros.findStringValueEntriesImpl[A]
+    macro ValueEnumMacros.findStringValueEntriesImpl[A]
 }
 
 object ByteEnum {
@@ -211,14 +200,14 @@ object ByteEnum {
    * Materializes a ByteEnum for an in-scope ByteEnumEntry
    */
   implicit def materialiseByteValueEnum[EntryType <: ByteEnumEntry]: ByteEnum[EntryType] =
-  macro EnumMacros.materializeEnumImpl[EntryType]
+    macro EnumMacros.materializeEnumImpl[EntryType]
 
 }
 
 /**
  * Value enum with [[ByteEnumEntry]] entries
  *
- * This is similar to [[enumeratum.Enum]], but different in that values must be
+ * This is similar to [[ValueEnum]], but different in that values must be
  * literal values. This restraint allows us to enforce uniqueness at compile time.
  *
  * Note that uniqueness is only guaranteed if you do not do any runtime string manipulation on values.
@@ -226,7 +215,7 @@ object ByteEnum {
 trait ByteEnum[A <: ByteEnumEntry] extends ValueEnum[Byte, A] {
 
   /**
-   * Method that returns a Seq of [[A]] objects that the macro was able to find.
+   * Method that returns an `IndexedSeq` of `A` objects that the macro was able to find.
    *
    * You will want to use this in some way to implement your [[values]] method. In fact,
    * if you aren't using this method...why are you even bothering with this lib?
@@ -240,14 +229,14 @@ object CharEnum {
    * Materializes a CharEnum for an in-scope CharEnumEntry
    */
   implicit def materialiseCharValueEnum[EntryType <: CharEnumEntry]: CharEnum[EntryType] =
-  macro EnumMacros.materializeEnumImpl[EntryType]
+    macro EnumMacros.materializeEnumImpl[EntryType]
 
 }
 
 /**
  * Value enum with [[CharEnumEntry]] entries
  *
- * This is similar to [[enumeratum.Enum]], but different in that values must be
+ * This is similar to [[ValueEnum]], but different in that values must be
  * literal values. This restraint allows us to enforce uniqueness at compile time.
  *
  * Note that uniqueness is only guaranteed if you do not do any runtime string manipulation on values.
@@ -255,7 +244,7 @@ object CharEnum {
 trait CharEnum[A <: CharEnumEntry] extends ValueEnum[Char, A] {
 
   /**
-   * Method that returns a Seq of [[A]] objects that the macro was able to find.
+   * Method that returns an `IndexedSeq` of `A` objects that the macro was able to find.
    *
    * You will want to use this in some way to implement your [[values]] method. In fact,
    * if you aren't using this method...why are you even bothering with this lib?

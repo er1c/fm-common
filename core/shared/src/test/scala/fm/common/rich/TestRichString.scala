@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import org.scalatest.funsuite.AnyFunSuite
@@ -20,30 +23,30 @@ import org.scalatest.matchers.should.Matchers
 
 final class TestRichString extends AnyFunSuite with Matchers {
   import fm.common.Implicits._
-  
+
   test("toBlankOption - None") {
     (null: String).toBlankOption shouldBe None
     "".toBlankOption shouldBe None
     "  ".toBlankOption shouldBe None
   }
-  
+
   test("toBlankOption - Some") {
     "asd".toBlankOption shouldBe Some("asd")
   }
-  
+
   test("toIntOptionCached") {
     "123".toIntOptionCached shouldBe Some(123)
     "-123".toIntOptionCached shouldBe Some(-123)
-    
+
     (null: String).toIntOptionCached shouldBe None
     "".toIntOptionCached shouldBe None
     "foo".toIntOptionCached shouldBe None
     "123.45".toIntOptionCached shouldBe None
     "1234567890000".toIntOptionCached shouldBe None // Too big for Int
-    
+
     "123asd".toIntOptionCached shouldBe None
   }
-  
+
   test("isInt") {
     "123".isInt shouldBe true
     "-123".isInt shouldBe true
@@ -53,7 +56,7 @@ final class TestRichString extends AnyFunSuite with Matchers {
     "foo".isInt shouldBe false
     "123.45".isInt shouldBe false
     "1234567890000".isInt shouldBe false // Too big for Int
-    
+
     "123asd".isInt shouldBe false
   }
 
@@ -63,18 +66,18 @@ final class TestRichString extends AnyFunSuite with Matchers {
     "false".toBoolean shouldBe false
     "fAlSe".toBoolean shouldBe false
 
-    an [IllegalArgumentException] shouldBe thrownBy { (null: String).toBoolean }
-    an [IllegalArgumentException] shouldBe thrownBy { "".toBoolean }
-    an [IllegalArgumentException] shouldBe thrownBy { " true".toBoolean }
-    an [IllegalArgumentException] shouldBe thrownBy { "false ".toBoolean }
-    an [IllegalArgumentException] shouldBe thrownBy { "t".toBoolean }
-    an [IllegalArgumentException] shouldBe thrownBy { "f".toBoolean }
-    an [IllegalArgumentException] shouldBe thrownBy { "yes".toBoolean }
-    an [IllegalArgumentException] shouldBe thrownBy { "y".toBoolean }
-    an [IllegalArgumentException] shouldBe thrownBy { "no".toBoolean }
-    an [IllegalArgumentException] shouldBe thrownBy { "n".toBoolean }
-    an [IllegalArgumentException] shouldBe thrownBy { "0".toBoolean }
-    an [IllegalArgumentException] shouldBe thrownBy { "1".toBoolean }
+    an[IllegalArgumentException] shouldBe thrownBy { (null: String).toBoolean }
+    an[IllegalArgumentException] shouldBe thrownBy { "".toBoolean }
+    an[IllegalArgumentException] shouldBe thrownBy { " true".toBoolean }
+    an[IllegalArgumentException] shouldBe thrownBy { "false ".toBoolean }
+    an[IllegalArgumentException] shouldBe thrownBy { "t".toBoolean }
+    an[IllegalArgumentException] shouldBe thrownBy { "f".toBoolean }
+    an[IllegalArgumentException] shouldBe thrownBy { "yes".toBoolean }
+    an[IllegalArgumentException] shouldBe thrownBy { "y".toBoolean }
+    an[IllegalArgumentException] shouldBe thrownBy { "no".toBoolean }
+    an[IllegalArgumentException] shouldBe thrownBy { "n".toBoolean }
+    an[IllegalArgumentException] shouldBe thrownBy { "0".toBoolean }
+    an[IllegalArgumentException] shouldBe thrownBy { "1".toBoolean }
   }
 
   test("parseBoolean") {
@@ -100,16 +103,16 @@ final class TestRichString extends AnyFunSuite with Matchers {
     "n".parseBoolean shouldBe Some(false)
     "no".parseBoolean shouldBe Some(false)
   }
-  
+
   test("capitalizeWords") {
     "foo baR".capitalizeWords shouldBe "Foo BaR"
-    
+
     "foo_bAR".capitalizeWords('_') shouldBe "Foo_BAR"
   }
-  
+
   test("capitalizeFully") {
     "foo baR".capitalizeFully shouldBe "Foo Bar"
-    
+
     "foo_bar".capitalizeFully('_') shouldBe "Foo_Bar"
   }
 

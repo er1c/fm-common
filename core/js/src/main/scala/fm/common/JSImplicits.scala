@@ -1,5 +1,7 @@
 /*
- * Copyright 2016 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import fm.common.rich._
@@ -21,7 +24,7 @@ import org.scalajs.jquery.JQuery
 
 trait JSImplicitsBase extends ImplicitsBase {
   implicit def toRichJQuery(jquery: JQuery): RichJQuery = new RichJQuery(jquery)
-  
+
   implicit def toRichEvent(event: Event): RichEvent = new RichEvent(event)
   implicit def toRichEventTarget(target: EventTarget): RichEventTarget = new RichEventTarget(target)
   implicit def toRichDocument(doc: Document): RichDocument = new RichDocument(doc)

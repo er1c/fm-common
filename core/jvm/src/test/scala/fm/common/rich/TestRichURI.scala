@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import fm.common._
@@ -25,8 +28,9 @@ import org.scalatest.matchers.should.Matchers
 final class TestRichURI extends AnyFunSuite with Matchers {
   test("Basics") {
     check("http://frugalmechanic.com", scheme = Some("http"), host = Some("frugalmechanic.com"), path = Some(""))
-    
-    check("https://user:pass@frugalmechanic.com:123/path?foo=bar#hash", 
+
+    check(
+      "https://user:pass@frugalmechanic.com:123/path?foo=bar#hash",
       scheme = Some("https"),
       userInfo = Some("user:pass"),
       host = Some("frugalmechanic.com"),
@@ -36,8 +40,9 @@ final class TestRichURI extends AnyFunSuite with Matchers {
       fragment = Some("hash"),
       queryParamsToCheck = Seq("foo" -> "bar")
     )
-    
-    check("https://user:pass@frugalmechanic.com:123/p%20a%3Dt%20h?param=foo%3Dbar%26asd%3Dq%20w%20e#hash", 
+
+    check(
+      "https://user:pass@frugalmechanic.com:123/p%20a%3Dt%20h?param=foo%3Dbar%26asd%3Dq%20w%20e#hash",
       scheme = Some("https"),
       userInfo = Some("user:pass"),
       host = Some("frugalmechanic.com"),
@@ -49,8 +54,17 @@ final class TestRichURI extends AnyFunSuite with Matchers {
       queryParamsToCheck = Seq("param" -> "foo=bar&asd=q w e")
     )
   }
-  
-  def check[T](s: String, scheme: Option[String] = None, userInfo: Option[String] = None, host: Option[String] = None, port: Option[Int] = None, path: Option[String] = None, query: Option[String] = None, fragment: Option[String] = None, queryParamsToCheck: Seq[(String,String)] = Nil): Unit = {
+
+  def check[T](
+    s: String,
+    scheme: Option[String] = None,
+    userInfo: Option[String] = None,
+    host: Option[String] = None,
+    port: Option[Int] = None,
+    path: Option[String] = None,
+    query: Option[String] = None,
+    fragment: Option[String] = None,
+    queryParamsToCheck: Seq[(String, String)] = Nil): Unit = {
     def checkFields[X](uri: RichURIBase[X]): Unit = {
       uri.scheme shouldBe scheme
       uri.userInfo shouldBe userInfo
@@ -59,30 +73,36 @@ final class TestRichURI extends AnyFunSuite with Matchers {
       uri.path shouldBe path
       uri.query shouldBe query
       uri.fragment shouldBe fragment
-      
-      queryParamsToCheck.foreach { case (k,v) =>
-        uri.queryParams.hasKey(k) shouldBe true
-        uri.queryParams.hasKeyWithValue(k) shouldBe v.isNotNullOrBlank
-        uri.queryParams.apply(k).head shouldBe v
+
+      queryParamsToCheck.foreach {
+        case (k, v) =>
+          uri.queryParams.hasKey(k) shouldBe true
+          uri.queryParams.hasKeyWithValue(k) shouldBe v.isNotNullOrBlank
+          uri.queryParams.apply(k).head shouldBe v
       }
     }
-    
+
     def checkCopy[X](uri: RichURIBase[X]): Unit = {
       uri.port shouldBe Some(999)
       uri.path shouldBe Some("/new-path")
+
+      ()
     }
 
     val richURI: RichURI = new RichURI(URI(s))
     checkFields(richURI)
-    
+
     val richURL: RichURL = new RichURL(URL(s))
     checkFields(richURL)
-    
+
     checkCopy(new RichURI(richURI.copy(path = Some("/new-path"), port = Some(999))))
     checkCopy(new RichURL(richURL.copy(path = Some("/new-path"), port = Some(999))))
-    
-    richURI.withQueryParams("var" -> "new & param").query should equal(Some(richURI.queryParams.toString.toBlankOption.map{ _+"&" }.getOrElse("")+"var=new+%26+param"))
-    richURL.withQueryParams("var" -> "new & param").query should equal(Some(richURL.queryParams.toString.toBlankOption.map{ _+"&" }.getOrElse("")+"var=new+%26+param"))
-    
+
+    richURI.withQueryParams("var" -> "new & param").query should equal(
+      Some(richURI.queryParams.toString.toBlankOption.map { _ + "&" }.getOrElse("") + "var=new+%26+param"))
+    richURL.withQueryParams("var" -> "new & param").query should equal(
+      Some(richURL.queryParams.toString.toBlankOption.map { _ + "&" }.getOrElse("") + "var=new+%26+param"))
+
+    ()
   }
 }

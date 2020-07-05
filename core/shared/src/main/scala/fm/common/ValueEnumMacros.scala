@@ -1,28 +1,21 @@
 /*
- * The MIT License (MIT)
- * 
- * Copyright (c) 2016 by Lloyd Chan
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- * 
- * This is from: https://github.com/lloydmeta/enumeratum
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package fm.common
 
 import fm.common.{EnumContextUtils => ContextUtils}
@@ -67,7 +60,9 @@ object ValueEnumMacros {
   def findShortValueEntriesImpl[ValueEntryType: c.WeakTypeTag](
     c: Context
   ): c.Expr[IndexedSeq[ValueEntryType]] = {
-    findValueEntriesImpl[ValueEntryType, ContextUtils.CTInt, Short](c)(_.toShort) // do a transform because there is no such thing as Short literals
+    findValueEntriesImpl[ValueEntryType, ContextUtils.CTInt, Short](c)(
+      _.toShort
+    ) // do a transform because there is no such thing as Short literals
   }
 
   /**
@@ -112,9 +107,8 @@ object ValueEnumMacros {
   /**
    * The method that does the heavy lifting.
    */
-  private[this] def findValueEntriesImpl[ValueEntryType: c.WeakTypeTag,
-  ValueType: ClassTag,
-  ProcessedValue](c: Context)(
+  private[this] def findValueEntriesImpl[ValueEntryType: c.WeakTypeTag, ValueType: ClassTag, ProcessedValue](
+    c: Context)(
     processFoundValues: ValueType => ProcessedValue
   ): c.Expr[IndexedSeq[ValueEntryType]] = {
     import c.universe._
@@ -190,22 +184,22 @@ object ValueEnumMacros {
     processFoundValues: ValueType => ProcessedValueType
   ): Seq[TreeWithMaybeVal[c.universe.ModuleDef, ProcessedValueType]] = {
     import c.universe._
-    val classTag  = implicitly[ClassTag[ValueType]]
+    val classTag = implicitly[ClassTag[ValueType]]
     val valueTerm = ContextUtils.termName(c)("value")
     // go through all the trees
     memberTrees.map { declTree =>
       val directMemberTrees = declTree.children.flatMap(_.children) // Things that are body-level, no lower
-    val constructorTrees = {
-      val immediate       = directMemberTrees // for 2.11+ this is enough
-      val constructorName = ContextUtils.constructorName(c)
-      // Sadly 2.10 has parent-class constructor calls nested inside a member..
-      val method =
-        directMemberTrees.collect { // for 2.10.x, we need to grab the body-level constructor method's trees
-          case t @ DefDef(_, `constructorName`, _, _, _, _) =>
-            t.collect { case t => t }
-        }.flatten
-      immediate ++ method
-    }.iterator
+      val constructorTrees = {
+        val immediate = directMemberTrees // for 2.11+ this is enough
+        val constructorName = ContextUtils.constructorName(c)
+        // Sadly 2.10 has parent-class constructor calls nested inside a member..
+        val method =
+          directMemberTrees.collect { // for 2.10.x, we need to grab the body-level constructor method's trees
+            case t @ DefDef(_, `constructorName`, _, _, _, _) =>
+              t.collect { case t => t }
+          }.flatten
+        immediate ++ method
+      }.iterator
 
       val valuesFromMembers = directMemberTrees.iterator.collect {
         case ValDef(_, termName, _, Literal(Constant(i: ValueType))) if termName == valueTerm =>
@@ -267,7 +261,7 @@ object ValueEnumMacros {
   private[this] def findConstructorParamsLists[ValueEntryType: c.WeakTypeTag](
     c: Context
   ): List[List[c.universe.Name]] = {
-    val valueEntryTypeTpe        = implicitly[c.WeakTypeTag[ValueEntryType]].tpe
+    val valueEntryTypeTpe = implicitly[c.WeakTypeTag[ValueEntryType]].tpe
     val valueEntryTypeTpeMembers = valueEntryTypeTpe.members
     valueEntryTypeTpeMembers.collect(ContextUtils.constructorsToParamNamesPF(c)).toList
   }
@@ -281,7 +275,13 @@ object ValueEnumMacros {
     val membersWithValues = treeWithVals.map { treeWithVal =>
       treeWithVal.tree.symbol -> treeWithVal.value
     }
-    val groupedByValue = membersWithValues.groupBy(_._2).mapValues(_.map(_._1))
+    // 2.13 deprecated mapValues and 2.11 .view doesn't have .mapValues
+    //val groupedByValue = membersWithValues.groupBy(_._2).mapValues(_.map(_._1))
+    val groupedByValue = membersWithValues.groupBy(_._2).map {
+      case (k, v) =>
+        k -> v.map { _._1 }
+    }
+
     val (valuesWithOneSymbol, valuesWithMoreThanOneSymbol) =
       groupedByValue.partition(_._2.size <= 1)
     if (valuesWithOneSymbol.size != membersWithValues.toMap.keys.size) {

@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package fm.common
 
 import java.io.File
@@ -13,7 +31,8 @@ import scala.util.matching.Regex
 object EmailSender {
   // RegEx From: https://www.w3.org/TR/html5/forms.html#valid-e-mail-address
   //   Modified to require at least one .<tld> at the end, so root@localhost isn't valid (changed *$""") => +$""")
-  private val emailRegex: Regex = """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$""".r
+  private val emailRegex: Regex =
+    """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$""".r
 
   sealed trait Attachment {
     def fileName: String
@@ -37,7 +56,7 @@ object EmailSender {
    * Simple reg-ex based email address validation
    */
   def isValidEmail(email: String): Boolean = {
-    email.toBlankOption.map{ emailRegex.findFirstMatchIn(_).isDefined }.getOrElse(false)
+    email.toBlankOption.map { emailRegex.findFirstMatchIn(_).isDefined }.getOrElse(false)
   }
 
   private val emailSenderTaskRunner: TaskRunner = TaskRunner(
@@ -92,18 +111,19 @@ final case class EmailSender(user: String, pass: String, host: String) {
     subject: String,
     plaintextBody: String,
     attachments: Seq[EmailSender.Attachment]
-  ): Unit = sendSyncImpl(
-    loggingName = "sendPlaintext",
-    to = to,
-    from = from,
-    cc = cc,
-    bcc = bcc,
-    replyTo = replyTo,
-    subject = subject,
-    plaintextBody = plaintextBody.toBlankOption,
-    htmlBody = None,
-    attachments = attachments
-  )
+  ): Unit =
+    sendSyncImpl(
+      loggingName = "sendPlaintext",
+      to = to,
+      from = from,
+      cc = cc,
+      bcc = bcc,
+      replyTo = replyTo,
+      subject = subject,
+      plaintextBody = plaintextBody.toBlankOption,
+      htmlBody = None,
+      attachments = attachments
+    )
 
   // Non-Attachment version for backwards compat
   def sendPlaintextAsync(
@@ -136,18 +156,19 @@ final case class EmailSender(user: String, pass: String, host: String) {
     subject: String,
     plaintextBody: String,
     attachments: Seq[EmailSender.Attachment]
-  ): Future[Unit] = sendAsyncImpl(
-    loggingName = "sendPlaintextAsync",
-    to = to,
-    from = from,
-    cc = cc,
-    bcc = bcc,
-    replyTo = replyTo,
-    subject = subject,
-    plaintextBody = plaintextBody.toBlankOption,
-    htmlBody = None,
-    attachments = attachments
-  )
+  ): Future[Unit] =
+    sendAsyncImpl(
+      loggingName = "sendPlaintextAsync",
+      to = to,
+      from = from,
+      cc = cc,
+      bcc = bcc,
+      replyTo = replyTo,
+      subject = subject,
+      plaintextBody = plaintextBody.toBlankOption,
+      htmlBody = None,
+      attachments = attachments
+    )
 
   // Non-Attachment version for backwards compat
   def sendHtml(
@@ -180,18 +201,19 @@ final case class EmailSender(user: String, pass: String, host: String) {
     subject: String,
     htmlBody: String,
     attachments: Seq[EmailSender.Attachment]
-  ): Unit = sendSyncImpl(
-    loggingName = "sendHtml",
-    to = to,
-    from = from,
-    cc = cc,
-    bcc = bcc,
-    replyTo = replyTo,
-    subject = subject,
-    plaintextBody = None,
-    htmlBody = htmlBody.toBlankOption,
-    attachments = attachments
-  )
+  ): Unit =
+    sendSyncImpl(
+      loggingName = "sendHtml",
+      to = to,
+      from = from,
+      cc = cc,
+      bcc = bcc,
+      replyTo = replyTo,
+      subject = subject,
+      plaintextBody = None,
+      htmlBody = htmlBody.toBlankOption,
+      attachments = attachments
+    )
 
   // Non-Attachment version for backwards compat
   def sendHtmlAsync(
@@ -224,18 +246,19 @@ final case class EmailSender(user: String, pass: String, host: String) {
     subject: String,
     htmlBody: String,
     attachments: Seq[EmailSender.Attachment]
-  ): Future[Unit] = sendAsyncImpl(
-    loggingName = "sendHtmlAsync",
-    to = to,
-    from = from,
-    cc = cc,
-    bcc = bcc,
-    replyTo = replyTo,
-    subject = subject,
-    plaintextBody = None,
-    htmlBody = htmlBody.toBlankOption,
-    attachments = attachments
-  )
+  ): Future[Unit] =
+    sendAsyncImpl(
+      loggingName = "sendHtmlAsync",
+      to = to,
+      from = from,
+      cc = cc,
+      bcc = bcc,
+      replyTo = replyTo,
+      subject = subject,
+      plaintextBody = None,
+      htmlBody = htmlBody.toBlankOption,
+      attachments = attachments
+    )
 
   // Non-Attachment version for backwards compat
   def sendMultipart(
@@ -271,18 +294,19 @@ final case class EmailSender(user: String, pass: String, host: String) {
     plaintextBody: String,
     htmlBody: String,
     attachments: Seq[EmailSender.Attachment]
-  ): Unit = sendSyncImpl(
-    loggingName = "sendMultipart",
-    to = to,
-    from = from,
-    cc = cc,
-    bcc = bcc,
-    replyTo = replyTo,
-    subject = subject,
-    plaintextBody = plaintextBody.toBlankOption,
-    htmlBody = htmlBody.toBlankOption,
-    attachments = attachments
-  )
+  ): Unit =
+    sendSyncImpl(
+      loggingName = "sendMultipart",
+      to = to,
+      from = from,
+      cc = cc,
+      bcc = bcc,
+      replyTo = replyTo,
+      subject = subject,
+      plaintextBody = plaintextBody.toBlankOption,
+      htmlBody = htmlBody.toBlankOption,
+      attachments = attachments
+    )
 
   def sendMultipartAsync(
     to: String,
@@ -317,18 +341,19 @@ final case class EmailSender(user: String, pass: String, host: String) {
     plaintextBody: String,
     htmlBody: String,
     attachments: Seq[EmailSender.Attachment]
-  ): Future[Unit] = sendAsyncImpl(
-    loggingName = "sendMultipartAsync",
-    to = to,
-    from = from,
-    cc = cc,
-    bcc = bcc,
-    replyTo = replyTo,
-    subject = subject,
-    plaintextBody = plaintextBody.toBlankOption,
-    htmlBody = htmlBody.toBlankOption,
-    attachments = attachments
-  )
+  ): Future[Unit] =
+    sendAsyncImpl(
+      loggingName = "sendMultipartAsync",
+      to = to,
+      from = from,
+      cc = cc,
+      bcc = bcc,
+      replyTo = replyTo,
+      subject = subject,
+      plaintextBody = plaintextBody.toBlankOption,
+      htmlBody = htmlBody.toBlankOption,
+      attachments = attachments
+    )
 
   def sendMultipartAsync(
     to: String,
@@ -340,18 +365,19 @@ final case class EmailSender(user: String, pass: String, host: String) {
     plaintextBody: Option[String],
     htmlBody: Option[String],
     attachments: Seq[EmailSender.Attachment]
-  ): Future[Unit] = sendAsyncImpl(
-    loggingName = "sendMultipartAsync",
-    to = to,
-    from = from,
-    cc = cc,
-    bcc = bcc,
-    replyTo = replyTo,
-    subject = subject,
-    plaintextBody = plaintextBody,
-    htmlBody = htmlBody,
-    attachments = attachments
-  )
+  ): Future[Unit] =
+    sendAsyncImpl(
+      loggingName = "sendMultipartAsync",
+      to = to,
+      from = from,
+      cc = cc,
+      bcc = bcc,
+      replyTo = replyTo,
+      subject = subject,
+      plaintextBody = plaintextBody,
+      htmlBody = htmlBody,
+      attachments = attachments
+    )
 
   private def sendSyncImpl(
     loggingName: String,
@@ -364,33 +390,11 @@ final case class EmailSender(user: String, pass: String, host: String) {
     plaintextBody: Option[String],
     htmlBody: Option[String],
     attachments: Seq[EmailSender.Attachment]
-  ): Unit = Service.call(s"EmailSender.${loggingName}", backOffStrategy = Service.BackOffStrategy.exponentialForRemote(), maxRetries = 3) {
-    sendImpl(
-      to = to,
-      from = from,
-      cc = cc,
-      bcc = bcc,
-      replyTo = replyTo,
-      subject = subject,
-      plaintextBody = plaintextBody,
-      htmlBody = htmlBody,
-      attachments = attachments
-    )
-  }
-
-  private def sendAsyncImpl(
-    loggingName: String,
-    to: String,
-    from: String,
-    cc: Seq[String],
-    bcc: Seq[String],
-    replyTo: String,
-    subject: String,
-    plaintextBody: Option[String],
-    htmlBody: Option[String],
-    attachments: Seq[EmailSender.Attachment]
-  ): Future[Unit] = Service.callAsync(s"EmailSender.${loggingName}", backOffStrategy = Service.BackOffStrategy.exponentialForRemote(), maxRetries = 3) {
-    EmailSender.emailSenderTaskRunner.submit{
+  ): Unit =
+    Service.call(
+      s"EmailSender.${loggingName}",
+      backOffStrategy = Service.BackOffStrategy.exponentialForRemote(),
+      maxRetries = 3) {
       sendImpl(
         to = to,
         from = from,
@@ -403,7 +407,37 @@ final case class EmailSender(user: String, pass: String, host: String) {
         attachments = attachments
       )
     }
-  }
+
+  private def sendAsyncImpl(
+    loggingName: String,
+    to: String,
+    from: String,
+    cc: Seq[String],
+    bcc: Seq[String],
+    replyTo: String,
+    subject: String,
+    plaintextBody: Option[String],
+    htmlBody: Option[String],
+    attachments: Seq[EmailSender.Attachment]
+  ): Future[Unit] =
+    Service.callAsync(
+      s"EmailSender.${loggingName}",
+      backOffStrategy = Service.BackOffStrategy.exponentialForRemote(),
+      maxRetries = 3) {
+      EmailSender.emailSenderTaskRunner.submit {
+        sendImpl(
+          to = to,
+          from = from,
+          cc = cc,
+          bcc = bcc,
+          replyTo = replyTo,
+          subject = subject,
+          plaintextBody = plaintextBody,
+          htmlBody = htmlBody,
+          attachments = attachments
+        )
+      }
+    }
 
   private def sendImpl(
     to: String,
@@ -444,13 +478,13 @@ final case class EmailSender(user: String, pass: String, host: String) {
 
     // According to the RFC for Multipart content, the plainest format should be set first and the richest format last
     // Source: https://www.w3.org/Protocols/rfc1341/7_2_Multipart.html
-    plaintextBody.foreach{ plaintext: String =>
+    plaintextBody.foreach { plaintext: String =>
       val bodyPart: MimeBodyPart = new MimeBodyPart
       bodyPart.setText(plaintext, "utf-8")
       multipart.addBodyPart(bodyPart)
     }
 
-    htmlBody.foreach{ html: String =>
+    htmlBody.foreach { html: String =>
       val bodyPart: MimeBodyPart = new MimeBodyPart
       bodyPart.setText(html, "utf-8", "html")
       multipart.addBodyPart(bodyPart)

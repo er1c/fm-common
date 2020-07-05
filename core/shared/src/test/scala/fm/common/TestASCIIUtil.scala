@@ -1,5 +1,7 @@
 /*
- * Copyright 2018 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import org.scalatest.funsuite.AnyFunSuite
@@ -20,7 +23,7 @@ import org.scalatest.matchers.should.Matchers
 
 final class TestASCIIUtil extends AnyFunSuite with Matchers {
 
-  private val ascii: String = (0 to 127).map{ _.toChar }.mkString
+  private val ascii: String = (0 to 127).map { _.toChar }.mkString
 
   test("toASCIIChar - 0-127 ascii") {
     ASCIIUtil.toASCIIChar('a') shouldBe 'a'
@@ -45,18 +48,18 @@ final class TestASCIIUtil extends AnyFunSuite with Matchers {
   }
 
   test("convertToASCII - ascii") {
-    ASCIIUtil.convertToASCII(ascii) shouldBe theSameInstanceAs (ascii)
-    ASCIIUtil.convertToASCII("foobar") shouldBe theSameInstanceAs ("foobar")
-    ASCIIUtil.convertToASCII("!@#$%^&*()_+") shouldBe theSameInstanceAs ("!@#$%^&*()_+")
+    ASCIIUtil.convertToASCII(ascii) shouldBe theSameInstanceAs(ascii)
+    ASCIIUtil.convertToASCII("foobar") shouldBe theSameInstanceAs("foobar")
+    ASCIIUtil.convertToASCII("!@#$%^&*()_+") shouldBe theSameInstanceAs("!@#$%^&*()_+")
   }
 
   test("convertToASCII - non-ascii") {
     ASCIIUtil.convertToASCII("\u204E") shouldBe "*"
-    ASCIIUtil.convertToASCII("\u204E"+ascii) shouldBe "*"+ascii
+    ASCIIUtil.convertToASCII("\u204E" + ascii) shouldBe "*" + ascii
     ASCIIUtil.convertToASCII("\u2052") shouldBe "%"
     ASCIIUtil.convertToASCII("Æ") shouldBe "AE"
-    ASCIIUtil.convertToASCII(ascii+"Æ") shouldBe ascii+"AE"
-    ASCIIUtil.convertToASCII("Æ"+ascii) shouldBe "AE"+ascii
-    ASCIIUtil.convertToASCII(ascii+"Foo Bar \u204E \u2052 Æ") shouldBe ascii+"Foo Bar * % AE"
+    ASCIIUtil.convertToASCII(ascii + "Æ") shouldBe ascii + "AE"
+    ASCIIUtil.convertToASCII("Æ" + ascii) shouldBe "AE" + ascii
+    ASCIIUtil.convertToASCII(ascii + "Foo Bar \u204E \u2052 Æ") shouldBe ascii + "Foo Bar * % AE"
   }
 }

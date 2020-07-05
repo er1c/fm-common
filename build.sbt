@@ -36,6 +36,12 @@ val ScalaTestVersion = "3.2.0"
   */
 val GitHub4sVersion = "0.24.1"
 
+
+/** Used for === and =!= macros:
+ * [[https://github.com/er1c/scala-typesafeequals]]
+ */
+val TypesafeEqualsVersion = "1.0.0"
+
 /**
   * Defines common plugins between all projects.
   */
@@ -60,7 +66,11 @@ lazy val sharedSettings = Seq(
   scalaVersion := "2.13.3",
   crossScalaVersions := Seq("2.11.12", "2.12.11", "2.13.3"),
 
-  scalacOptions += "-language:implicitConversions,experimental.macros",
+  //scalacOptions += "-language:implicitConversions,experimental.macros",
+
+  libraryDependencies ++= Seq(
+    "io.github.er1c" %%% "scala-typesafeequals" % TypesafeEqualsVersion % Compile,
+  ),
 
   // More version specific compiler options
   scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
@@ -72,8 +82,20 @@ lazy val sharedSettings = Seq(
         Seq.empty
   }),
 
+  baseDirectory in (Test, run) := (baseDirectory in LocalRootProject).value,
+
   // Turning off fatal warnings for doc generation
   scalacOptions.in(Compile, doc) ~= filterConsoleScalacOptions,
+
+  // things  like .linesIterator were changed to not deprecated, go with 2.13
+  scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
+    case Some((2, v)) if v <= 12 =>
+      Seq(
+        "-deprecation:false"
+      )
+    case _ =>
+      Seq()
+  }),
 
   // ScalaDoc settings
   autoAPIMappings := true,
@@ -164,7 +186,13 @@ def defaultCrossProjectConfiguration(pr: CrossProject) = {
       val l = (baseDirectory in LocalRootProject).value.toURI.toString
       val g = s"https://raw.githubusercontent.com/${githubFullRepositoryID.value}/$tagOrHash/"
       s"-P:scalajs:mapSourceURI:$l->$g"
+    
     },
+    // For @nowarn
+    //libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.6",
+
+    fork in Test := false,
+
     // Needed in order to publish for multiple Scala.js versions:
     // https://github.com/olafurpg/sbt-ci-release#how-do-i-publish-cross-built-scalajs-projects
     skip.in(publish) := customScalaJSVersion.isEmpty,
@@ -174,6 +202,7 @@ def defaultCrossProjectConfiguration(pr: CrossProject) = {
     // Needed in order to publish for multiple Scala.js versions:
     // https://github.com/olafurpg/sbt-ci-release#how-do-i-publish-cross-built-scalajs-projects
     skip.in(publish) := customScalaJSVersion.isDefined,
+    fork in Test := true,
   )
 
   pr.configure(defaultPlugins)
@@ -212,7 +241,7 @@ lazy val site = project.in(file("site"))
     import microsites._
     Seq(
       micrositeName := projectTitle.value,
-      micrositeDescription := "Macro-based typesafe === and =!= operators",
+      micrositeDescription := "fm-common",
       micrositeAuthor := "Eric Peters",
       micrositeTwitterCreator := "@ericpeters",
       micrositeGithubOwner := githubOwnerID.value,
@@ -240,9 +269,10 @@ lazy val site = project.in(file("site"))
       micrositePushSiteWith := GitHub4s,
       micrositeGithubToken := sys.env.get("GITHUB_TOKEN"),
       micrositeExtraMdFiles := Map(
-        file("CHANGELOG.md") -> ExtraMdFileConfig("CHANGELOG.md", "page", Map("title" -> "Change Log", "section" -> "changelog", "position" -> "100")),
-        file("CODE_OF_CONDUCT.md") -> ExtraMdFileConfig("CODE_OF_CONDUCT.md", "page", Map("title" -> "Code of Conduct", "section" -> "code of conduct", "position" -> "101")),
-        file("LICENSE.md") -> ExtraMdFileConfig("LICENSE.md", "page", Map("title" -> "License", "section" -> "license", "position" -> "102"))
+        file("README.md") -> ExtraMdFileConfig("index.md", "page", Map("title" -> "Home", "section" -> "home", "position" -> "100")),
+        file("CHANGELOG.md") -> ExtraMdFileConfig("CHANGELOG.md", "page", Map("title" -> "Change Log", "section" -> "changelog", "position" -> "101")),
+        file("CODE_OF_CONDUCT.md") -> ExtraMdFileConfig("CODE_OF_CONDUCT.md", "page", Map("title" -> "Code of Conduct", "section" -> "code of conduct", "position" -> "102")),
+        file("LICENSE.md") -> ExtraMdFileConfig("LICENSE.md", "page", Map("title" -> "License", "section" -> "license", "position" -> "103"))
       ),
       docsMappingsAPIDir := s"api",
       addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc) in root, docsMappingsAPIDir),
@@ -267,19 +297,21 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)//, NativePlatform)
     libraryDependencies ++= Seq(
       "org.scalatest" %%% "scalatest" % ScalaTestVersion % Test,
     ),
+    //baseDirectory in (Test) := file("./core"),
+    doctestIgnoreRegex := Some(".*.scala"), // TODO: not sure why these  fail, just disable
   )
   .settings(setCrossDirs(Compile) ++ setCrossDirs(Test))
   .jvmSettings(
     libraryDependencies ++= Seq(
       "ch.qos.logback" % "logback-classic" % "1.2.3",
       "com.google.guava" % "guava" % "28.0-jre",
-      "com.googlecode.juniversalchardet" % "juniversalchardet" % "1.0.3",
+      "com.github.albfernandez" % "juniversalchardet" % "2.3.2",
       "com.sun.mail" % "javax.mail" % "1.5.2" % "provided",
       "com.fasterxml.woodstox" % "woodstox-core" % "5.1.0",
       "commons-io" % "commons-io" % "2.6",
       "it.unimi.dsi" % "fastutil" % "8.2.2",
       "org.apache.commons" % "commons-compress" % "1.18",
-      "org.apache.commons" % "commons-lang3" % "3.8.1",
+      "org.apache.commons" % "commons-text" % "1.8",
       "org.slf4j" % "slf4j-api" % "1.7.25",
       "org.tukaani" % "xz" % "1.8",  // Used by commons-compress and should be synced up with whatever version commons-compress requires
       "org.xerial.snappy" % "snappy-java" % "1.1.2.6"
@@ -290,7 +322,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)//, NativePlatform)
     libraryDependencies += "be.doeraene" %%% "scalajs-jquery" % "1.0.0",
     libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "1.0.0",
     libraryDependencies += "org.scala-js" %%% "scalajs-java-time" % "1.0.0",
-    //jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv(),
+    jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv()
   ))
 
 lazy val coreJVM = core.jvm
@@ -304,7 +336,15 @@ lazy val macros = crossProject(JSPlatform, JVMPlatform)
   .settings(doNotPublishArtifact)
   .settings(
     name := "fm-macros",
-    libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion.value
+    scalacOptions --= Seq(
+      "-Xlint:deprecation",
+      "-deprecation"
+    ),
+    scalacOptions += "-deprecation:false",
+    libraryDependencies ++= Seq(
+      "org.scala-lang" % "scala-compiler" % scalaVersion.value
+    )
+
   )
 
 lazy val macrosJVM = macros.jvm

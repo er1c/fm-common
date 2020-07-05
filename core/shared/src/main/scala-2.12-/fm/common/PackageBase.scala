@@ -16,15 +16,18 @@
  * limitations under the License.
  */
 
-package fm.common.rich
+package fm.common
 
-import fm.common.Implicits._
-import org.scalajs.dom.raw.Node
+object PackageBase {
+  implicit class RichIterableOnce[+A](val self: IterableOnce[A]) extends AnyVal {
+    def iterator(): Iterator[A] = self.toIterator
+  }
+}
 
-final class RichNodeTraversable(val elems: Traversable[Node]) extends AnyVal {
-  def textContent: IndexedSeq[String] = elems.map { _.textContent }.toVector
+trait PackageBase {
+  import PackageBase.RichIterableOnce
 
-  def textContent_=(value: String): Unit = elems.foreach { _.textContent = value }
+  type IterableOnce[+A] = collection.TraversableOnce[A]
 
-  def remove(): Unit = elems.foreach { _.remove() }
+  implicit def toRichIterableOnce[A](i: IterableOnce[A]): RichIterableOnce[A] = new RichIterableOnce[A](i)
 }

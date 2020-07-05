@@ -1,5 +1,7 @@
 /*
- * Copyright 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import org.scalajs.dom.document
@@ -33,24 +36,25 @@ final class TestRichNode extends AnyFunSuite with Matchers {
   }
 
   private def setupInsertAfterUL(): Unit = {
-    document.body.innerHTML =
-      s"""
-         |<ul id="outer-ul">
-         |  <li id="one">one</li>
-         |  <li id="two">
-         |    <ul id="inner-ul">
-         |      <li id="inner-one">inner-one</li>
-         |      <li id="inner-two">inner-two</li>
-         |    </ul>
-         |  </li>
-         |  <li id="three">three</li>
-         |</ul>
-       """.stripMargin.linesIterator.map{ _.trim }.mkString("") // remove whitespace/newlines
+    document.body.innerHTML = s"""
+                                 |<ul id="outer-ul">
+                                 |  <li id="one">one</li>
+                                 |  <li id="two">
+                                 |    <ul id="inner-ul">
+                                 |      <li id="inner-one">inner-one</li>
+                                 |      <li id="inner-two">inner-two</li>
+                                 |    </ul>
+                                 |  </li>
+                                 |  <li id="three">three</li>
+                                 |</ul>
+       """.stripMargin.linesIterator.map { _.trim }.mkString("") // remove whitespace/newlines
   }
 
-
-
-  private def testFullInsertAfterImpl(parentId: String = "outer-ul", targetId: String, useParent: Boolean = true, expectedCount: Int = 4): Unit = {
+  private def testFullInsertAfterImpl(
+    parentId: String = "outer-ul",
+    targetId: String,
+    useParent: Boolean = true,
+    expectedCount: Int = 4): Unit = {
     setupInsertAfterUL()
 
     val ul: Element = document.getElementById(parentId)
@@ -59,8 +63,12 @@ final class TestRichNode extends AnyFunSuite with Matchers {
     testInsertAfterImpl(parentId, targetId, useParent, expectedCount)
   }
 
-  private def testInsertAfterImpl(parentId: String = "outer-ul", targetId: String, useParent: Boolean = true, expectedCount: Int): Unit = {
-    withClue(s"testInsertAfterImpl($parentId, $targetId, $useParent, $expectedCount)"){
+  private def testInsertAfterImpl(
+    parentId: String = "outer-ul",
+    targetId: String,
+    useParent: Boolean = true,
+    expectedCount: Int): Unit = {
+    withClue(s"testInsertAfterImpl($parentId, $targetId, $useParent, $expectedCount)") {
       val ul: Element = document.getElementById(parentId)
       val targetChild: Element = document.getElementById(targetId)
 
@@ -72,6 +80,7 @@ final class TestRichNode extends AnyFunSuite with Matchers {
       // Verify Insert
       ul.childElementCount should equal(expectedCount)
       targetChild.nextElementSibling should equal(newNode)
+      ()
     }
   }
 
@@ -80,6 +89,7 @@ final class TestRichNode extends AnyFunSuite with Matchers {
       withClue(s"hasNextSibling: $id") {
         document.getElementById(id).hasNextSibling should equal(expected)
       }
+      ()
     }
 
     setupInsertAfterUL()

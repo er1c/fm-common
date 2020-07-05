@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import org.scalatest.funsuite.AnyFunSuite
@@ -20,11 +23,11 @@ import org.scalatest.matchers.should.Matchers
 
 final class TestRichCharSequence extends AnyFunSuite with Matchers {
   import fm.common.Implicits._
-  
+
   test("isBlank null") {
     null.asInstanceOf[String].isNullOrBlank should equal(true)
   }
-  
+
   test("isBlank whitespace") {
     "".isNullOrBlank should equal(true)
     " ".isNullOrBlank should equal(true)
@@ -33,7 +36,7 @@ final class TestRichCharSequence extends AnyFunSuite with Matchers {
     "\n".isNullOrBlank should equal(true)
     "\r".isNullOrBlank should equal(true)
   }
-  
+
   test("isBlank whitespace followed by a character") {
     "a".isNullOrBlank should equal(false)
     " a".isNullOrBlank should equal(false)
@@ -42,7 +45,7 @@ final class TestRichCharSequence extends AnyFunSuite with Matchers {
     "\na".isNullOrBlank should equal(false)
     "\ra".isNullOrBlank should equal(false)
   }
-  
+
   test("isBlank non-empty") {
     "abc".isNullOrBlank should equal(false)
     "123".isNullOrBlank should equal(false)
@@ -51,17 +54,17 @@ final class TestRichCharSequence extends AnyFunSuite with Matchers {
     "@".isNullOrBlank should equal(false)
     "#".isNullOrBlank should equal(false)
   }
-  
+
   test("nextCharsMatch") {
     ",".nextCharsMatch(",", 0) should equal(true)
     ", ".nextCharsMatch(",", 0) should equal(true)
 
     "".nextCharsMatch(",", 0) should equal(false)
     " ,".nextCharsMatch(",", 0) should equal(false)
-    
+
     "|-|".nextCharsMatch("|-|", 0) should equal(true)
     "|-|asd".nextCharsMatch("|-|", 0) should equal(true)
-    
+
     "".nextCharsMatch("|-|", 0) should equal(false)
     "|".nextCharsMatch("|-|", 0) should equal(false)
     "|-".nextCharsMatch("|-|", 0) should equal(false)
@@ -90,7 +93,7 @@ final class TestRichCharSequence extends AnyFunSuite with Matchers {
     "".startsWith("foo") should equal(false)
     "fo".startsWith("foo") should equal(false)
   }
-  
+
   test("indexesOf") {
     "aaaaaaaa".indexesOf("aa", withOverlaps = false) shouldBe List(0, 2, 4, 6)
     "aaaaaaaa".indexesOf(target = "aa", withOverlaps = true) shouldBe List(0, 1, 2, 3, 4, 5, 6)
@@ -157,10 +160,14 @@ final class TestRichCharSequence extends AnyFunSuite with Matchers {
   private def checkIndexOfNormalized(s: CharSequence, target: CharSequence, idx: Int): Unit = {
     s.indexOfNormalized(target) shouldBe idx
     s.containsNormalized(target) shouldBe idx > -1
+
+    ()
   }
 
   private def checkIndexOfIgnoreCase(s: CharSequence, target: CharSequence, idx: Int): Unit = {
     s.indexOfIgnoreCase(target) shouldBe idx
     s.containsIgnoreCase(target) shouldBe idx > -1
+
+    ()
   }
 }

@@ -1,5 +1,7 @@
 /*
- * Copyright 2017 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import java.util.Locale
@@ -34,7 +37,7 @@ final class TestRichLocale extends AnyFunSuite with Matchers {
     checkLocale(Locale.KOREA)
     checkLocale(Locale.PRC)
     checkLocale(Locale.PRC)
-    checkLocale(Locale.SIMPLIFIED_CHINESE)  // CN is the country: createConstant("zh", "CN");
+    checkLocale(Locale.SIMPLIFIED_CHINESE) // CN is the country: createConstant("zh", "CN");
     checkLocale(Locale.TRADITIONAL_CHINESE) // TW is the country: createConstant("zh", "TW");
     checkLocale(Locale.TAIWAN)
     checkLocale(Locale.US)
@@ -53,11 +56,15 @@ final class TestRichLocale extends AnyFunSuite with Matchers {
   }
 
   test("isValid / hasNonBlankValidLanguage / hasNonBlankValidCountry - Manually Constructed Locales") {
-    checkLocale(new Locale("en","US"))
-    checkLocale(new Locale("en","US", "foo"))
+    checkLocale(new Locale("en", "US"))
+    checkLocale(new Locale("en", "US", "foo"))
 
-    checkLocale(new Locale("",""), isValid = true, hasNonBlankValidLanguage = false, hasNonBlankValidCountry = false)
-    checkLocale(new Locale("","",""), isValid = true, hasNonBlankValidLanguage = false, hasNonBlankValidCountry = false)
+    checkLocale(new Locale("", ""), isValid = true, hasNonBlankValidLanguage = false, hasNonBlankValidCountry = false)
+    checkLocale(
+      new Locale("", "", ""),
+      isValid = true,
+      hasNonBlankValidLanguage = false,
+      hasNonBlankValidCountry = false)
   }
 
   test("isValid / hasNonBlankValidLanguage / hasNonBlankValidCountry - Custom Tags") {
@@ -75,47 +82,64 @@ final class TestRichLocale extends AnyFunSuite with Matchers {
   }
 
   test("isChinese") {
-    checkLanguageHelper(Locale.CHINESE, Locale.CHINA, Locale.SIMPLIFIED_CHINESE, Locale.TRADITIONAL_CHINESE){ _.isChinese }
+    checkLanguageHelper(Locale.CHINESE, Locale.CHINA, Locale.SIMPLIFIED_CHINESE, Locale.TRADITIONAL_CHINESE) {
+      _.isChinese
+    }
   }
 
   test("isEnglish") {
-    checkLanguageHelper(Locale.ENGLISH, Locale.US, Locale.UK, Locale.CANADA){ _.isEnglish }
+    checkLanguageHelper(Locale.ENGLISH, Locale.US, Locale.UK, Locale.CANADA) { _.isEnglish }
   }
 
   test("isFrench") {
-    checkLanguageHelper(Locale.FRENCH, Locale.FRANCE, Locale.CANADA_FRENCH){ _.isFrench }
+    checkLanguageHelper(Locale.FRENCH, Locale.FRANCE, Locale.CANADA_FRENCH) { _.isFrench }
   }
 
   test("isGerman") {
-    checkLanguageHelper(Locale.GERMAN, Locale.GERMANY){ _.isGerman }
+    checkLanguageHelper(Locale.GERMAN, Locale.GERMANY) { _.isGerman }
   }
 
   test("isItalian") {
-    checkLanguageHelper(Locale.ITALIAN, Locale.ITALY){ _.isItalian }
+    checkLanguageHelper(Locale.ITALIAN, Locale.ITALY) { _.isItalian }
   }
 
   test("isJapanese") {
-    checkLanguageHelper(Locale.JAPANESE, Locale.JAPAN){ _.isJapanese }
+    checkLanguageHelper(Locale.JAPANESE, Locale.JAPAN) { _.isJapanese }
   }
 
   test("isKorean") {
-    checkLanguageHelper(Locale.KOREAN, Locale.KOREA){ _.isKorean }
+    checkLanguageHelper(Locale.KOREAN, Locale.KOREA) { _.isKorean }
   }
 
-  private def checkTag(tag: String, isValid: Boolean = true, hasNonBlankValidLanguage: Boolean = true, hasNonBlankValidCountry: Boolean = true): Unit = {
-    checkLocale(Locale.forLanguageTag(tag), isValid = isValid, hasNonBlankValidLanguage = hasNonBlankValidLanguage, hasNonBlankValidCountry = hasNonBlankValidCountry)
+  private def checkTag(
+    tag: String,
+    isValid: Boolean = true,
+    hasNonBlankValidLanguage: Boolean = true,
+    hasNonBlankValidCountry: Boolean = true): Unit = {
+    checkLocale(
+      Locale.forLanguageTag(tag),
+      isValid = isValid,
+      hasNonBlankValidLanguage = hasNonBlankValidLanguage,
+      hasNonBlankValidCountry = hasNonBlankValidCountry)
   }
 
-  private def checkLocale(locale: Locale, isValid: Boolean = true, hasNonBlankValidLanguage: Boolean = true, hasNonBlankValidCountry: Boolean = true): Unit = {
-    withClue(s"Locale: $locale   (Expected == Actual | isValid: $isValid == ${locale.isValid} | hasNonBlankValidLanguage: $hasNonBlankValidLanguage == ${locale.hasNonBlankValidLanguage} | hasNonBlankValidCountry: $hasNonBlankValidCountry == ${locale.hasNonBlankValidCountry})") {
+  private def checkLocale(
+    locale: Locale,
+    isValid: Boolean = true,
+    hasNonBlankValidLanguage: Boolean = true,
+    hasNonBlankValidCountry: Boolean = true): Unit = {
+    withClue(
+      s"Locale: $locale   (Expected == Actual | isValid: $isValid == ${locale.isValid} | hasNonBlankValidLanguage: $hasNonBlankValidLanguage == ${locale.hasNonBlankValidLanguage} | hasNonBlankValidCountry: $hasNonBlankValidCountry == ${locale.hasNonBlankValidCountry})") {
       locale.isValid shouldBe isValid
       locale.hasNonBlankValidLanguage shouldBe hasNonBlankValidLanguage
       locale.hasNonBlankValidCountry shouldBe hasNonBlankValidCountry
+
+      ()
     }
   }
 
   private def checkLanguageHelper(locales: Locale*)(f: Locale => Boolean): Unit = {
-    locales.foreach{ locale: Locale =>
+    locales.foreach { locale: Locale =>
       f(locale) shouldBe true
     }
   }

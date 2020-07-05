@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import java.math.BigDecimal
@@ -23,30 +26,30 @@ class TestRichBigDecimal extends AnyFunSuite with Matchers {
   import fm.common.Implicits._
 
   private def bd(s: String): BigDecimal = new BigDecimal(s)
-  
+
   test("isZero") {
     bd("0").isZero shouldBe true
     bd("0.00").isZero shouldBe true
-    
+
     bd("0.001").isZero shouldBe false
     bd("1").isZero shouldBe false
     bd("123").isZero shouldBe false
   }
-  
+
   test("isNotZero") {
     bd("0").isNotZero shouldBe false
     bd("0.00").isNotZero shouldBe false
-    
+
     bd("0.001").isNotZero shouldBe true
     bd("1").isNotZero shouldBe true
     bd("123").isNotZero shouldBe true
   }
-  
+
   test("isOne") {
     bd("1").isOne shouldBe true
     bd("1.00000").isOne shouldBe true
-    
+
     bd("0").isOne shouldBe false
   }
-  
+
 }

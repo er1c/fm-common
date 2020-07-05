@@ -1,5 +1,7 @@
 /*
- * Copyright 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 /**
@@ -22,7 +25,7 @@ package fm.common
  */
 protected[common] object IntegerCacheUtil {
   val low: Int = {
-    System.getProperty("fm.common.IntegerCache.low").toIntOptionCached.getOrElse{ -128 }
+    System.getProperty("fm.common.IntegerCache.low").toIntOptionCached.getOrElse { -128 }
   }
 
   // Note: Ideally we would use the java.lang.Integer.IntegerCache.high property to get this value but the JVM removes
@@ -31,7 +34,7 @@ protected[common] object IntegerCacheUtil {
   // Original code that does not work:
   //    System.getProperty("java.lang.Integer.IntegerCache.high").toIntOptionCached.getOrElse(127)
   val high: Int = {
-    System.getProperty("fm.common.IntegerCache.high").toIntOptionCached.getOrElse{ determineIntegerCacheHighValue() }
+    System.getProperty("fm.common.IntegerCache.high").toIntOptionCached.getOrElse { determineIntegerCacheHighValue() }
   }
 
   require(low <= high, s"Expected low ($low) to be <= high ($high)")

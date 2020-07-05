@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import java.nio.file.Path
@@ -23,7 +26,7 @@ final class RichPath(val self: Path) extends AnyVal {
     if (self.startsWith(path)) self.subpath(path.getNameCount, self.getNameCount)
     else self
   }
-  
+
   /** If this path ends with the passed in path then strip it */
   def stripTrailing(path: Path): Path = {
     if (self.endsWith(path)) self.subpath(0, self.getNameCount - path.getNameCount)

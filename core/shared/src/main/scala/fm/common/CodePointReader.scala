@@ -1,5 +1,7 @@
 /*
- * Copyright 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.io.{IOException, Reader}
@@ -45,7 +48,7 @@ trait CodePointReader {
   def read(buf: Array[Int], off: Int, len: Int): Int
 
   /** Marks the present position in the stream. */
-  def mark(readAheadLimit: Int): Unit = throw new IOException("mark() not supported")
+  def mark(readAheadLimit: Int): Unit = { void(readAheadLimit); throw new IOException("mark() not supported") }
 
   /** Tells whether this stream supports the mark() operation. */
   def markSupported(): Boolean = false
@@ -76,14 +79,14 @@ trait CodePointReader {
 
   /** Skips characters. */
   def skip(n: Long): Long = {
-    val size: Int = math.min(n, CodePointReader.maxSkipBufferSize).toInt
+    val size: Int = math.min(n, CodePointReader.maxSkipBufferSize.toLong).toInt
     if (skipBuffer === null || skipBuffer.length < size) skipBuffer = new Array(size)
 
     var eof: Boolean = false
     var remaining: Long = n
 
     while (remaining > 0 && !eof) {
-      val numRead: Int = read(skipBuffer, 0, math.min(remaining, size).toInt)
+      val numRead: Int = read(skipBuffer, 0, math.min(remaining, size.toLong).toInt)
       if (numRead === -1) eof = true
       else remaining -= numRead
     }

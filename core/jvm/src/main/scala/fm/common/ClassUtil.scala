@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
+import fm.common.JavaConverters._
 import java.lang.annotation.Annotation
 import java.lang.reflect.{Method, Modifier}
 import java.net.{JarURLConnection, URLConnection, URLDecoder}
 import java.io.{File, InputStream}
 import java.nio.file.Path
 import java.util.jar.{JarEntry, JarFile}
-import scala.collection.JavaConverters._
-import scala.reflect.{ClassTag, classTag}
+import scala.reflect.{classTag, ClassTag}
 
 /**
  * This contains utility methods for scanning Classes or Files on the classpath.
- * 
- * Originally we used the classpath scanning functionality in the Spring Framework
+ *
+  * Originally we used the classpath scanning functionality in the Spring Framework
  * and then later switched to the Reflections library (https://code.google.com/p/reflections/)
  * to avoid the dependency on Spring.  At some point we ran into issues with the Reflections
  * library not properly detecting classes so I ended up writing this as a replacement.
@@ -55,7 +58,7 @@ object ClassUtil extends Logging {
 
   def companionObject(cls: Class[_]): AnyRef = companionObjectAs[AnyRef](cls)
 
-  def companionObjectAs[T <: AnyRef : ClassTag](cls: Class[_]): T = {
+  def companionObjectAs[T <: AnyRef: ClassTag](cls: Class[_]): T = {
     companionObjectAs(cls, classTag[T].runtimeClass.asInstanceOf[Class[T]])
   }
 
@@ -67,7 +70,7 @@ object ClassUtil extends Logging {
 
   def getCompanionObject(cls: Class[_]): Option[AnyRef] = getCompanionObjectAs[AnyRef](cls)
 
-  def getCompanionObjectAs[T <: AnyRef : ClassTag](cls: Class[_]): Option[T] = {
+  def getCompanionObjectAs[T <: AnyRef: ClassTag](cls: Class[_]): Option[T] = {
     getCompanionObjectAs(cls, classTag[T].runtimeClass.asInstanceOf[Class[T]])
   }
 
@@ -89,14 +92,16 @@ object ClassUtil extends Logging {
    * Lookup the companion object class for a class
    */
   def companionObjectClass(cls: String, classLoader: ClassLoader): Class[_] = {
-    getCompanionObjectClass(cls, classLoader).getOrElse{ throw new ClassNotFoundException(s"No companion object class for $cls") }
+    getCompanionObjectClass(cls, classLoader).getOrElse {
+      throw new ClassNotFoundException(s"No companion object class for $cls")
+    }
   }
 
   /**
    * Lookup the companion object class for a class
    */
   def companionObjectClass(cls: Class[_]): Class[_] = {
-    getCompanionObjectClass(cls).getOrElse{ throw new ClassNotFoundException(s"No companion object class for $cls") }
+    getCompanionObjectClass(cls).getOrElse { throw new ClassNotFoundException(s"No companion object class for $cls") }
   }
 
   /**
@@ -110,12 +115,12 @@ object ClassUtil extends Logging {
    * Lookup the companion object class for a class
    */
   def getCompanionObjectClass(cls: String, classLoader: ClassLoader): Option[Class[_]] = {
-    getClassForName(cls, classLoader).flatMap{ getCompanionObjectClass }
+    getClassForName(cls, classLoader).flatMap { getCompanionObjectClass }
   }
 
   def getCompanionObjectClass(cls: Class[_]): Option[Class[_]] = {
     if (isScalaObject(cls)) Some(cls)
-    else if (!cls.getName.endsWith("$")) getCompanionObjectClass(cls.getName+"$", cls.getClassLoader)
+    else if (!cls.getName.endsWith("$")) getCompanionObjectClass(cls.getName + "$", cls.getClassLoader)
     else None
   }
 
@@ -162,7 +167,7 @@ object ClassUtil extends Logging {
   /**
    * Returns the Scala object instance for this class
    */
-  def scalaObjectAs[T <: AnyRef : ClassTag](objectCls: Class[_]): T = {
+  def scalaObjectAs[T <: AnyRef: ClassTag](objectCls: Class[_]): T = {
     scalaObjectAs(objectCls, classTag[T].runtimeClass.asInstanceOf[Class[T]])
   }
 
@@ -182,7 +187,7 @@ object ClassUtil extends Logging {
   /**
    * Returns the Scala object instance for this class (if it is the class of a Scala object)
    */
-  def getScalaObjectAs[T <: AnyRef : ClassTag](objectCls: Class[_]): Option[T] = {
+  def getScalaObjectAs[T <: AnyRef: ClassTag](objectCls: Class[_]): Option[T] = {
     getScalaObjectAs(objectCls, classTag[T].runtimeClass.asInstanceOf[Class[T]])
   }
 
@@ -194,9 +199,9 @@ object ClassUtil extends Logging {
       val res: AnyRef = objectCls.getField("MODULE$").get(objectCls)
       if (res.isNotNull && asCls.isAssignableFrom(res.getClass)) Some(res.asInstanceOf[T]) else None
     } catch {
-      case _: NoSuchFieldException => None   // No MODULE$ field.  Not a Scala object?
+      case _: NoSuchFieldException => None // No MODULE$ field.  Not a Scala object?
       case _: ClassNotFoundException => None // Object does not exist
-      case _: ClassCastException => None     // Object is not an instance of T
+      case _: ClassCastException => None // Object is not an instance of T
     }
   }
 
@@ -231,7 +236,7 @@ object ClassUtil extends Logging {
   /**
    * Creates a new instance of a class using a 0-args constructor or returns the Scala object instance of this class
    */
-  def newInstanceOrObjectAs[T <: AnyRef : ClassTag](cls: Class[_]): T = {
+  def newInstanceOrObjectAs[T <: AnyRef: ClassTag](cls: Class[_]): T = {
     newInstanceOrObjectAs(cls, classTag[T].runtimeClass.asInstanceOf[Class[T]])
   }
 
@@ -252,7 +257,7 @@ object ClassUtil extends Logging {
     getNewInstanceOrObjectAs(cls, cls)
   }
 
-  def getNewInstanceOrObjectAs[T <: AnyRef : ClassTag](cls: Class[_]): Option[T] = {
+  def getNewInstanceOrObjectAs[T <: AnyRef: ClassTag](cls: Class[_]): Option[T] = {
     getNewInstanceOrObjectAs(cls, classTag[T].runtimeClass.asInstanceOf[Class[T]])
   }
 
@@ -273,7 +278,7 @@ object ClassUtil extends Logging {
       } catch {
         case _: IllegalAccessException => None // Private Constructor
         case _: InstantiationException => None // No 0-args Constructor
-        case _: NoSuchMethodException => None  // No 0-args Constructor
+        case _: NoSuchMethodException => None // No 0-args Constructor
       }
     }
   }
@@ -305,110 +310,116 @@ object ClassUtil extends Logging {
   /**
    * Check if a class exists.
    */
-  def classExists(cls: String, classLoader: ClassLoader): Boolean = try {
-    classLoader.loadClass(cls)
-    true
-  } catch {
-    case _: ClassNotFoundException => false
-  }
-  
+  def classExists(cls: String, classLoader: ClassLoader): Boolean =
+    try {
+      classLoader.loadClass(cls)
+      true
+    } catch {
+      case _: ClassNotFoundException => false
+    }
+
   /** Check if a file exists on the classpath */
   def classpathFileExists(file: String): Boolean = classpathFileExists(file, defaultClassLoader)
-  
+
   /** Check if a file exists on the classpath */
   def classpathFileExists(file: String, classLoader: ClassLoader): Boolean = {
     classpathFileExists(new File(file), classLoader)
   }
-    
+
   /** Check if a file exists on the classpath */
   def classpathFileExists(file: File): Boolean = classpathFileExists(file, defaultClassLoader)
-  
+
   /** Check if a file exists on the classpath */
   def classpathFileExists(file: File, classLoader: ClassLoader): Boolean = {
-    withClasspathURL(file, classLoader){ url: URL =>
+    withClasspathURL(file, classLoader) { url: URL =>
       if (url.isFile) url.toFile.isFile()
-      else withURLInputStream(url){ is: InputStream =>
-        // This should work for a file
-        try { is.read(); true } catch { case ex: NullPointerException => false }
-      }
+      else
+        withURLInputStream(url) { is: InputStream =>
+          // This should work for a file
+          try { is.read(); true }
+          catch { case _: NullPointerException => false }
+        }
     }.getOrElse(false)
   }
-  
+
   /** Check if a directory exists on the classpath */
   def classpathDirExists(file: String): Boolean = classpathDirExists(file, defaultClassLoader)
-  
+
   /** Check if a directory exists on the classpath */
   def classpathDirExists(file: String, classLoader: ClassLoader): Boolean = {
     classpathDirExists(new File(file), classLoader)
   }
-    
+
   /** Check if a directory exists on the classpath */
   def classpathDirExists(file: File): Boolean = classpathDirExists(file, defaultClassLoader)
-  
+
   /** Check if a directory exists on the classpath */
   def classpathDirExists(file: File, classLoader: ClassLoader): Boolean = {
-    withClasspathURL(file, classLoader){ url: URL =>
+    withClasspathURL(file, classLoader) { url: URL =>
       if (url.isFile) url.toFile.isDirectory()
-      else withURLInputStream(url){ is: InputStream =>
-        // Not sure if there is a better way to do this -- A NullPointerException is thrown for a directory
-        try { is.read(); false } catch { case ex: Exception => true }
-      }
+      else
+        withURLInputStream(url) { is: InputStream =>
+          // Not sure if there is a better way to do this -- A NullPointerException is thrown for a directory
+          try { is.read(); false }
+          catch { case _: Exception => true }
+        }
     }.getOrElse(false)
   }
-  
+
   /** Lookup the lastModified timestamp for a resource on the classpath */
   def classpathLastModified(file: String): Long = classpathLastModified(file, defaultClassLoader)
-  
+
   /** Lookup the lastModified timestamp for a resource on the classpath */
   def classpathLastModified(file: String, classLoader: ClassLoader): Long = {
     classpathLastModified(new File(file), classLoader)
   }
-  
+
   /** Lookup the lastModified timestamp for a resource on the classpath */
   def classpathLastModified(file: File): Long = classpathLastModified(file, defaultClassLoader)
-  
+
   /** Lookup the lastModified timestamp for a resource on the classpath */
   def classpathLastModified(file: File, classLoader: ClassLoader): Long = {
-    withClasspathURLConnection(file, classLoader){ conn: URLConnection =>
+    withClasspathURLConnection(file, classLoader) { conn: URLConnection =>
       conn match {
         case j: JarURLConnection if null != j.getJarEntry => j.getJarEntry.getLastModifiedTime.toMillis
         case _ => conn.getLastModified
       }
     }.getOrElse(0L) // This default matches File.lastModified()
   }
-    
+
   /** Lookup the legnth for a resource on the classpath */
   def classpathContentLength(file: String): Long = classpathContentLength(file, defaultClassLoader)
-  
+
   /** Lookup the legnth for a resource on the classpath */
   def classpathContentLength(file: String, classLoader: ClassLoader): Long = {
     classpathContentLength(new File(file), classLoader)
   }
-  
+
   /** Lookup the legnth for a resource on the classpath */
   def classpathContentLength(file: File): Long = classpathContentLength(file, defaultClassLoader)
-  
+
   /** Lookup the legnth for a resource on the classpath */
   def classpathContentLength(file: File, classLoader: ClassLoader): Long = {
-    withClasspathURLConnection(file, classLoader){ _.getContentLengthLong() }.getOrElse(0L) // This default matches File.length()
+    withClasspathURLConnection(file, classLoader) { _.getContentLengthLong() }
+      .getOrElse(0L) // This default matches File.length()
   }
-  
+
   /** A helper for the above methods */
   private def withClasspathURL[T](file: File, classLoader: ClassLoader)(f: URL => T): Option[T] = {
     val path: String = file.toResourcePath.stripLeading(classpathSeparator)
     val urls: Vector[URL] = classLoader.getResources(path).asScala.toVector
-    
-    urls.headOption.map{ url: URL => f(url) }
+
+    urls.headOption.map { url: URL => f(url) }
   }
-  
+
   /** A helper for the above methods */
   private def withClasspathURLConnection[T](file: File, classLoader: ClassLoader)(f: URLConnection => T): Option[T] = {
-    withClasspathURL(file, classLoader){ url: URL =>
+    withClasspathURL(file, classLoader) { url: URL =>
       val conn: URLConnection = url.openConnection()
       f(conn)
     }
   }
-  
+
   /** A helper for the above methods */
   private def withURLInputStream[T](url: URL)(f: InputStream => T): T = {
     val is: InputStream = url.openStream()
@@ -416,7 +427,8 @@ object ClassUtil extends Logging {
       f(is)
     } finally {
       // close() can throw exceptions if the file doesn't exist
-      try{ is.close() } catch { case _: Exception => }
+      try { is.close() }
+      catch { case _: Exception => }
     }
   }
 
@@ -443,12 +455,16 @@ object ClassUtil extends Logging {
 
   /**
    * Find all classes annotated with a Java Annotation.
-   * 
-   * Note: This loads ALL classes under the basePackage!
+   *
+    * Note: This loads ALL classes under the basePackage!
    */
-  def findAnnotatedClasses[T <: Annotation](basePackage: String, annotationClass: Class[T], classLoader: ClassLoader): Set[Class[_]] = {
-    findClassNames(basePackage, classLoader)/*.filterNot { _.contains("$") }*/.map{ classLoader.loadClass }.filter { c: Class[_] =>
-      c.getAnnotation(annotationClass) != null
+  def findAnnotatedClasses[T <: Annotation](
+    basePackage: String,
+    annotationClass: Class[T],
+    classLoader: ClassLoader): Set[Class[_]] = {
+    findClassNames(basePackage, classLoader) /*.filterNot { _.contains("$") }*/ .map { classLoader.loadClass }.filter {
+      c: Class[_] =>
+        c.getAnnotation(annotationClass) != null
     }
   }
 
@@ -468,7 +484,7 @@ object ClassUtil extends Logging {
    * Note: This loads ALL classes under the basePackage and uses Class.isAssignableFrom for checking.
    */
   def findImplementingObjects[T <: AnyRef](basePackage: String, clazz: Class[T], classLoader: ClassLoader): Set[T] = {
-    findImplementingClasses(basePackage, clazz, classLoader).filter{ isScalaObject }.map{ scalaObjectAs(_, clazz) }
+    findImplementingClasses(basePackage, clazz, classLoader).filter { isScalaObject }.map { scalaObjectAs(_, clazz) }
   }
 
   /**
@@ -482,16 +498,17 @@ object ClassUtil extends Logging {
 
   /**
    * Find all concrete classes that extend a trait/interface/class.
-   * 
-   * Note: This loads ALL classes under the basePackage and uses Class.isAssignableFrom for checking.
+   *
+    * Note: This loads ALL classes under the basePackage and uses Class.isAssignableFrom for checking.
    */
   def findImplementingClasses[T](basePackage: String, clazz: Class[T], classLoader: ClassLoader): Set[Class[_ <: T]] = {
-    findClassNames(basePackage, classLoader)/*.filterNot{ _.contains("$") }*/.map{ classLoader.loadClass }.filter { c: Class[_] =>
-      clazz.isAssignableFrom(c)
-    }.filterNot{ c: Class[_] => 
+    findClassNames(basePackage, classLoader) /*.filterNot{ _.contains("$") }*/ .map { classLoader.loadClass }.filter {
+      c: Class[_] =>
+        clazz.isAssignableFrom(c)
+    }.filterNot { c: Class[_] =>
       val mods: Int = c.getModifiers()
       Modifier.isAbstract(mods) || Modifier.isInterface(mods)
-    }.map{ _.asInstanceOf[Class[_ <: T]] }
+    }.map { _.asInstanceOf[Class[_ <: T]] }
   }
 
   /**
@@ -503,9 +520,9 @@ object ClassUtil extends Logging {
    * Find all class names under the base package (includes anonymous/inner/objects etc...)
    */
   def findClassNames(basePackage: String, classLoader: ClassLoader): Set[String] = {
-    findClasspathFiles(basePackage, classLoader).filter{ f: File =>
+    findClasspathFiles(basePackage, classLoader).filter { f: File =>
       f.getName.endsWith(".class")
-    }.map{ f: File =>
+    }.map { f: File =>
       val name: String = f.toString()
       name.substring(0, name.length - ".class".length).replace(File.separator, ".")
     }
@@ -526,7 +543,7 @@ object ClassUtil extends Logging {
     // You can technically have a directory named " ", so using .isEmpty and not .isNullOrBlank
     val subPathLength: Int = if (packageDirPath.toString.isEmpty) 1 else packageDirPath.getNameCount() + 1
 
-    findClasspathFiles(basePackage, classLoader).map{ _.toPath.subpath(0, subPathLength).toFile }
+    findClasspathFiles(basePackage, classLoader).map { _.toPath.subpath(0, subPathLength).toFile }
   }
 
   /**
@@ -540,7 +557,7 @@ object ClassUtil extends Logging {
   def findClasspathFiles(basePackage: String, classLoader: ClassLoader): Set[File] = {
     val packageDirPath: String = getPackageDirPath(basePackage)
     val urls: Set[URL] = classLoader.getResources(packageDirPath).asScala.toSet
-    
+
     urls.flatMap { url: URL =>
       val filePath: String = URLDecoder.decode(url.getFile(), "UTF-8")
 
@@ -548,20 +565,25 @@ object ClassUtil extends Logging {
         case "jar" =>
           val jarFile: String = filePath.substring("file:".length, filePath.indexOf("!"))
           val jarPrefix: String = filePath.substring(filePath.indexOf("!") + 1)
-          require(jarPrefix == classpathSeparator+packageDirPath, s"Expected jarPrefix ($jarPrefix) to equal package prefix ($classpathSeparator$packageDirPath)")
-          scanJar(packageDirPath+classpathSeparator, new File(jarFile))
-          
+          require(
+            jarPrefix == classpathSeparator + packageDirPath,
+            s"Expected jarPrefix ($jarPrefix) to equal package prefix ($classpathSeparator$packageDirPath)")
+          scanJar(packageDirPath + classpathSeparator, new File(jarFile))
+
         case "file" =>
           val packageDir: File = new File(filePath)
-          if (packageDir.isDirectory) recursiveListFiles(packageDir).map{ f: File => packageDir.toPath.relativize(f.toPath).toFile }.map{ f: File => new File(packageDirPath, f.toString) } else Nil
-        
-        case _ => 
-          logger.warn("Unknown classpath entry: "+url)
+          if (packageDir.isDirectory) recursiveListFiles(packageDir).map { f: File =>
+            packageDir.toPath.relativize(f.toPath).toFile
+          }.map { f: File => new File(packageDirPath, f.toString) }
+          else Nil
+
+        case _ =>
+          logger.warn("Unknown classpath entry: " + url)
           Nil
       }
     }
   }
-  
+
   private def recursiveListFiles(dir: File): Set[File] = {
     require(dir.isDirectory, s"Expected file to be a directory: $dir")
     dir.listFiles.flatMap { f: File =>
@@ -570,7 +592,7 @@ object ClassUtil extends Logging {
       else Nil
     }.toSet
   }
-  
+
   private def scanJar(prefix: String, jarFile: File): Set[File] = {
     require(jarFile.isFile, s"Missing jar file: $jarFile")
     if (prefix != "") {
@@ -579,21 +601,21 @@ object ClassUtil extends Logging {
     }
 
     val builder = Set.newBuilder[File]
-    
-    Resource.using(new JarFile(jarFile)){ jar: JarFile => 
+
+    Resource.using(new JarFile(jarFile)) { jar: JarFile =>
       jar.entries().asScala.foreach { entry: JarEntry =>
         val name: String = entry.getName
         if (!entry.isDirectory && name.startsWith(prefix)) builder += new File(name)
       }
     }
-    
-    builder.result
+
+    builder.result()
   }
 
   private def getPackageDirPath(basePackage: String): String = {
     basePackage.stripLeading(classpathSeparator).replace(".", classpathSeparator)
   }
-  
+
   private def defaultClassLoader: ClassLoader = {
     val cl: ClassLoader = Thread.currentThread.getContextClassLoader
     if (null != cl) cl else getClass().getClassLoader()

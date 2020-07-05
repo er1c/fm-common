@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 // Generated Tue Feb 05 21:28:01 PST 2019
 // AUTO-GENERATED FROM THE makeAccents.sh SCRIPT
 // AUTO-GENERATED FROM THE makeAccents.sh SCRIPT
@@ -46,11 +64,11 @@ object ASCIIUtil {
    *   '\u2487' => "(20)"  // ⒇  [PARENTHESIZED NUMBER TWENTY]
    */
   val MaxASCIIExpandedLength: Int = 4
-  
+
   /**
    * Converts Accented Characters to the Non-Accented Equivalent Char.
-   * 
-   * Note: This only works for when there is a 1 to 1 Character equivalence (i.e. it does not work for stuff like Æ which needs to expand to AE)
+   *
+    * Note: This only works for when there is a 1 to 1 Character equivalence (i.e. it does not work for stuff like Æ which needs to expand to AE)
    */
   def toASCIIChar(c: Char): Char = {
     // This is potentially more JIT friendly since the JVM should be able
@@ -59,14 +77,14 @@ object ASCIIUtil {
     // calling stripAccentCharImpl()
     if (c < '\u0080') c else stripAccentCharImpl(c)
   }
-  
+
   /**
    * Converts Accented Characters to the Non-Accented Equivalent String (or null if already ASCII or no conversion exists).
    */
   def toASCIICharsOrNull(c: Char): String = {
     if (c < '\u0080') null else stripAccentStringImplOrNull(c)
   }
-  
+
   /**
    * Converts Accented Characters to the Non-Accented Equivalent String.
    *
@@ -78,7 +96,7 @@ object ASCIIUtil {
     var i: Int = 0
 
     // Skip past any ASCII characters
-    while (i < s.length && s.charAt(i) < '\u0080'){
+    while (i < s.length && s.charAt(i) < '\u0080') {
       i += 1
     }
 
@@ -102,7 +120,7 @@ object ASCIIUtil {
 
     sb.toString()
   }
-  
+
   /**
    * Converts Accented Characters to the Non-Accented Equivalent String.
    */
@@ -117,9 +135,11 @@ object ASCIIUtil {
       val str: String = stripAccentStringImplOrNull(c)
       if (null == str) sb.append(c) else sb.append(str)
     }
+
+    ()
   }
-  
-    /** Generated From Lucene's ASCIIFoldingFilter.java */
+
+  /** Generated From Lucene's ASCIIFoldingFilter.java */
   private def stripAccentCharImpl(c: Char): Char = {
     // Quick test: if it's not in range then just keep current character
     if (c < '\u0080') {
@@ -146,7 +166,9 @@ object ASCIIUtil {
         // ❮  [HEAVY LEFT-POINTING ANGLE QUOTATION MARK ORNAMENT]
         // ❯  [HEAVY RIGHT-POINTING ANGLE QUOTATION MARK ORNAMENT]
         // ＂  [FULLWIDTH QUOTATION MARK]
-        case '\u00AB' | '\u00BB' | '\u201C' | '\u201D' | '\u201E' | '\u2033' | '\u2036' | '\u275D' | '\u275E' | '\u276E' | '\u276F' | '\uFF02' => '"'
+        case '\u00AB' | '\u00BB' | '\u201C' | '\u201D' | '\u201E' | '\u2033' | '\u2036' | '\u275D' | '\u275E' |
+            '\u276E' | '\u276F' | '\uFF02' =>
+          '"'
 
         // ASCII: #
 
@@ -226,7 +248,10 @@ object ASCIIUtil {
         // ⁻  [SUPERSCRIPT MINUS]
         // ₋  [SUBSCRIPT MINUS]
         // －  [FULLWIDTH HYPHEN-MINUS]
-        case '\u2018' | '\u2019' | '\u201A' | '\u201B' | '\u2032' | '\u2035' | '\u2039' | '\u203A' | '\u275B' | '\u275C' | '\uFF07' | '\u2010' | '\u2011' | '\u2012' | '\u2013' | '\u2014' | '\u207B' | '\u208B' | '\uFF0D' => '-'
+        case '\u2018' | '\u2019' | '\u201A' | '\u201B' | '\u2032' | '\u2035' | '\u2039' | '\u203A' | '\u275B' |
+            '\u275C' | '\uFF07' | '\u2010' | '\u2011' | '\u2012' | '\u2013' | '\u2014' | '\u207B' | '\u208B' |
+            '\uFF0D' =>
+          '-'
 
         // ASCII: .
 
@@ -434,7 +459,11 @@ object ASCIIUtil {
         // Ặ  [LATIN CAPITAL LETTER A WITH BREVE AND DOT BELOW]
         // Ⓐ  [CIRCLED LATIN CAPITAL LETTER A]
         // Ａ  [FULLWIDTH LATIN CAPITAL LETTER A]
-        case '\u00C0' | '\u00C1' | '\u00C2' | '\u00C3' | '\u00C4' | '\u00C5' | '\u0100' | '\u0102' | '\u0104' | '\u018F' | '\u01CD' | '\u01DE' | '\u01E0' | '\u01FA' | '\u0200' | '\u0202' | '\u0226' | '\u023A' | '\u1D00' | '\u1E00' | '\u1EA0' | '\u1EA2' | '\u1EA4' | '\u1EA6' | '\u1EA8' | '\u1EAA' | '\u1EAC' | '\u1EAE' | '\u1EB0' | '\u1EB2' | '\u1EB4' | '\u1EB6' | '\u24B6' | '\uFF21' => 'A'
+        case '\u00C0' | '\u00C1' | '\u00C2' | '\u00C3' | '\u00C4' | '\u00C5' | '\u0100' | '\u0102' | '\u0104' |
+            '\u018F' | '\u01CD' | '\u01DE' | '\u01E0' | '\u01FA' | '\u0200' | '\u0202' | '\u0226' | '\u023A' |
+            '\u1D00' | '\u1E00' | '\u1EA0' | '\u1EA2' | '\u1EA4' | '\u1EA6' | '\u1EA8' | '\u1EAA' | '\u1EAC' |
+            '\u1EAE' | '\u1EB0' | '\u1EB2' | '\u1EB4' | '\u1EB6' | '\u24B6' | '\uFF21' =>
+          'A'
 
         // ASCII: B
 
@@ -448,7 +477,9 @@ object ASCIIUtil {
         // Ḇ  [LATIN CAPITAL LETTER B WITH LINE BELOW]
         // Ⓑ  [CIRCLED LATIN CAPITAL LETTER B]
         // Ｂ  [FULLWIDTH LATIN CAPITAL LETTER B]
-        case '\u0181' | '\u0182' | '\u0243' | '\u0299' | '\u1D03' | '\u1E02' | '\u1E04' | '\u1E06' | '\u24B7' | '\uFF22' => 'B'
+        case '\u0181' | '\u0182' | '\u0243' | '\u0299' | '\u1D03' | '\u1E02' | '\u1E04' | '\u1E06' | '\u24B7' |
+            '\uFF22' =>
+          'B'
 
         // ASCII: C
 
@@ -464,7 +495,9 @@ object ASCIIUtil {
         // Ḉ  [LATIN CAPITAL LETTER C WITH CEDILLA AND ACUTE]
         // Ⓒ  [CIRCLED LATIN CAPITAL LETTER C]
         // Ｃ  [FULLWIDTH LATIN CAPITAL LETTER C]
-        case '\u00C7' | '\u0106' | '\u0108' | '\u010A' | '\u010C' | '\u0187' | '\u023B' | '\u0297' | '\u1D04' | '\u1E08' | '\u24B8' | '\uFF23' => 'C'
+        case '\u00C7' | '\u0106' | '\u0108' | '\u010A' | '\u010C' | '\u0187' | '\u023B' | '\u0297' | '\u1D04' |
+            '\u1E08' | '\u24B8' | '\uFF23' =>
+          'C'
 
         // ASCII: D
 
@@ -484,7 +517,9 @@ object ASCIIUtil {
         // Ⓓ  [CIRCLED LATIN CAPITAL LETTER D]
         // Ꝺ  [LATIN CAPITAL LETTER INSULAR D]
         // Ｄ  [FULLWIDTH LATIN CAPITAL LETTER D]
-        case '\u00D0' | '\u010E' | '\u0110' | '\u0189' | '\u018A' | '\u018B' | '\u1D05' | '\u1D06' | '\u1E0A' | '\u1E0C' | '\u1E0E' | '\u1E10' | '\u1E12' | '\u24B9' | '\uA779' | '\uFF24' => 'D'
+        case '\u00D0' | '\u010E' | '\u0110' | '\u0189' | '\u018A' | '\u018B' | '\u1D05' | '\u1D06' | '\u1E0A' |
+            '\u1E0C' | '\u1E0E' | '\u1E10' | '\u1E12' | '\u24B9' | '\uA779' | '\uFF24' =>
+          'D'
 
         // ASCII: E
 
@@ -520,7 +555,11 @@ object ASCIIUtil {
         // Ⓔ  [CIRCLED LATIN CAPITAL LETTER E]
         // ⱻ  [LATIN LETTER SMALL CAPITAL TURNED E]
         // Ｅ  [FULLWIDTH LATIN CAPITAL LETTER E]
-        case '\u00C8' | '\u00C9' | '\u00CA' | '\u00CB' | '\u0112' | '\u0114' | '\u0116' | '\u0118' | '\u011A' | '\u018E' | '\u0190' | '\u0204' | '\u0206' | '\u0228' | '\u0246' | '\u1D07' | '\u1E14' | '\u1E16' | '\u1E18' | '\u1E1A' | '\u1E1C' | '\u1EB8' | '\u1EBA' | '\u1EBC' | '\u1EBE' | '\u1EC0' | '\u1EC2' | '\u1EC4' | '\u1EC6' | '\u24BA' | '\u2C7B' | '\uFF25' => 'E'
+        case '\u00C8' | '\u00C9' | '\u00CA' | '\u00CB' | '\u0112' | '\u0114' | '\u0116' | '\u0118' | '\u011A' |
+            '\u018E' | '\u0190' | '\u0204' | '\u0206' | '\u0228' | '\u0246' | '\u1D07' | '\u1E14' | '\u1E16' |
+            '\u1E18' | '\u1E1A' | '\u1E1C' | '\u1EB8' | '\u1EBA' | '\u1EBC' | '\u1EBE' | '\u1EC0' | '\u1EC2' |
+            '\u1EC4' | '\u1EC6' | '\u24BA' | '\u2C7B' | '\uFF25' =>
+          'E'
 
         // ASCII: F
 
@@ -552,7 +591,9 @@ object ASCIIUtil {
         // Ᵹ  [LATIN CAPITAL LETTER INSULAR G]
         // Ꝿ  [LATIN CAPITAL LETTER TURNED INSULAR G]
         // Ｇ  [FULLWIDTH LATIN CAPITAL LETTER G]
-        case '\u011C' | '\u011E' | '\u0120' | '\u0122' | '\u0193' | '\u01E4' | '\u01E5' | '\u01E6' | '\u01E7' | '\u01F4' | '\u0262' | '\u029B' | '\u1E20' | '\u24BC' | '\uA77D' | '\uA77E' | '\uFF27' => 'G'
+        case '\u011C' | '\u011E' | '\u0120' | '\u0122' | '\u0193' | '\u01E4' | '\u01E5' | '\u01E6' | '\u01E7' |
+            '\u01F4' | '\u0262' | '\u029B' | '\u1E20' | '\u24BC' | '\uA77D' | '\uA77E' | '\uFF27' =>
+          'G'
 
         // ASCII: H
 
@@ -569,7 +610,9 @@ object ASCIIUtil {
         // Ⱨ  [LATIN CAPITAL LETTER H WITH DESCENDER]
         // Ⱶ  [LATIN CAPITAL LETTER HALF H]
         // Ｈ  [FULLWIDTH LATIN CAPITAL LETTER H]
-        case '\u0124' | '\u0126' | '\u021E' | '\u029C' | '\u1E22' | '\u1E24' | '\u1E26' | '\u1E28' | '\u1E2A' | '\u24BD' | '\u2C67' | '\u2C75' | '\uFF28' => 'H'
+        case '\u0124' | '\u0126' | '\u021E' | '\u029C' | '\u1E22' | '\u1E24' | '\u1E26' | '\u1E28' | '\u1E2A' |
+            '\u24BD' | '\u2C67' | '\u2C75' | '\uFF28' =>
+          'H'
 
         // ASCII: I
 
@@ -596,7 +639,10 @@ object ASCIIUtil {
         // Ⓘ  [CIRCLED LATIN CAPITAL LETTER I]
         // ꟾ  [LATIN EPIGRAPHIC LETTER I LONGA]
         // Ｉ  [FULLWIDTH LATIN CAPITAL LETTER I]
-        case '\u00CC' | '\u00CD' | '\u00CE' | '\u00CF' | '\u0128' | '\u012A' | '\u012C' | '\u012E' | '\u0130' | '\u0196' | '\u0197' | '\u01CF' | '\u0208' | '\u020A' | '\u026A' | '\u1D7B' | '\u1E2C' | '\u1E2E' | '\u1EC8' | '\u1ECA' | '\u24BE' | '\uA7FE' | '\uFF29' => 'I'
+        case '\u00CC' | '\u00CD' | '\u00CE' | '\u00CF' | '\u0128' | '\u012A' | '\u012C' | '\u012E' | '\u0130' |
+            '\u0196' | '\u0197' | '\u01CF' | '\u0208' | '\u020A' | '\u026A' | '\u1D7B' | '\u1E2C' | '\u1E2E' |
+            '\u1EC8' | '\u1ECA' | '\u24BE' | '\uA7FE' | '\uFF29' =>
+          'I'
 
         // ASCII: J
 
@@ -622,7 +668,9 @@ object ASCIIUtil {
         // Ꝃ  [LATIN CAPITAL LETTER K WITH DIAGONAL STROKE]
         // Ꝅ  [LATIN CAPITAL LETTER K WITH STROKE AND DIAGONAL STROKE]
         // Ｋ  [FULLWIDTH LATIN CAPITAL LETTER K]
-        case '\u0136' | '\u0198' | '\u01E8' | '\u1D0B' | '\u1E30' | '\u1E32' | '\u1E34' | '\u24C0' | '\u2C69' | '\uA740' | '\uA742' | '\uA744' | '\uFF2B' => 'K'
+        case '\u0136' | '\u0198' | '\u01E8' | '\u1D0B' | '\u1E30' | '\u1E32' | '\u1E34' | '\u24C0' | '\u2C69' |
+            '\uA740' | '\uA742' | '\uA744' | '\uFF2B' =>
+          'K'
 
         // ASCII: L
 
@@ -645,7 +693,10 @@ object ASCIIUtil {
         // Ꝉ  [LATIN CAPITAL LETTER L WITH HIGH STROKE]
         // Ꞁ  [LATIN CAPITAL LETTER TURNED L]
         // Ｌ  [FULLWIDTH LATIN CAPITAL LETTER L]
-        case '\u0139' | '\u013B' | '\u013D' | '\u013F' | '\u0141' | '\u023D' | '\u029F' | '\u1D0C' | '\u1E36' | '\u1E38' | '\u1E3A' | '\u1E3C' | '\u24C1' | '\u2C60' | '\u2C62' | '\uA746' | '\uA748' | '\uA780' | '\uFF2C' => 'L'
+        case '\u0139' | '\u013B' | '\u013D' | '\u013F' | '\u0141' | '\u023D' | '\u029F' | '\u1D0C' | '\u1E36' |
+            '\u1E38' | '\u1E3A' | '\u1E3C' | '\u24C1' | '\u2C60' | '\u2C62' | '\uA746' | '\uA748' | '\uA780' |
+            '\uFF2C' =>
+          'L'
 
         // ASCII: M
 
@@ -659,7 +710,9 @@ object ASCIIUtil {
         // ꟽ  [LATIN EPIGRAPHIC LETTER INVERTED M]
         // ꟿ  [LATIN EPIGRAPHIC LETTER ARCHAIC M]
         // Ｍ  [FULLWIDTH LATIN CAPITAL LETTER M]
-        case '\u019C' | '\u1D0D' | '\u1E3E' | '\u1E40' | '\u1E42' | '\u24C2' | '\u2C6E' | '\uA7FD' | '\uA7FF' | '\uFF2D' => 'M'
+        case '\u019C' | '\u1D0D' | '\u1E3E' | '\u1E40' | '\u1E42' | '\u24C2' | '\u2C6E' | '\uA7FD' | '\uA7FF' |
+            '\uFF2D' =>
+          'M'
 
         // ASCII: N
 
@@ -679,7 +732,9 @@ object ASCIIUtil {
         // Ṋ  [LATIN CAPITAL LETTER N WITH CIRCUMFLEX BELOW]
         // Ⓝ  [CIRCLED LATIN CAPITAL LETTER N]
         // Ｎ  [FULLWIDTH LATIN CAPITAL LETTER N]
-        case '\u00D1' | '\u0143' | '\u0145' | '\u0147' | '\u014A' | '\u019D' | '\u01F8' | '\u0220' | '\u0274' | '\u1D0E' | '\u1E44' | '\u1E46' | '\u1E48' | '\u1E4A' | '\u24C3' | '\uFF2E' => 'N'
+        case '\u00D1' | '\u0143' | '\u0145' | '\u0147' | '\u014A' | '\u019D' | '\u01F8' | '\u0220' | '\u0274' |
+            '\u1D0E' | '\u1E44' | '\u1E46' | '\u1E48' | '\u1E4A' | '\u24C3' | '\uFF2E' =>
+          'N'
 
         // ASCII: O
 
@@ -728,7 +783,12 @@ object ASCIIUtil {
         // Ꝋ  [LATIN CAPITAL LETTER O WITH LONG STROKE OVERLAY]
         // Ꝍ  [LATIN CAPITAL LETTER O WITH LOOP]
         // Ｏ  [FULLWIDTH LATIN CAPITAL LETTER O]
-        case '\uA734' | '\u00D2' | '\u00D3' | '\u00D4' | '\u00D5' | '\u00D6' | '\u00D8' | '\u014C' | '\u014E' | '\u0150' | '\u0186' | '\u019F' | '\u01A0' | '\u01D1' | '\u01EA' | '\u01EC' | '\u01FE' | '\u020C' | '\u020E' | '\u022A' | '\u022C' | '\u022E' | '\u0230' | '\u1D0F' | '\u1D10' | '\u1E4C' | '\u1E4E' | '\u1E50' | '\u1E52' | '\u1ECC' | '\u1ECE' | '\u1ED0' | '\u1ED2' | '\u1ED4' | '\u1ED6' | '\u1ED8' | '\u1EDA' | '\u1EDC' | '\u1EDE' | '\u1EE0' | '\u1EE2' | '\u24C4' | '\uA74A' | '\uA74C' | '\uFF2F' => 'O'
+        case '\uA734' | '\u00D2' | '\u00D3' | '\u00D4' | '\u00D5' | '\u00D6' | '\u00D8' | '\u014C' | '\u014E' |
+            '\u0150' | '\u0186' | '\u019F' | '\u01A0' | '\u01D1' | '\u01EA' | '\u01EC' | '\u01FE' | '\u020C' |
+            '\u020E' | '\u022A' | '\u022C' | '\u022E' | '\u0230' | '\u1D0F' | '\u1D10' | '\u1E4C' | '\u1E4E' |
+            '\u1E50' | '\u1E52' | '\u1ECC' | '\u1ECE' | '\u1ED0' | '\u1ED2' | '\u1ED4' | '\u1ED6' | '\u1ED8' |
+            '\u1EDA' | '\u1EDC' | '\u1EDE' | '\u1EE0' | '\u1EE2' | '\u24C4' | '\uA74A' | '\uA74C' | '\uFF2F' =>
+          'O'
 
         // ASCII: P
 
@@ -742,7 +802,9 @@ object ASCIIUtil {
         // Ꝓ  [LATIN CAPITAL LETTER P WITH FLOURISH]
         // Ꝕ  [LATIN CAPITAL LETTER P WITH SQUIRREL TAIL]
         // Ｐ  [FULLWIDTH LATIN CAPITAL LETTER P]
-        case '\u01A4' | '\u1D18' | '\u1E54' | '\u1E56' | '\u24C5' | '\u2C63' | '\uA750' | '\uA752' | '\uA754' | '\uFF30' => 'P'
+        case '\u01A4' | '\u1D18' | '\u1E54' | '\u1E56' | '\u24C5' | '\u2C63' | '\uA750' | '\uA752' | '\uA754' |
+            '\uFF30' =>
+          'P'
 
         // ASCII: Q
 
@@ -774,7 +836,10 @@ object ASCIIUtil {
         // Ꝛ  [LATIN CAPITAL LETTER R ROTUNDA]
         // Ꞃ  [LATIN CAPITAL LETTER INSULAR R]
         // Ｒ  [FULLWIDTH LATIN CAPITAL LETTER R]
-        case '\u0154' | '\u0156' | '\u0158' | '\u0210' | '\u0212' | '\u024C' | '\u0280' | '\u0281' | '\u1D19' | '\u1D1A' | '\u1E58' | '\u1E5A' | '\u1E5C' | '\u1E5E' | '\u24C7' | '\u2C64' | '\uA75A' | '\uA782' | '\uFF32' => 'R'
+        case '\u0154' | '\u0156' | '\u0158' | '\u0210' | '\u0212' | '\u024C' | '\u0280' | '\u0281' | '\u1D19' |
+            '\u1D1A' | '\u1E58' | '\u1E5A' | '\u1E5C' | '\u1E5E' | '\u24C7' | '\u2C64' | '\uA75A' | '\uA782' |
+            '\uFF32' =>
+          'R'
 
         // ASCII: S
 
@@ -792,7 +857,9 @@ object ASCIIUtil {
         // ꜱ  [LATIN LETTER SMALL CAPITAL S]
         // ꞅ  [LATIN SMALL LETTER INSULAR S]
         // Ｓ  [FULLWIDTH LATIN CAPITAL LETTER S]
-        case '\u015A' | '\u015C' | '\u015E' | '\u0160' | '\u0218' | '\u1E60' | '\u1E62' | '\u1E64' | '\u1E66' | '\u1E68' | '\u24C8' | '\uA731' | '\uA785' | '\uFF33' => 'S'
+        case '\u015A' | '\u015C' | '\u015E' | '\u0160' | '\u0218' | '\u1E60' | '\u1E62' | '\u1E64' | '\u1E66' |
+            '\u1E68' | '\u24C8' | '\uA731' | '\uA785' | '\uFF33' =>
+          'S'
 
         // ASCII: T
 
@@ -811,7 +878,9 @@ object ASCIIUtil {
         // Ⓣ  [CIRCLED LATIN CAPITAL LETTER T]
         // Ꞇ  [LATIN CAPITAL LETTER INSULAR T]
         // Ｔ  [FULLWIDTH LATIN CAPITAL LETTER T]
-        case '\u0162' | '\u0164' | '\u0166' | '\u01AC' | '\u01AE' | '\u021A' | '\u023E' | '\u1D1B' | '\u1E6A' | '\u1E6C' | '\u1E6E' | '\u1E70' | '\u24C9' | '\uA786' | '\uFF34' => 'T'
+        case '\u0162' | '\u0164' | '\u0166' | '\u01AC' | '\u01AE' | '\u021A' | '\u023E' | '\u1D1B' | '\u1E6A' |
+            '\u1E6C' | '\u1E6E' | '\u1E70' | '\u24C9' | '\uA786' | '\uFF34' =>
+          'T'
 
         // ASCII: U
 
@@ -850,7 +919,11 @@ object ASCIIUtil {
         // Ự  [LATIN CAPITAL LETTER U WITH HORN AND DOT BELOW]
         // Ⓤ  [CIRCLED LATIN CAPITAL LETTER U]
         // Ｕ  [FULLWIDTH LATIN CAPITAL LETTER U]
-        case '\u00D9' | '\u00DA' | '\u00DB' | '\u00DC' | '\u0168' | '\u016A' | '\u016C' | '\u016E' | '\u0170' | '\u0172' | '\u01AF' | '\u01D3' | '\u01D5' | '\u01D7' | '\u01D9' | '\u01DB' | '\u0214' | '\u0216' | '\u0244' | '\u1D1C' | '\u1D7E' | '\u1E72' | '\u1E74' | '\u1E76' | '\u1E78' | '\u1E7A' | '\u1EE4' | '\u1EE6' | '\u1EE8' | '\u1EEA' | '\u1EEC' | '\u1EEE' | '\u1EF0' | '\u24CA' | '\uFF35' => 'U'
+        case '\u00D9' | '\u00DA' | '\u00DB' | '\u00DC' | '\u0168' | '\u016A' | '\u016C' | '\u016E' | '\u0170' |
+            '\u0172' | '\u01AF' | '\u01D3' | '\u01D5' | '\u01D7' | '\u01D9' | '\u01DB' | '\u0214' | '\u0216' |
+            '\u0244' | '\u1D1C' | '\u1D7E' | '\u1E72' | '\u1E74' | '\u1E76' | '\u1E78' | '\u1E7A' | '\u1EE4' |
+            '\u1EE6' | '\u1EE8' | '\u1EEA' | '\u1EEC' | '\u1EEE' | '\u1EF0' | '\u24CA' | '\uFF35' =>
+          'U'
 
         // ASCII: V
 
@@ -864,7 +937,9 @@ object ASCIIUtil {
         // Ꝟ  [LATIN CAPITAL LETTER V WITH DIAGONAL STROKE]
         // Ꝩ  [LATIN CAPITAL LETTER VEND]
         // Ｖ  [FULLWIDTH LATIN CAPITAL LETTER V]
-        case '\u01B2' | '\u0245' | '\u1D20' | '\u1E7C' | '\u1E7E' | '\u1EFC' | '\u24CB' | '\uA75E' | '\uA768' | '\uFF36' => 'V'
+        case '\u01B2' | '\u0245' | '\u1D20' | '\u1E7C' | '\u1E7E' | '\u1EFC' | '\u24CB' | '\uA75E' | '\uA768' |
+            '\uFF36' =>
+          'V'
 
         // ASCII: W
 
@@ -879,7 +954,9 @@ object ASCIIUtil {
         // Ⓦ  [CIRCLED LATIN CAPITAL LETTER W]
         // Ⱳ  [LATIN CAPITAL LETTER W WITH HOOK]
         // Ｗ  [FULLWIDTH LATIN CAPITAL LETTER W]
-        case '\u0174' | '\u01F7' | '\u1D21' | '\u1E80' | '\u1E82' | '\u1E84' | '\u1E86' | '\u1E88' | '\u24CC' | '\u2C72' | '\uFF37' => 'W'
+        case '\u0174' | '\u01F7' | '\u1D21' | '\u1E80' | '\u1E82' | '\u1E84' | '\u1E86' | '\u1E88' | '\u24CC' |
+            '\u2C72' | '\uFF37' =>
+          'W'
 
         // ASCII: X
 
@@ -906,7 +983,9 @@ object ASCIIUtil {
         // Ỿ  [LATIN CAPITAL LETTER Y WITH LOOP]
         // Ⓨ  [CIRCLED LATIN CAPITAL LETTER Y]
         // Ｙ  [FULLWIDTH LATIN CAPITAL LETTER Y]
-        case '\u00DD' | '\u0176' | '\u0178' | '\u01B3' | '\u0232' | '\u024E' | '\u028F' | '\u1E8E' | '\u1EF2' | '\u1EF4' | '\u1EF6' | '\u1EF8' | '\u1EFE' | '\u24CE' | '\uFF39' => 'Y'
+        case '\u00DD' | '\u0176' | '\u0178' | '\u01B3' | '\u0232' | '\u024E' | '\u028F' | '\u1E8E' | '\u1EF2' |
+            '\u1EF4' | '\u1EF6' | '\u1EF8' | '\u1EFE' | '\u24CE' | '\uFF39' =>
+          'Y'
 
         // ASCII: Z
 
@@ -924,7 +1003,9 @@ object ASCIIUtil {
         // Ⱬ  [LATIN CAPITAL LETTER Z WITH DESCENDER]
         // Ꝣ  [LATIN CAPITAL LETTER VISIGOTHIC Z]
         // Ｚ  [FULLWIDTH LATIN CAPITAL LETTER Z]
-        case '\u0179' | '\u017B' | '\u017D' | '\u01B5' | '\u021C' | '\u0224' | '\u1D22' | '\u1E90' | '\u1E92' | '\u1E94' | '\u24CF' | '\u2C6B' | '\uA762' | '\uFF3A' => 'Z'
+        case '\u0179' | '\u017B' | '\u017D' | '\u01B5' | '\u021C' | '\u0224' | '\u1D22' | '\u1E90' | '\u1E92' |
+            '\u1E94' | '\u24CF' | '\u2C6B' | '\uA762' | '\uFF3A' =>
+          'Z'
 
         // ASCII: [
 
@@ -995,7 +1076,12 @@ object ASCIIUtil {
         // ⱥ  [LATIN SMALL LETTER A WITH STROKE]
         // Ɐ  [LATIN CAPITAL LETTER TURNED A]
         // ａ  [FULLWIDTH LATIN SMALL LETTER A]
-        case '\u00E0' | '\u00E1' | '\u00E2' | '\u00E3' | '\u00E4' | '\u00E5' | '\u0101' | '\u0103' | '\u0105' | '\u01CE' | '\u01DF' | '\u01E1' | '\u01FB' | '\u0201' | '\u0203' | '\u0227' | '\u0250' | '\u0259' | '\u025A' | '\u1D8F' | '\u1D95' | '\u1E01' | '\u1E9A' | '\u1EA1' | '\u1EA3' | '\u1EA5' | '\u1EA7' | '\u1EA9' | '\u1EAB' | '\u1EAD' | '\u1EAF' | '\u1EB1' | '\u1EB3' | '\u1EB5' | '\u1EB7' | '\u2090' | '\u2094' | '\u24D0' | '\u2C65' | '\u2C6F' | '\uFF41' => 'a'
+        case '\u00E0' | '\u00E1' | '\u00E2' | '\u00E3' | '\u00E4' | '\u00E5' | '\u0101' | '\u0103' | '\u0105' |
+            '\u01CE' | '\u01DF' | '\u01E1' | '\u01FB' | '\u0201' | '\u0203' | '\u0227' | '\u0250' | '\u0259' |
+            '\u025A' | '\u1D8F' | '\u1D95' | '\u1E01' | '\u1E9A' | '\u1EA1' | '\u1EA3' | '\u1EA5' | '\u1EA7' |
+            '\u1EA9' | '\u1EAB' | '\u1EAD' | '\u1EAF' | '\u1EB1' | '\u1EB3' | '\u1EB5' | '\u1EB7' | '\u2090' |
+            '\u2094' | '\u24D0' | '\u2C65' | '\u2C6F' | '\uFF41' =>
+          'a'
 
         // ASCII: b
 
@@ -1009,7 +1095,9 @@ object ASCIIUtil {
         // ḇ  [LATIN SMALL LETTER B WITH LINE BELOW]
         // ⓑ  [CIRCLED LATIN SMALL LETTER B]
         // ｂ  [FULLWIDTH LATIN SMALL LETTER B]
-        case '\u0180' | '\u0183' | '\u0253' | '\u1D6C' | '\u1D80' | '\u1E03' | '\u1E05' | '\u1E07' | '\u24D1' | '\uFF42' => 'b'
+        case '\u0180' | '\u0183' | '\u0253' | '\u1D6C' | '\u1D80' | '\u1E03' | '\u1E05' | '\u1E07' | '\u24D1' |
+            '\uFF42' =>
+          'b'
 
         // ASCII: c
 
@@ -1027,7 +1115,9 @@ object ASCIIUtil {
         // Ꜿ  [LATIN CAPITAL LETTER REVERSED C WITH DOT]
         // ꜿ  [LATIN SMALL LETTER REVERSED C WITH DOT]
         // ｃ  [FULLWIDTH LATIN SMALL LETTER C]
-        case '\u00E7' | '\u0107' | '\u0109' | '\u010B' | '\u010D' | '\u0188' | '\u023C' | '\u0255' | '\u1E09' | '\u2184' | '\u24D2' | '\uA73E' | '\uA73F' | '\uFF43' => 'c'
+        case '\u00E7' | '\u0107' | '\u0109' | '\u010B' | '\u010D' | '\u0188' | '\u023C' | '\u0255' | '\u1E09' |
+            '\u2184' | '\u24D2' | '\uA73E' | '\uA73F' | '\uFF43' =>
+          'c'
 
         // ASCII: d
 
@@ -1049,7 +1139,9 @@ object ASCIIUtil {
         // ⓓ  [CIRCLED LATIN SMALL LETTER D]
         // ꝺ  [LATIN SMALL LETTER INSULAR D]
         // ｄ  [FULLWIDTH LATIN SMALL LETTER D]
-        case '\u00F0' | '\u010F' | '\u0111' | '\u018C' | '\u0221' | '\u0256' | '\u0257' | '\u1D6D' | '\u1D81' | '\u1D91' | '\u1E0B' | '\u1E0D' | '\u1E0F' | '\u1E11' | '\u1E13' | '\u24D3' | '\uA77A' | '\uFF44' => 'd'
+        case '\u00F0' | '\u010F' | '\u0111' | '\u018C' | '\u0221' | '\u0256' | '\u0257' | '\u1D6D' | '\u1D81' |
+            '\u1D91' | '\u1E0B' | '\u1E0D' | '\u1E0F' | '\u1E11' | '\u1E13' | '\u24D3' | '\uA77A' | '\uFF44' =>
+          'd'
 
         // ASCII: e
 
@@ -1094,7 +1186,12 @@ object ASCIIUtil {
         // ⓔ  [CIRCLED LATIN SMALL LETTER E]
         // ⱸ  [LATIN SMALL LETTER E WITH NOTCH]
         // ｅ  [FULLWIDTH LATIN SMALL LETTER E]
-        case '\u00E8' | '\u00E9' | '\u00EA' | '\u00EB' | '\u0113' | '\u0115' | '\u0117' | '\u0119' | '\u011B' | '\u01DD' | '\u0205' | '\u0207' | '\u0229' | '\u0247' | '\u0258' | '\u025B' | '\u025C' | '\u025D' | '\u025E' | '\u029A' | '\u1D08' | '\u1D92' | '\u1D93' | '\u1D94' | '\u1E15' | '\u1E17' | '\u1E19' | '\u1E1B' | '\u1E1D' | '\u1EB9' | '\u1EBB' | '\u1EBD' | '\u1EBF' | '\u1EC1' | '\u1EC3' | '\u1EC5' | '\u1EC7' | '\u2091' | '\u24D4' | '\u2C78' | '\uFF45' => 'e'
+        case '\u00E8' | '\u00E9' | '\u00EA' | '\u00EB' | '\u0113' | '\u0115' | '\u0117' | '\u0119' | '\u011B' |
+            '\u01DD' | '\u0205' | '\u0207' | '\u0229' | '\u0247' | '\u0258' | '\u025B' | '\u025C' | '\u025D' |
+            '\u025E' | '\u029A' | '\u1D08' | '\u1D92' | '\u1D93' | '\u1D94' | '\u1E15' | '\u1E17' | '\u1E19' |
+            '\u1E1B' | '\u1E1D' | '\u1EB9' | '\u1EBB' | '\u1EBD' | '\u1EBF' | '\u1EC1' | '\u1EC3' | '\u1EC5' |
+            '\u1EC7' | '\u2091' | '\u24D4' | '\u2C78' | '\uFF45' =>
+          'e'
 
         // ASCII: f
 
@@ -1124,7 +1221,9 @@ object ASCIIUtil {
         // ⓖ  [CIRCLED LATIN SMALL LETTER G]
         // ꝿ  [LATIN SMALL LETTER TURNED INSULAR G]
         // ｇ  [FULLWIDTH LATIN SMALL LETTER G]
-        case '\u011D' | '\u011F' | '\u0121' | '\u0123' | '\u01F5' | '\u0260' | '\u0261' | '\u1D77' | '\u1D79' | '\u1D83' | '\u1E21' | '\u24D6' | '\uA77F' | '\uFF47' => 'g'
+        case '\u011D' | '\u011F' | '\u0121' | '\u0123' | '\u01F5' | '\u0260' | '\u0261' | '\u1D77' | '\u1D79' |
+            '\u1D83' | '\u1E21' | '\u24D6' | '\uA77F' | '\uFF47' =>
+          'g'
 
         // ASCII: h
 
@@ -1145,7 +1244,9 @@ object ASCIIUtil {
         // ⱨ  [LATIN SMALL LETTER H WITH DESCENDER]
         // ⱶ  [LATIN SMALL LETTER HALF H]
         // ｈ  [FULLWIDTH LATIN SMALL LETTER H]
-        case '\u0125' | '\u0127' | '\u021F' | '\u0265' | '\u0266' | '\u02AE' | '\u02AF' | '\u1E23' | '\u1E25' | '\u1E27' | '\u1E29' | '\u1E2B' | '\u1E96' | '\u24D7' | '\u2C68' | '\u2C76' | '\uFF48' => 'h'
+        case '\u0125' | '\u0127' | '\u021F' | '\u0265' | '\u0266' | '\u02AE' | '\u02AF' | '\u1E23' | '\u1E25' |
+            '\u1E27' | '\u1E29' | '\u1E2B' | '\u1E96' | '\u24D7' | '\u2C68' | '\u2C76' | '\uFF48' =>
+          'h'
 
         // ASCII: i
 
@@ -1173,7 +1274,10 @@ object ASCIIUtil {
         // ⁱ  [SUPERSCRIPT LATIN SMALL LETTER I]
         // ⓘ  [CIRCLED LATIN SMALL LETTER I]
         // ｉ  [FULLWIDTH LATIN SMALL LETTER I]
-        case '\u00EC' | '\u00ED' | '\u00EE' | '\u00EF' | '\u0129' | '\u012B' | '\u012D' | '\u012F' | '\u0131' | '\u01D0' | '\u0209' | '\u020B' | '\u0268' | '\u1D09' | '\u1D62' | '\u1D7C' | '\u1D96' | '\u1E2D' | '\u1E2F' | '\u1EC9' | '\u1ECB' | '\u2071' | '\u24D8' | '\uFF49' => 'i'
+        case '\u00EC' | '\u00ED' | '\u00EE' | '\u00EF' | '\u0129' | '\u012B' | '\u012D' | '\u012F' | '\u0131' |
+            '\u01D0' | '\u0209' | '\u020B' | '\u0268' | '\u1D09' | '\u1D62' | '\u1D7C' | '\u1D96' | '\u1E2D' |
+            '\u1E2F' | '\u1EC9' | '\u1ECB' | '\u2071' | '\u24D8' | '\uFF49' =>
+          'i'
 
         // ASCII: j
 
@@ -1187,7 +1291,9 @@ object ASCIIUtil {
         // ⓙ  [CIRCLED LATIN SMALL LETTER J]
         // ⱼ  [LATIN SUBSCRIPT SMALL LETTER J]
         // ｊ  [FULLWIDTH LATIN SMALL LETTER J]
-        case '\u0135' | '\u01F0' | '\u0237' | '\u0249' | '\u025F' | '\u0284' | '\u029D' | '\u24D9' | '\u2C7C' | '\uFF4A' => 'j'
+        case '\u0135' | '\u01F0' | '\u0237' | '\u0249' | '\u025F' | '\u0284' | '\u029D' | '\u24D9' | '\u2C7C' |
+            '\uFF4A' =>
+          'j'
 
         // ASCII: k
 
@@ -1205,7 +1311,9 @@ object ASCIIUtil {
         // ꝃ  [LATIN SMALL LETTER K WITH DIAGONAL STROKE]
         // ꝅ  [LATIN SMALL LETTER K WITH STROKE AND DIAGONAL STROKE]
         // ｋ  [FULLWIDTH LATIN SMALL LETTER K]
-        case '\u0137' | '\u0199' | '\u01E9' | '\u029E' | '\u1D84' | '\u1E31' | '\u1E33' | '\u1E35' | '\u24DA' | '\u2C6A' | '\uA741' | '\uA743' | '\uA745' | '\uFF4B' => 'k'
+        case '\u0137' | '\u0199' | '\u01E9' | '\u029E' | '\u1D84' | '\u1E31' | '\u1E33' | '\u1E35' | '\u24DA' |
+            '\u2C6A' | '\uA741' | '\uA743' | '\uA745' | '\uFF4B' =>
+          'k'
 
         // ASCII: l
 
@@ -1230,7 +1338,10 @@ object ASCIIUtil {
         // ꝉ  [LATIN SMALL LETTER L WITH HIGH STROKE]
         // ꞁ  [LATIN SMALL LETTER TURNED L]
         // ｌ  [FULLWIDTH LATIN SMALL LETTER L]
-        case '\u013A' | '\u013C' | '\u013E' | '\u0140' | '\u0142' | '\u019A' | '\u0234' | '\u026B' | '\u026C' | '\u026D' | '\u1D85' | '\u1E37' | '\u1E39' | '\u1E3B' | '\u1E3D' | '\u24DB' | '\u2C61' | '\uA747' | '\uA749' | '\uA781' | '\uFF4C' => 'l'
+        case '\u013A' | '\u013C' | '\u013E' | '\u0140' | '\u0142' | '\u019A' | '\u0234' | '\u026B' | '\u026C' |
+            '\u026D' | '\u1D85' | '\u1E37' | '\u1E39' | '\u1E3B' | '\u1E3D' | '\u24DB' | '\u2C61' | '\uA747' |
+            '\uA749' | '\uA781' | '\uFF4C' =>
+          'l'
 
         // ASCII: m
 
@@ -1244,7 +1355,9 @@ object ASCIIUtil {
         // ṃ  [LATIN SMALL LETTER M WITH DOT BELOW]
         // ⓜ  [CIRCLED LATIN SMALL LETTER M]
         // ｍ  [FULLWIDTH LATIN SMALL LETTER M]
-        case '\u026F' | '\u0270' | '\u0271' | '\u1D6F' | '\u1D86' | '\u1E3F' | '\u1E41' | '\u1E43' | '\u24DC' | '\uFF4D' => 'm'
+        case '\u026F' | '\u0270' | '\u0271' | '\u1D6F' | '\u1D86' | '\u1E3F' | '\u1E41' | '\u1E43' | '\u24DC' |
+            '\uFF4D' =>
+          'm'
 
         // ASCII: n
 
@@ -1268,7 +1381,10 @@ object ASCIIUtil {
         // ⁿ  [SUPERSCRIPT LATIN SMALL LETTER N]
         // ⓝ  [CIRCLED LATIN SMALL LETTER N]
         // ｎ  [FULLWIDTH LATIN SMALL LETTER N]
-        case '\u00F1' | '\u0144' | '\u0146' | '\u0148' | '\u0149' | '\u014B' | '\u019E' | '\u01F9' | '\u0235' | '\u0272' | '\u0273' | '\u1D70' | '\u1D87' | '\u1E45' | '\u1E47' | '\u1E49' | '\u1E4B' | '\u207F' | '\u24DD' | '\uFF4E' => 'n'
+        case '\u00F1' | '\u0144' | '\u0146' | '\u0148' | '\u0149' | '\u014B' | '\u019E' | '\u01F9' | '\u0235' |
+            '\u0272' | '\u0273' | '\u1D70' | '\u1D87' | '\u1E45' | '\u1E47' | '\u1E49' | '\u1E4B' | '\u207F' |
+            '\u24DD' | '\uFF4E' =>
+          'n'
 
         // ASCII: o
 
@@ -1319,7 +1435,13 @@ object ASCIIUtil {
         // ꝋ  [LATIN SMALL LETTER O WITH LONG STROKE OVERLAY]
         // ꝍ  [LATIN SMALL LETTER O WITH LOOP]
         // ｏ  [FULLWIDTH LATIN SMALL LETTER O]
-        case '\u00F2' | '\u00F3' | '\u00F4' | '\u00F5' | '\u00F6' | '\u00F8' | '\u014D' | '\u014F' | '\u0151' | '\u01A1' | '\u01D2' | '\u01EB' | '\u01ED' | '\u01FF' | '\u020D' | '\u020F' | '\u022B' | '\u022D' | '\u022F' | '\u0231' | '\u0254' | '\u0275' | '\u1D16' | '\u1D17' | '\u1D97' | '\u1E4D' | '\u1E4F' | '\u1E51' | '\u1E53' | '\u1ECD' | '\u1ECF' | '\u1ED1' | '\u1ED3' | '\u1ED5' | '\u1ED7' | '\u1ED9' | '\u1EDB' | '\u1EDD' | '\u1EDF' | '\u1EE1' | '\u1EE3' | '\u2092' | '\u24DE' | '\u2C7A' | '\uA74B' | '\uA74D' | '\uFF4F' => 'o'
+        case '\u00F2' | '\u00F3' | '\u00F4' | '\u00F5' | '\u00F6' | '\u00F8' | '\u014D' | '\u014F' | '\u0151' |
+            '\u01A1' | '\u01D2' | '\u01EB' | '\u01ED' | '\u01FF' | '\u020D' | '\u020F' | '\u022B' | '\u022D' |
+            '\u022F' | '\u0231' | '\u0254' | '\u0275' | '\u1D16' | '\u1D17' | '\u1D97' | '\u1E4D' | '\u1E4F' |
+            '\u1E51' | '\u1E53' | '\u1ECD' | '\u1ECF' | '\u1ED1' | '\u1ED3' | '\u1ED5' | '\u1ED7' | '\u1ED9' |
+            '\u1EDB' | '\u1EDD' | '\u1EDF' | '\u1EE1' | '\u1EE3' | '\u2092' | '\u24DE' | '\u2C7A' | '\uA74B' |
+            '\uA74D' | '\uFF4F' =>
+          'o'
 
         // ASCII: p
 
@@ -1335,7 +1457,9 @@ object ASCIIUtil {
         // ꝕ  [LATIN SMALL LETTER P WITH SQUIRREL TAIL]
         // ꟼ  [LATIN EPIGRAPHIC LETTER REVERSED P]
         // ｐ  [FULLWIDTH LATIN SMALL LETTER P]
-        case '\u01A5' | '\u1D71' | '\u1D7D' | '\u1D88' | '\u1E55' | '\u1E57' | '\u24DF' | '\uA751' | '\uA753' | '\uA755' | '\uA7FC' | '\uFF50' => 'p'
+        case '\u01A5' | '\u1D71' | '\u1D7D' | '\u1D88' | '\u1E55' | '\u1E57' | '\u24DF' | '\uA751' | '\uA753' |
+            '\uA755' | '\uA7FC' | '\uFF50' =>
+          'p'
 
         // ASCII: q
 
@@ -1372,7 +1496,10 @@ object ASCIIUtil {
         // ꝛ  [LATIN SMALL LETTER R ROTUNDA]
         // ꞃ  [LATIN SMALL LETTER INSULAR R]
         // ｒ  [FULLWIDTH LATIN SMALL LETTER R]
-        case '\u0155' | '\u0157' | '\u0159' | '\u0211' | '\u0213' | '\u024D' | '\u027C' | '\u027D' | '\u027E' | '\u027F' | '\u1D63' | '\u1D72' | '\u1D73' | '\u1D89' | '\u1E59' | '\u1E5B' | '\u1E5D' | '\u1E5F' | '\u24E1' | '\uA75B' | '\uA783' | '\uFF52' => 'r'
+        case '\u0155' | '\u0157' | '\u0159' | '\u0211' | '\u0213' | '\u024D' | '\u027C' | '\u027D' | '\u027E' |
+            '\u027F' | '\u1D63' | '\u1D72' | '\u1D73' | '\u1D89' | '\u1E59' | '\u1E5B' | '\u1E5D' | '\u1E5F' |
+            '\u24E1' | '\uA75B' | '\uA783' | '\uFF52' =>
+          'r'
 
         // ASCII: s
 
@@ -1396,7 +1523,10 @@ object ASCIIUtil {
         // ⓢ  [CIRCLED LATIN SMALL LETTER S]
         // Ꞅ  [LATIN CAPITAL LETTER INSULAR S]
         // ｓ  [FULLWIDTH LATIN SMALL LETTER S]
-        case '\u015B' | '\u015D' | '\u015F' | '\u0161' | '\u017F' | '\u0219' | '\u023F' | '\u0282' | '\u1D74' | '\u1D8A' | '\u1E61' | '\u1E63' | '\u1E65' | '\u1E67' | '\u1E69' | '\u1E9C' | '\u1E9D' | '\u24E2' | '\uA784' | '\uFF53' => 's'
+        case '\u015B' | '\u015D' | '\u015F' | '\u0161' | '\u017F' | '\u0219' | '\u023F' | '\u0282' | '\u1D74' |
+            '\u1D8A' | '\u1E61' | '\u1E63' | '\u1E65' | '\u1E67' | '\u1E69' | '\u1E9C' | '\u1E9D' | '\u24E2' |
+            '\uA784' | '\uFF53' =>
+          's'
 
         // ASCII: t
 
@@ -1418,7 +1548,9 @@ object ASCIIUtil {
         // ⓣ  [CIRCLED LATIN SMALL LETTER T]
         // ⱦ  [LATIN SMALL LETTER T WITH DIAGONAL STROKE]
         // ｔ  [FULLWIDTH LATIN SMALL LETTER T]
-        case '\u0163' | '\u0165' | '\u0167' | '\u01AB' | '\u01AD' | '\u021B' | '\u0236' | '\u0287' | '\u0288' | '\u1D75' | '\u1E6B' | '\u1E6D' | '\u1E6F' | '\u1E71' | '\u1E97' | '\u24E3' | '\u2C66' | '\uFF54' => 't'
+        case '\u0163' | '\u0165' | '\u0167' | '\u01AB' | '\u01AD' | '\u021B' | '\u0236' | '\u0287' | '\u0288' |
+            '\u1D75' | '\u1E6B' | '\u1E6D' | '\u1E6F' | '\u1E71' | '\u1E97' | '\u24E3' | '\u2C66' | '\uFF54' =>
+          't'
 
         // ASCII: u
 
@@ -1457,7 +1589,11 @@ object ASCIIUtil {
         // ự  [LATIN SMALL LETTER U WITH HORN AND DOT BELOW]
         // ⓤ  [CIRCLED LATIN SMALL LETTER U]
         // ｕ  [FULLWIDTH LATIN SMALL LETTER U]
-        case '\u00F9' | '\u00FA' | '\u00FB' | '\u00FC' | '\u0169' | '\u016B' | '\u016D' | '\u016F' | '\u0171' | '\u0173' | '\u01B0' | '\u01D4' | '\u01D6' | '\u01D8' | '\u01DA' | '\u01DC' | '\u0215' | '\u0217' | '\u0289' | '\u1D64' | '\u1D99' | '\u1E73' | '\u1E75' | '\u1E77' | '\u1E79' | '\u1E7B' | '\u1EE5' | '\u1EE7' | '\u1EE9' | '\u1EEB' | '\u1EED' | '\u1EEF' | '\u1EF1' | '\u24E4' | '\uFF55' => 'u'
+        case '\u00F9' | '\u00FA' | '\u00FB' | '\u00FC' | '\u0169' | '\u016B' | '\u016D' | '\u016F' | '\u0171' |
+            '\u0173' | '\u01B0' | '\u01D4' | '\u01D6' | '\u01D8' | '\u01DA' | '\u01DC' | '\u0215' | '\u0217' |
+            '\u0289' | '\u1D64' | '\u1D99' | '\u1E73' | '\u1E75' | '\u1E77' | '\u1E79' | '\u1E7B' | '\u1EE5' |
+            '\u1EE7' | '\u1EE9' | '\u1EEB' | '\u1EED' | '\u1EEF' | '\u1EF1' | '\u24E4' | '\uFF55' =>
+          'u'
 
         // ASCII: v
 
@@ -1472,7 +1608,9 @@ object ASCIIUtil {
         // ⱴ  [LATIN SMALL LETTER V WITH CURL]
         // ꝟ  [LATIN SMALL LETTER V WITH DIAGONAL STROKE]
         // ｖ  [FULLWIDTH LATIN SMALL LETTER V]
-        case '\u028B' | '\u028C' | '\u1D65' | '\u1D8C' | '\u1E7D' | '\u1E7F' | '\u24E5' | '\u2C71' | '\u2C74' | '\uA75F' | '\uFF56' => 'v'
+        case '\u028B' | '\u028C' | '\u1D65' | '\u1D8C' | '\u1E7D' | '\u1E7F' | '\u24E5' | '\u2C71' | '\u2C74' |
+            '\uA75F' | '\uFF56' =>
+          'v'
 
         // ASCII: w
 
@@ -1488,7 +1626,9 @@ object ASCIIUtil {
         // ⓦ  [CIRCLED LATIN SMALL LETTER W]
         // ⱳ  [LATIN SMALL LETTER W WITH HOOK]
         // ｗ  [FULLWIDTH LATIN SMALL LETTER W]
-        case '\u0175' | '\u01BF' | '\u028D' | '\u1E81' | '\u1E83' | '\u1E85' | '\u1E87' | '\u1E89' | '\u1E98' | '\u24E6' | '\u2C73' | '\uFF57' => 'w'
+        case '\u0175' | '\u01BF' | '\u028D' | '\u1E81' | '\u1E83' | '\u1E85' | '\u1E87' | '\u1E89' | '\u1E98' |
+            '\u24E6' | '\u2C73' | '\uFF57' =>
+          'w'
 
         // ASCII: x
 
@@ -1518,7 +1658,9 @@ object ASCIIUtil {
         // ỿ  [LATIN SMALL LETTER Y WITH LOOP]
         // ⓨ  [CIRCLED LATIN SMALL LETTER Y]
         // ｙ  [FULLWIDTH LATIN SMALL LETTER Y]
-        case '\u00FD' | '\u00FF' | '\u0177' | '\u01B4' | '\u0233' | '\u024F' | '\u028E' | '\u1E8F' | '\u1E99' | '\u1EF3' | '\u1EF5' | '\u1EF7' | '\u1EF9' | '\u1EFF' | '\u24E8' | '\uFF59' => 'y'
+        case '\u00FD' | '\u00FF' | '\u0177' | '\u01B4' | '\u0233' | '\u024F' | '\u028E' | '\u1E8F' | '\u1E99' |
+            '\u1EF3' | '\u1EF5' | '\u1EF7' | '\u1EF9' | '\u1EFF' | '\u24E8' | '\uFF59' =>
+          'y'
 
         // ASCII: z
 
@@ -1540,7 +1682,9 @@ object ASCIIUtil {
         // ⱬ  [LATIN SMALL LETTER Z WITH DESCENDER]
         // ꝣ  [LATIN SMALL LETTER VISIGOTHIC Z]
         // ｚ  [FULLWIDTH LATIN SMALL LETTER Z]
-        case '\u017A' | '\u017C' | '\u017E' | '\u01B6' | '\u021D' | '\u0225' | '\u0240' | '\u0290' | '\u0291' | '\u1D76' | '\u1D8E' | '\u1E91' | '\u1E93' | '\u1E95' | '\u24E9' | '\u2C6C' | '\uA763' | '\uFF5A' => 'z'
+        case '\u017A' | '\u017C' | '\u017E' | '\u01B6' | '\u021D' | '\u0225' | '\u0240' | '\u0290' | '\u0291' |
+            '\u1D76' | '\u1D8E' | '\u1E91' | '\u1E93' | '\u1E95' | '\u24E9' | '\u2C6C' | '\uA763' | '\uFF5A' =>
+          'z'
 
         // ASCII: {
 
@@ -1558,9 +1702,6 @@ object ASCIIUtil {
       }
     }
   }
-
-  
-  
 
   /** Generated From Lucene's ASCIIFoldingFilter.java */
   private def stripAccentStringImplOrNull(c: Char): String = {
@@ -1599,7 +1740,9 @@ object ASCIIUtil {
         // ❮  [HEAVY LEFT-POINTING ANGLE QUOTATION MARK ORNAMENT]
         // ❯  [HEAVY RIGHT-POINTING ANGLE QUOTATION MARK ORNAMENT]
         // ＂  [FULLWIDTH QUOTATION MARK]
-        case '\u00AB' | '\u00BB' | '\u201C' | '\u201D' | '\u201E' | '\u2033' | '\u2036' | '\u275D' | '\u275E' | '\u276E' | '\u276F' | '\uFF02' => "\""
+        case '\u00AB' | '\u00BB' | '\u201C' | '\u201D' | '\u201E' | '\u2033' | '\u2036' | '\u275D' | '\u275E' |
+            '\u276E' | '\u276F' | '\uFF02' =>
+          "\""
 
         // ASCII: #
 
@@ -1914,7 +2057,10 @@ object ASCIIUtil {
         // ⁻  [SUPERSCRIPT MINUS]
         // ₋  [SUBSCRIPT MINUS]
         // －  [FULLWIDTH HYPHEN-MINUS]
-        case '\u2018' | '\u2019' | '\u201A' | '\u201B' | '\u2032' | '\u2035' | '\u2039' | '\u203A' | '\u275B' | '\u275C' | '\uFF07' | '\u2010' | '\u2011' | '\u2012' | '\u2013' | '\u2014' | '\u207B' | '\u208B' | '\uFF0D' => "-"
+        case '\u2018' | '\u2019' | '\u201A' | '\u201B' | '\u2032' | '\u2035' | '\u2039' | '\u203A' | '\u275B' |
+            '\u275C' | '\uFF07' | '\u2010' | '\u2011' | '\u2012' | '\u2013' | '\u2014' | '\u207B' | '\u208B' |
+            '\uFF0D' =>
+          "-"
 
         // ASCII: .
 
@@ -2301,7 +2447,11 @@ object ASCIIUtil {
         // Ặ  [LATIN CAPITAL LETTER A WITH BREVE AND DOT BELOW]
         // Ⓐ  [CIRCLED LATIN CAPITAL LETTER A]
         // Ａ  [FULLWIDTH LATIN CAPITAL LETTER A]
-        case '\u00C0' | '\u00C1' | '\u00C2' | '\u00C3' | '\u00C4' | '\u00C5' | '\u0100' | '\u0102' | '\u0104' | '\u018F' | '\u01CD' | '\u01DE' | '\u01E0' | '\u01FA' | '\u0200' | '\u0202' | '\u0226' | '\u023A' | '\u1D00' | '\u1E00' | '\u1EA0' | '\u1EA2' | '\u1EA4' | '\u1EA6' | '\u1EA8' | '\u1EAA' | '\u1EAC' | '\u1EAE' | '\u1EB0' | '\u1EB2' | '\u1EB4' | '\u1EB6' | '\u24B6' | '\uFF21' => "A"
+        case '\u00C0' | '\u00C1' | '\u00C2' | '\u00C3' | '\u00C4' | '\u00C5' | '\u0100' | '\u0102' | '\u0104' |
+            '\u018F' | '\u01CD' | '\u01DE' | '\u01E0' | '\u01FA' | '\u0200' | '\u0202' | '\u0226' | '\u023A' |
+            '\u1D00' | '\u1E00' | '\u1EA0' | '\u1EA2' | '\u1EA4' | '\u1EA6' | '\u1EA8' | '\u1EAA' | '\u1EAC' |
+            '\u1EAE' | '\u1EB0' | '\u1EB2' | '\u1EB4' | '\u1EB6' | '\u24B6' | '\uFF21' =>
+          "A"
 
         // ASCII: AA
 
@@ -2344,7 +2494,9 @@ object ASCIIUtil {
         // Ḇ  [LATIN CAPITAL LETTER B WITH LINE BELOW]
         // Ⓑ  [CIRCLED LATIN CAPITAL LETTER B]
         // Ｂ  [FULLWIDTH LATIN CAPITAL LETTER B]
-        case '\u0181' | '\u0182' | '\u0243' | '\u0299' | '\u1D03' | '\u1E02' | '\u1E04' | '\u1E06' | '\u24B7' | '\uFF22' => "B"
+        case '\u0181' | '\u0182' | '\u0243' | '\u0299' | '\u1D03' | '\u1E02' | '\u1E04' | '\u1E06' | '\u24B7' |
+            '\uFF22' =>
+          "B"
 
         // ASCII: C
 
@@ -2360,7 +2512,9 @@ object ASCIIUtil {
         // Ḉ  [LATIN CAPITAL LETTER C WITH CEDILLA AND ACUTE]
         // Ⓒ  [CIRCLED LATIN CAPITAL LETTER C]
         // Ｃ  [FULLWIDTH LATIN CAPITAL LETTER C]
-        case '\u00C7' | '\u0106' | '\u0108' | '\u010A' | '\u010C' | '\u0187' | '\u023B' | '\u0297' | '\u1D04' | '\u1E08' | '\u24B8' | '\uFF23' => "C"
+        case '\u00C7' | '\u0106' | '\u0108' | '\u010A' | '\u010C' | '\u0187' | '\u023B' | '\u0297' | '\u1D04' |
+            '\u1E08' | '\u24B8' | '\uFF23' =>
+          "C"
 
         // ASCII: D
 
@@ -2380,7 +2534,9 @@ object ASCIIUtil {
         // Ⓓ  [CIRCLED LATIN CAPITAL LETTER D]
         // Ꝺ  [LATIN CAPITAL LETTER INSULAR D]
         // Ｄ  [FULLWIDTH LATIN CAPITAL LETTER D]
-        case '\u00D0' | '\u010E' | '\u0110' | '\u0189' | '\u018A' | '\u018B' | '\u1D05' | '\u1D06' | '\u1E0A' | '\u1E0C' | '\u1E0E' | '\u1E10' | '\u1E12' | '\u24B9' | '\uA779' | '\uFF24' => "D"
+        case '\u00D0' | '\u010E' | '\u0110' | '\u0189' | '\u018A' | '\u018B' | '\u1D05' | '\u1D06' | '\u1E0A' |
+            '\u1E0C' | '\u1E0E' | '\u1E10' | '\u1E12' | '\u24B9' | '\uA779' | '\uFF24' =>
+          "D"
 
         // ASCII: DZ
 
@@ -2428,7 +2584,11 @@ object ASCIIUtil {
         // Ⓔ  [CIRCLED LATIN CAPITAL LETTER E]
         // ⱻ  [LATIN LETTER SMALL CAPITAL TURNED E]
         // Ｅ  [FULLWIDTH LATIN CAPITAL LETTER E]
-        case '\u00C8' | '\u00C9' | '\u00CA' | '\u00CB' | '\u0112' | '\u0114' | '\u0116' | '\u0118' | '\u011A' | '\u018E' | '\u0190' | '\u0204' | '\u0206' | '\u0228' | '\u0246' | '\u1D07' | '\u1E14' | '\u1E16' | '\u1E18' | '\u1E1A' | '\u1E1C' | '\u1EB8' | '\u1EBA' | '\u1EBC' | '\u1EBE' | '\u1EC0' | '\u1EC2' | '\u1EC4' | '\u1EC6' | '\u24BA' | '\u2C7B' | '\uFF25' => "E"
+        case '\u00C8' | '\u00C9' | '\u00CA' | '\u00CB' | '\u0112' | '\u0114' | '\u0116' | '\u0118' | '\u011A' |
+            '\u018E' | '\u0190' | '\u0204' | '\u0206' | '\u0228' | '\u0246' | '\u1D07' | '\u1E14' | '\u1E16' |
+            '\u1E18' | '\u1E1A' | '\u1E1C' | '\u1EB8' | '\u1EBA' | '\u1EBC' | '\u1EBE' | '\u1EC0' | '\u1EC2' |
+            '\u1EC4' | '\u1EC6' | '\u24BA' | '\u2C7B' | '\uFF25' =>
+          "E"
 
         // ASCII: F
 
@@ -2460,7 +2620,9 @@ object ASCIIUtil {
         // Ᵹ  [LATIN CAPITAL LETTER INSULAR G]
         // Ꝿ  [LATIN CAPITAL LETTER TURNED INSULAR G]
         // Ｇ  [FULLWIDTH LATIN CAPITAL LETTER G]
-        case '\u011C' | '\u011E' | '\u0120' | '\u0122' | '\u0193' | '\u01E4' | '\u01E5' | '\u01E6' | '\u01E7' | '\u01F4' | '\u0262' | '\u029B' | '\u1E20' | '\u24BC' | '\uA77D' | '\uA77E' | '\uFF27' => "G"
+        case '\u011C' | '\u011E' | '\u0120' | '\u0122' | '\u0193' | '\u01E4' | '\u01E5' | '\u01E6' | '\u01E7' |
+            '\u01F4' | '\u0262' | '\u029B' | '\u1E20' | '\u24BC' | '\uA77D' | '\uA77E' | '\uFF27' =>
+          "G"
 
         // ASCII: H
 
@@ -2477,7 +2639,9 @@ object ASCIIUtil {
         // Ⱨ  [LATIN CAPITAL LETTER H WITH DESCENDER]
         // Ⱶ  [LATIN CAPITAL LETTER HALF H]
         // Ｈ  [FULLWIDTH LATIN CAPITAL LETTER H]
-        case '\u0124' | '\u0126' | '\u021E' | '\u029C' | '\u1E22' | '\u1E24' | '\u1E26' | '\u1E28' | '\u1E2A' | '\u24BD' | '\u2C67' | '\u2C75' | '\uFF28' => "H"
+        case '\u0124' | '\u0126' | '\u021E' | '\u029C' | '\u1E22' | '\u1E24' | '\u1E26' | '\u1E28' | '\u1E2A' |
+            '\u24BD' | '\u2C67' | '\u2C75' | '\uFF28' =>
+          "H"
 
         // ASCII: HV
 
@@ -2509,7 +2673,10 @@ object ASCIIUtil {
         // Ⓘ  [CIRCLED LATIN CAPITAL LETTER I]
         // ꟾ  [LATIN EPIGRAPHIC LETTER I LONGA]
         // Ｉ  [FULLWIDTH LATIN CAPITAL LETTER I]
-        case '\u00CC' | '\u00CD' | '\u00CE' | '\u00CF' | '\u0128' | '\u012A' | '\u012C' | '\u012E' | '\u0130' | '\u0196' | '\u0197' | '\u01CF' | '\u0208' | '\u020A' | '\u026A' | '\u1D7B' | '\u1E2C' | '\u1E2E' | '\u1EC8' | '\u1ECA' | '\u24BE' | '\uA7FE' | '\uFF29' => "I"
+        case '\u00CC' | '\u00CD' | '\u00CE' | '\u00CF' | '\u0128' | '\u012A' | '\u012C' | '\u012E' | '\u0130' |
+            '\u0196' | '\u0197' | '\u01CF' | '\u0208' | '\u020A' | '\u026A' | '\u1D7B' | '\u1E2C' | '\u1E2E' |
+            '\u1EC8' | '\u1ECA' | '\u24BE' | '\uA7FE' | '\uFF29' =>
+          "I"
 
         // ASCII: IJ
 
@@ -2540,7 +2707,9 @@ object ASCIIUtil {
         // Ꝃ  [LATIN CAPITAL LETTER K WITH DIAGONAL STROKE]
         // Ꝅ  [LATIN CAPITAL LETTER K WITH STROKE AND DIAGONAL STROKE]
         // Ｋ  [FULLWIDTH LATIN CAPITAL LETTER K]
-        case '\u0136' | '\u0198' | '\u01E8' | '\u1D0B' | '\u1E30' | '\u1E32' | '\u1E34' | '\u24C0' | '\u2C69' | '\uA740' | '\uA742' | '\uA744' | '\uFF2B' => "K"
+        case '\u0136' | '\u0198' | '\u01E8' | '\u1D0B' | '\u1E30' | '\u1E32' | '\u1E34' | '\u24C0' | '\u2C69' |
+            '\uA740' | '\uA742' | '\uA744' | '\uFF2B' =>
+          "K"
 
         // ASCII: L
 
@@ -2563,7 +2732,10 @@ object ASCIIUtil {
         // Ꝉ  [LATIN CAPITAL LETTER L WITH HIGH STROKE]
         // Ꞁ  [LATIN CAPITAL LETTER TURNED L]
         // Ｌ  [FULLWIDTH LATIN CAPITAL LETTER L]
-        case '\u0139' | '\u013B' | '\u013D' | '\u013F' | '\u0141' | '\u023D' | '\u029F' | '\u1D0C' | '\u1E36' | '\u1E38' | '\u1E3A' | '\u1E3C' | '\u24C1' | '\u2C60' | '\u2C62' | '\uA746' | '\uA748' | '\uA780' | '\uFF2C' => "L"
+        case '\u0139' | '\u013B' | '\u013D' | '\u013F' | '\u0141' | '\u023D' | '\u029F' | '\u1D0C' | '\u1E36' |
+            '\u1E38' | '\u1E3A' | '\u1E3C' | '\u24C1' | '\u2C60' | '\u2C62' | '\uA746' | '\uA748' | '\uA780' |
+            '\uFF2C' =>
+          "L"
 
         // ASCII: LJ
 
@@ -2592,7 +2764,9 @@ object ASCIIUtil {
         // ꟽ  [LATIN EPIGRAPHIC LETTER INVERTED M]
         // ꟿ  [LATIN EPIGRAPHIC LETTER ARCHAIC M]
         // Ｍ  [FULLWIDTH LATIN CAPITAL LETTER M]
-        case '\u019C' | '\u1D0D' | '\u1E3E' | '\u1E40' | '\u1E42' | '\u24C2' | '\u2C6E' | '\uA7FD' | '\uA7FF' | '\uFF2D' => "M"
+        case '\u019C' | '\u1D0D' | '\u1E3E' | '\u1E40' | '\u1E42' | '\u24C2' | '\u2C6E' | '\uA7FD' | '\uA7FF' |
+            '\uFF2D' =>
+          "M"
 
         // ASCII: N
 
@@ -2612,7 +2786,9 @@ object ASCIIUtil {
         // Ṋ  [LATIN CAPITAL LETTER N WITH CIRCUMFLEX BELOW]
         // Ⓝ  [CIRCLED LATIN CAPITAL LETTER N]
         // Ｎ  [FULLWIDTH LATIN CAPITAL LETTER N]
-        case '\u00D1' | '\u0143' | '\u0145' | '\u0147' | '\u014A' | '\u019D' | '\u01F8' | '\u0220' | '\u0274' | '\u1D0E' | '\u1E44' | '\u1E46' | '\u1E48' | '\u1E4A' | '\u24C3' | '\uFF2E' => "N"
+        case '\u00D1' | '\u0143' | '\u0145' | '\u0147' | '\u014A' | '\u019D' | '\u01F8' | '\u0220' | '\u0274' |
+            '\u1D0E' | '\u1E44' | '\u1E46' | '\u1E48' | '\u1E4A' | '\u24C3' | '\uFF2E' =>
+          "N"
 
         // ASCII: NJ
 
@@ -2671,7 +2847,12 @@ object ASCIIUtil {
         // Ꝋ  [LATIN CAPITAL LETTER O WITH LONG STROKE OVERLAY]
         // Ꝍ  [LATIN CAPITAL LETTER O WITH LOOP]
         // Ｏ  [FULLWIDTH LATIN CAPITAL LETTER O]
-        case '\uA734' | '\u00D2' | '\u00D3' | '\u00D4' | '\u00D5' | '\u00D6' | '\u00D8' | '\u014C' | '\u014E' | '\u0150' | '\u0186' | '\u019F' | '\u01A0' | '\u01D1' | '\u01EA' | '\u01EC' | '\u01FE' | '\u020C' | '\u020E' | '\u022A' | '\u022C' | '\u022E' | '\u0230' | '\u1D0F' | '\u1D10' | '\u1E4C' | '\u1E4E' | '\u1E50' | '\u1E52' | '\u1ECC' | '\u1ECE' | '\u1ED0' | '\u1ED2' | '\u1ED4' | '\u1ED6' | '\u1ED8' | '\u1EDA' | '\u1EDC' | '\u1EDE' | '\u1EE0' | '\u1EE2' | '\u24C4' | '\uA74A' | '\uA74C' | '\uFF2F' => "O"
+        case '\uA734' | '\u00D2' | '\u00D3' | '\u00D4' | '\u00D5' | '\u00D6' | '\u00D8' | '\u014C' | '\u014E' |
+            '\u0150' | '\u0186' | '\u019F' | '\u01A0' | '\u01D1' | '\u01EA' | '\u01EC' | '\u01FE' | '\u020C' |
+            '\u020E' | '\u022A' | '\u022C' | '\u022E' | '\u0230' | '\u1D0F' | '\u1D10' | '\u1E4C' | '\u1E4E' |
+            '\u1E50' | '\u1E52' | '\u1ECC' | '\u1ECE' | '\u1ED0' | '\u1ED2' | '\u1ED4' | '\u1ED6' | '\u1ED8' |
+            '\u1EDA' | '\u1EDC' | '\u1EDE' | '\u1EE0' | '\u1EE2' | '\u24C4' | '\uA74A' | '\uA74C' | '\uFF2F' =>
+          "O"
 
         // ASCII: OE
 
@@ -2702,7 +2883,9 @@ object ASCIIUtil {
         // Ꝓ  [LATIN CAPITAL LETTER P WITH FLOURISH]
         // Ꝕ  [LATIN CAPITAL LETTER P WITH SQUIRREL TAIL]
         // Ｐ  [FULLWIDTH LATIN CAPITAL LETTER P]
-        case '\u01A4' | '\u1D18' | '\u1E54' | '\u1E56' | '\u24C5' | '\u2C63' | '\uA750' | '\uA752' | '\uA754' | '\uFF30' => "P"
+        case '\u01A4' | '\u1D18' | '\u1E54' | '\u1E56' | '\u24C5' | '\u2C63' | '\uA750' | '\uA752' | '\uA754' |
+            '\uFF30' =>
+          "P"
 
         // ASCII: Q
 
@@ -2734,7 +2917,10 @@ object ASCIIUtil {
         // Ꝛ  [LATIN CAPITAL LETTER R ROTUNDA]
         // Ꞃ  [LATIN CAPITAL LETTER INSULAR R]
         // Ｒ  [FULLWIDTH LATIN CAPITAL LETTER R]
-        case '\u0154' | '\u0156' | '\u0158' | '\u0210' | '\u0212' | '\u024C' | '\u0280' | '\u0281' | '\u1D19' | '\u1D1A' | '\u1E58' | '\u1E5A' | '\u1E5C' | '\u1E5E' | '\u24C7' | '\u2C64' | '\uA75A' | '\uA782' | '\uFF32' => "R"
+        case '\u0154' | '\u0156' | '\u0158' | '\u0210' | '\u0212' | '\u024C' | '\u0280' | '\u0281' | '\u1D19' |
+            '\u1D1A' | '\u1E58' | '\u1E5A' | '\u1E5C' | '\u1E5E' | '\u24C7' | '\u2C64' | '\uA75A' | '\uA782' |
+            '\uFF32' =>
+          "R"
 
         // ASCII: S
 
@@ -2752,7 +2938,9 @@ object ASCIIUtil {
         // ꜱ  [LATIN LETTER SMALL CAPITAL S]
         // ꞅ  [LATIN SMALL LETTER INSULAR S]
         // Ｓ  [FULLWIDTH LATIN CAPITAL LETTER S]
-        case '\u015A' | '\u015C' | '\u015E' | '\u0160' | '\u0218' | '\u1E60' | '\u1E62' | '\u1E64' | '\u1E66' | '\u1E68' | '\u24C8' | '\uA731' | '\uA785' | '\uFF33' => "S"
+        case '\u015A' | '\u015C' | '\u015E' | '\u0160' | '\u0218' | '\u1E60' | '\u1E62' | '\u1E64' | '\u1E66' |
+            '\u1E68' | '\u24C8' | '\uA731' | '\uA785' | '\uFF33' =>
+          "S"
 
         // ASCII: SS
 
@@ -2776,7 +2964,9 @@ object ASCIIUtil {
         // Ⓣ  [CIRCLED LATIN CAPITAL LETTER T]
         // Ꞇ  [LATIN CAPITAL LETTER INSULAR T]
         // Ｔ  [FULLWIDTH LATIN CAPITAL LETTER T]
-        case '\u0162' | '\u0164' | '\u0166' | '\u01AC' | '\u01AE' | '\u021A' | '\u023E' | '\u1D1B' | '\u1E6A' | '\u1E6C' | '\u1E6E' | '\u1E70' | '\u24C9' | '\uA786' | '\uFF34' => "T"
+        case '\u0162' | '\u0164' | '\u0166' | '\u01AC' | '\u01AE' | '\u021A' | '\u023E' | '\u1D1B' | '\u1E6A' |
+            '\u1E6C' | '\u1E6E' | '\u1E70' | '\u24C9' | '\uA786' | '\uFF34' =>
+          "T"
 
         // ASCII: TH
 
@@ -2826,7 +3016,11 @@ object ASCIIUtil {
         // Ự  [LATIN CAPITAL LETTER U WITH HORN AND DOT BELOW]
         // Ⓤ  [CIRCLED LATIN CAPITAL LETTER U]
         // Ｕ  [FULLWIDTH LATIN CAPITAL LETTER U]
-        case '\u00D9' | '\u00DA' | '\u00DB' | '\u00DC' | '\u0168' | '\u016A' | '\u016C' | '\u016E' | '\u0170' | '\u0172' | '\u01AF' | '\u01D3' | '\u01D5' | '\u01D7' | '\u01D9' | '\u01DB' | '\u0214' | '\u0216' | '\u0244' | '\u1D1C' | '\u1D7E' | '\u1E72' | '\u1E74' | '\u1E76' | '\u1E78' | '\u1E7A' | '\u1EE4' | '\u1EE6' | '\u1EE8' | '\u1EEA' | '\u1EEC' | '\u1EEE' | '\u1EF0' | '\u24CA' | '\uFF35' => "U"
+        case '\u00D9' | '\u00DA' | '\u00DB' | '\u00DC' | '\u0168' | '\u016A' | '\u016C' | '\u016E' | '\u0170' |
+            '\u0172' | '\u01AF' | '\u01D3' | '\u01D5' | '\u01D7' | '\u01D9' | '\u01DB' | '\u0214' | '\u0216' |
+            '\u0244' | '\u1D1C' | '\u1D7E' | '\u1E72' | '\u1E74' | '\u1E76' | '\u1E78' | '\u1E7A' | '\u1EE4' |
+            '\u1EE6' | '\u1EE8' | '\u1EEA' | '\u1EEC' | '\u1EEE' | '\u1EF0' | '\u24CA' | '\uFF35' =>
+          "U"
 
         // ASCII: V
 
@@ -2840,7 +3034,9 @@ object ASCIIUtil {
         // Ꝟ  [LATIN CAPITAL LETTER V WITH DIAGONAL STROKE]
         // Ꝩ  [LATIN CAPITAL LETTER VEND]
         // Ｖ  [FULLWIDTH LATIN CAPITAL LETTER V]
-        case '\u01B2' | '\u0245' | '\u1D20' | '\u1E7C' | '\u1E7E' | '\u1EFC' | '\u24CB' | '\uA75E' | '\uA768' | '\uFF36' => "V"
+        case '\u01B2' | '\u0245' | '\u1D20' | '\u1E7C' | '\u1E7E' | '\u1EFC' | '\u24CB' | '\uA75E' | '\uA768' |
+            '\uFF36' =>
+          "V"
 
         // ASCII: VY
 
@@ -2860,7 +3056,9 @@ object ASCIIUtil {
         // Ⓦ  [CIRCLED LATIN CAPITAL LETTER W]
         // Ⱳ  [LATIN CAPITAL LETTER W WITH HOOK]
         // Ｗ  [FULLWIDTH LATIN CAPITAL LETTER W]
-        case '\u0174' | '\u01F7' | '\u1D21' | '\u1E80' | '\u1E82' | '\u1E84' | '\u1E86' | '\u1E88' | '\u24CC' | '\u2C72' | '\uFF37' => "W"
+        case '\u0174' | '\u01F7' | '\u1D21' | '\u1E80' | '\u1E82' | '\u1E84' | '\u1E86' | '\u1E88' | '\u24CC' |
+            '\u2C72' | '\uFF37' =>
+          "W"
 
         // ASCII: X
 
@@ -2887,7 +3085,9 @@ object ASCIIUtil {
         // Ỿ  [LATIN CAPITAL LETTER Y WITH LOOP]
         // Ⓨ  [CIRCLED LATIN CAPITAL LETTER Y]
         // Ｙ  [FULLWIDTH LATIN CAPITAL LETTER Y]
-        case '\u00DD' | '\u0176' | '\u0178' | '\u01B3' | '\u0232' | '\u024E' | '\u028F' | '\u1E8E' | '\u1EF2' | '\u1EF4' | '\u1EF6' | '\u1EF8' | '\u1EFE' | '\u24CE' | '\uFF39' => "Y"
+        case '\u00DD' | '\u0176' | '\u0178' | '\u01B3' | '\u0232' | '\u024E' | '\u028F' | '\u1E8E' | '\u1EF2' |
+            '\u1EF4' | '\u1EF6' | '\u1EF8' | '\u1EFE' | '\u24CE' | '\uFF39' =>
+          "Y"
 
         // ASCII: Z
 
@@ -2905,7 +3105,9 @@ object ASCIIUtil {
         // Ⱬ  [LATIN CAPITAL LETTER Z WITH DESCENDER]
         // Ꝣ  [LATIN CAPITAL LETTER VISIGOTHIC Z]
         // Ｚ  [FULLWIDTH LATIN CAPITAL LETTER Z]
-        case '\u0179' | '\u017B' | '\u017D' | '\u01B5' | '\u021C' | '\u0224' | '\u1D22' | '\u1E90' | '\u1E92' | '\u1E94' | '\u24CF' | '\u2C6B' | '\uA762' | '\uFF3A' => "Z"
+        case '\u0179' | '\u017B' | '\u017D' | '\u01B5' | '\u021C' | '\u0224' | '\u1D22' | '\u1E90' | '\u1E92' |
+            '\u1E94' | '\u24CF' | '\u2C6B' | '\uA762' | '\uFF3A' =>
+          "Z"
 
         // ASCII: [
 
@@ -2976,7 +3178,12 @@ object ASCIIUtil {
         // ⱥ  [LATIN SMALL LETTER A WITH STROKE]
         // Ɐ  [LATIN CAPITAL LETTER TURNED A]
         // ａ  [FULLWIDTH LATIN SMALL LETTER A]
-        case '\u00E0' | '\u00E1' | '\u00E2' | '\u00E3' | '\u00E4' | '\u00E5' | '\u0101' | '\u0103' | '\u0105' | '\u01CE' | '\u01DF' | '\u01E1' | '\u01FB' | '\u0201' | '\u0203' | '\u0227' | '\u0250' | '\u0259' | '\u025A' | '\u1D8F' | '\u1D95' | '\u1E01' | '\u1E9A' | '\u1EA1' | '\u1EA3' | '\u1EA5' | '\u1EA7' | '\u1EA9' | '\u1EAB' | '\u1EAD' | '\u1EAF' | '\u1EB1' | '\u1EB3' | '\u1EB5' | '\u1EB7' | '\u2090' | '\u2094' | '\u24D0' | '\u2C65' | '\u2C6F' | '\uFF41' => "a"
+        case '\u00E0' | '\u00E1' | '\u00E2' | '\u00E3' | '\u00E4' | '\u00E5' | '\u0101' | '\u0103' | '\u0105' |
+            '\u01CE' | '\u01DF' | '\u01E1' | '\u01FB' | '\u0201' | '\u0203' | '\u0227' | '\u0250' | '\u0259' |
+            '\u025A' | '\u1D8F' | '\u1D95' | '\u1E01' | '\u1E9A' | '\u1EA1' | '\u1EA3' | '\u1EA5' | '\u1EA7' |
+            '\u1EA9' | '\u1EAB' | '\u1EAD' | '\u1EAF' | '\u1EB1' | '\u1EB3' | '\u1EB5' | '\u1EB7' | '\u2090' |
+            '\u2094' | '\u24D0' | '\u2C65' | '\u2C6F' | '\uFF41' =>
+          "a"
 
         // ASCII: aa
 
@@ -3024,7 +3231,9 @@ object ASCIIUtil {
         // ḇ  [LATIN SMALL LETTER B WITH LINE BELOW]
         // ⓑ  [CIRCLED LATIN SMALL LETTER B]
         // ｂ  [FULLWIDTH LATIN SMALL LETTER B]
-        case '\u0180' | '\u0183' | '\u0253' | '\u1D6C' | '\u1D80' | '\u1E03' | '\u1E05' | '\u1E07' | '\u24D1' | '\uFF42' => "b"
+        case '\u0180' | '\u0183' | '\u0253' | '\u1D6C' | '\u1D80' | '\u1E03' | '\u1E05' | '\u1E07' | '\u24D1' |
+            '\uFF42' =>
+          "b"
 
         // ASCII: b)
 
@@ -3047,7 +3256,9 @@ object ASCIIUtil {
         // Ꜿ  [LATIN CAPITAL LETTER REVERSED C WITH DOT]
         // ꜿ  [LATIN SMALL LETTER REVERSED C WITH DOT]
         // ｃ  [FULLWIDTH LATIN SMALL LETTER C]
-        case '\u00E7' | '\u0107' | '\u0109' | '\u010B' | '\u010D' | '\u0188' | '\u023C' | '\u0255' | '\u1E09' | '\u2184' | '\u24D2' | '\uA73E' | '\uA73F' | '\uFF43' => "c"
+        case '\u00E7' | '\u0107' | '\u0109' | '\u010B' | '\u010D' | '\u0188' | '\u023C' | '\u0255' | '\u1E09' |
+            '\u2184' | '\u24D2' | '\uA73E' | '\uA73F' | '\uFF43' =>
+          "c"
 
         // ASCII: d
 
@@ -3069,7 +3280,9 @@ object ASCIIUtil {
         // ⓓ  [CIRCLED LATIN SMALL LETTER D]
         // ꝺ  [LATIN SMALL LETTER INSULAR D]
         // ｄ  [FULLWIDTH LATIN SMALL LETTER D]
-        case '\u00F0' | '\u010F' | '\u0111' | '\u018C' | '\u0221' | '\u0256' | '\u0257' | '\u1D6D' | '\u1D81' | '\u1D91' | '\u1E0B' | '\u1E0D' | '\u1E0F' | '\u1E11' | '\u1E13' | '\u24D3' | '\uA77A' | '\uFF44' => "d"
+        case '\u00F0' | '\u010F' | '\u0111' | '\u018C' | '\u0221' | '\u0256' | '\u0257' | '\u1D6D' | '\u1D81' |
+            '\u1D91' | '\u1E0B' | '\u1E0D' | '\u1E0F' | '\u1E11' | '\u1E13' | '\u24D3' | '\uA77A' | '\uFF44' =>
+          "d"
 
         // ASCII: db
 
@@ -3127,7 +3340,12 @@ object ASCIIUtil {
         // ⓔ  [CIRCLED LATIN SMALL LETTER E]
         // ⱸ  [LATIN SMALL LETTER E WITH NOTCH]
         // ｅ  [FULLWIDTH LATIN SMALL LETTER E]
-        case '\u00E8' | '\u00E9' | '\u00EA' | '\u00EB' | '\u0113' | '\u0115' | '\u0117' | '\u0119' | '\u011B' | '\u01DD' | '\u0205' | '\u0207' | '\u0229' | '\u0247' | '\u0258' | '\u025B' | '\u025C' | '\u025D' | '\u025E' | '\u029A' | '\u1D08' | '\u1D92' | '\u1D93' | '\u1D94' | '\u1E15' | '\u1E17' | '\u1E19' | '\u1E1B' | '\u1E1D' | '\u1EB9' | '\u1EBB' | '\u1EBD' | '\u1EBF' | '\u1EC1' | '\u1EC3' | '\u1EC5' | '\u1EC7' | '\u2091' | '\u24D4' | '\u2C78' | '\uFF45' => "e"
+        case '\u00E8' | '\u00E9' | '\u00EA' | '\u00EB' | '\u0113' | '\u0115' | '\u0117' | '\u0119' | '\u011B' |
+            '\u01DD' | '\u0205' | '\u0207' | '\u0229' | '\u0247' | '\u0258' | '\u025B' | '\u025C' | '\u025D' |
+            '\u025E' | '\u029A' | '\u1D08' | '\u1D92' | '\u1D93' | '\u1D94' | '\u1E15' | '\u1E17' | '\u1E19' |
+            '\u1E1B' | '\u1E1D' | '\u1EB9' | '\u1EBB' | '\u1EBD' | '\u1EBF' | '\u1EC1' | '\u1EC3' | '\u1EC5' |
+            '\u1EC7' | '\u2091' | '\u24D4' | '\u2C78' | '\uFF45' =>
+          "e"
 
         // ASCII: f
 
@@ -3182,7 +3400,9 @@ object ASCIIUtil {
         // ⓖ  [CIRCLED LATIN SMALL LETTER G]
         // ꝿ  [LATIN SMALL LETTER TURNED INSULAR G]
         // ｇ  [FULLWIDTH LATIN SMALL LETTER G]
-        case '\u011D' | '\u011F' | '\u0121' | '\u0123' | '\u01F5' | '\u0260' | '\u0261' | '\u1D77' | '\u1D79' | '\u1D83' | '\u1E21' | '\u24D6' | '\uA77F' | '\uFF47' => "g"
+        case '\u011D' | '\u011F' | '\u0121' | '\u0123' | '\u01F5' | '\u0260' | '\u0261' | '\u1D77' | '\u1D79' |
+            '\u1D83' | '\u1E21' | '\u24D6' | '\uA77F' | '\uFF47' =>
+          "g"
 
         // ASCII: h
 
@@ -3203,7 +3423,9 @@ object ASCIIUtil {
         // ⱨ  [LATIN SMALL LETTER H WITH DESCENDER]
         // ⱶ  [LATIN SMALL LETTER HALF H]
         // ｈ  [FULLWIDTH LATIN SMALL LETTER H]
-        case '\u0125' | '\u0127' | '\u021F' | '\u0265' | '\u0266' | '\u02AE' | '\u02AF' | '\u1E23' | '\u1E25' | '\u1E27' | '\u1E29' | '\u1E2B' | '\u1E96' | '\u24D7' | '\u2C68' | '\u2C76' | '\uFF48' => "h"
+        case '\u0125' | '\u0127' | '\u021F' | '\u0265' | '\u0266' | '\u02AE' | '\u02AF' | '\u1E23' | '\u1E25' |
+            '\u1E27' | '\u1E29' | '\u1E2B' | '\u1E96' | '\u24D7' | '\u2C68' | '\u2C76' | '\uFF48' =>
+          "h"
 
         // ASCII: hv
 
@@ -3236,7 +3458,10 @@ object ASCIIUtil {
         // ⁱ  [SUPERSCRIPT LATIN SMALL LETTER I]
         // ⓘ  [CIRCLED LATIN SMALL LETTER I]
         // ｉ  [FULLWIDTH LATIN SMALL LETTER I]
-        case '\u00EC' | '\u00ED' | '\u00EE' | '\u00EF' | '\u0129' | '\u012B' | '\u012D' | '\u012F' | '\u0131' | '\u01D0' | '\u0209' | '\u020B' | '\u0268' | '\u1D09' | '\u1D62' | '\u1D7C' | '\u1D96' | '\u1E2D' | '\u1E2F' | '\u1EC9' | '\u1ECB' | '\u2071' | '\u24D8' | '\uFF49' => "i"
+        case '\u00EC' | '\u00ED' | '\u00EE' | '\u00EF' | '\u0129' | '\u012B' | '\u012D' | '\u012F' | '\u0131' |
+            '\u01D0' | '\u0209' | '\u020B' | '\u0268' | '\u1D09' | '\u1D62' | '\u1D7C' | '\u1D96' | '\u1E2D' |
+            '\u1E2F' | '\u1EC9' | '\u1ECB' | '\u2071' | '\u24D8' | '\uFF49' =>
+          "i"
 
         // ASCII: ij
 
@@ -3255,7 +3480,9 @@ object ASCIIUtil {
         // ⓙ  [CIRCLED LATIN SMALL LETTER J]
         // ⱼ  [LATIN SUBSCRIPT SMALL LETTER J]
         // ｊ  [FULLWIDTH LATIN SMALL LETTER J]
-        case '\u0135' | '\u01F0' | '\u0237' | '\u0249' | '\u025F' | '\u0284' | '\u029D' | '\u24D9' | '\u2C7C' | '\uFF4A' => "j"
+        case '\u0135' | '\u01F0' | '\u0237' | '\u0249' | '\u025F' | '\u0284' | '\u029D' | '\u24D9' | '\u2C7C' |
+            '\uFF4A' =>
+          "j"
 
         // ASCII: k
 
@@ -3273,7 +3500,9 @@ object ASCIIUtil {
         // ꝃ  [LATIN SMALL LETTER K WITH DIAGONAL STROKE]
         // ꝅ  [LATIN SMALL LETTER K WITH STROKE AND DIAGONAL STROKE]
         // ｋ  [FULLWIDTH LATIN SMALL LETTER K]
-        case '\u0137' | '\u0199' | '\u01E9' | '\u029E' | '\u1D84' | '\u1E31' | '\u1E33' | '\u1E35' | '\u24DA' | '\u2C6A' | '\uA741' | '\uA743' | '\uA745' | '\uFF4B' => "k"
+        case '\u0137' | '\u0199' | '\u01E9' | '\u029E' | '\u1D84' | '\u1E31' | '\u1E33' | '\u1E35' | '\u24DA' |
+            '\u2C6A' | '\uA741' | '\uA743' | '\uA745' | '\uFF4B' =>
+          "k"
 
         // ASCII: l
 
@@ -3298,7 +3527,10 @@ object ASCIIUtil {
         // ꝉ  [LATIN SMALL LETTER L WITH HIGH STROKE]
         // ꞁ  [LATIN SMALL LETTER TURNED L]
         // ｌ  [FULLWIDTH LATIN SMALL LETTER L]
-        case '\u013A' | '\u013C' | '\u013E' | '\u0140' | '\u0142' | '\u019A' | '\u0234' | '\u026B' | '\u026C' | '\u026D' | '\u1D85' | '\u1E37' | '\u1E39' | '\u1E3B' | '\u1E3D' | '\u24DB' | '\u2C61' | '\uA747' | '\uA749' | '\uA781' | '\uFF4C' => "l"
+        case '\u013A' | '\u013C' | '\u013E' | '\u0140' | '\u0142' | '\u019A' | '\u0234' | '\u026B' | '\u026C' |
+            '\u026D' | '\u1D85' | '\u1E37' | '\u1E39' | '\u1E3B' | '\u1E3D' | '\u24DB' | '\u2C61' | '\uA747' |
+            '\uA749' | '\uA781' | '\uFF4C' =>
+          "l"
 
         // ASCII: lj
 
@@ -3332,7 +3564,9 @@ object ASCIIUtil {
         // ṃ  [LATIN SMALL LETTER M WITH DOT BELOW]
         // ⓜ  [CIRCLED LATIN SMALL LETTER M]
         // ｍ  [FULLWIDTH LATIN SMALL LETTER M]
-        case '\u026F' | '\u0270' | '\u0271' | '\u1D6F' | '\u1D86' | '\u1E3F' | '\u1E41' | '\u1E43' | '\u24DC' | '\uFF4D' => "m"
+        case '\u026F' | '\u0270' | '\u0271' | '\u1D6F' | '\u1D86' | '\u1E3F' | '\u1E41' | '\u1E43' | '\u24DC' |
+            '\uFF4D' =>
+          "m"
 
         // ASCII: n
 
@@ -3356,7 +3590,10 @@ object ASCIIUtil {
         // ⁿ  [SUPERSCRIPT LATIN SMALL LETTER N]
         // ⓝ  [CIRCLED LATIN SMALL LETTER N]
         // ｎ  [FULLWIDTH LATIN SMALL LETTER N]
-        case '\u00F1' | '\u0144' | '\u0146' | '\u0148' | '\u0149' | '\u014B' | '\u019E' | '\u01F9' | '\u0235' | '\u0272' | '\u0273' | '\u1D70' | '\u1D87' | '\u1E45' | '\u1E47' | '\u1E49' | '\u1E4B' | '\u207F' | '\u24DD' | '\uFF4E' => "n"
+        case '\u00F1' | '\u0144' | '\u0146' | '\u0148' | '\u0149' | '\u014B' | '\u019E' | '\u01F9' | '\u0235' |
+            '\u0272' | '\u0273' | '\u1D70' | '\u1D87' | '\u1E45' | '\u1E47' | '\u1E49' | '\u1E4B' | '\u207F' |
+            '\u24DD' | '\uFF4E' =>
+          "n"
 
         // ASCII: nj
 
@@ -3412,7 +3649,13 @@ object ASCIIUtil {
         // ꝋ  [LATIN SMALL LETTER O WITH LONG STROKE OVERLAY]
         // ꝍ  [LATIN SMALL LETTER O WITH LOOP]
         // ｏ  [FULLWIDTH LATIN SMALL LETTER O]
-        case '\u00F2' | '\u00F3' | '\u00F4' | '\u00F5' | '\u00F6' | '\u00F8' | '\u014D' | '\u014F' | '\u0151' | '\u01A1' | '\u01D2' | '\u01EB' | '\u01ED' | '\u01FF' | '\u020D' | '\u020F' | '\u022B' | '\u022D' | '\u022F' | '\u0231' | '\u0254' | '\u0275' | '\u1D16' | '\u1D17' | '\u1D97' | '\u1E4D' | '\u1E4F' | '\u1E51' | '\u1E53' | '\u1ECD' | '\u1ECF' | '\u1ED1' | '\u1ED3' | '\u1ED5' | '\u1ED7' | '\u1ED9' | '\u1EDB' | '\u1EDD' | '\u1EDF' | '\u1EE1' | '\u1EE3' | '\u2092' | '\u24DE' | '\u2C7A' | '\uA74B' | '\uA74D' | '\uFF4F' => "o"
+        case '\u00F2' | '\u00F3' | '\u00F4' | '\u00F5' | '\u00F6' | '\u00F8' | '\u014D' | '\u014F' | '\u0151' |
+            '\u01A1' | '\u01D2' | '\u01EB' | '\u01ED' | '\u01FF' | '\u020D' | '\u020F' | '\u022B' | '\u022D' |
+            '\u022F' | '\u0231' | '\u0254' | '\u0275' | '\u1D16' | '\u1D17' | '\u1D97' | '\u1E4D' | '\u1E4F' |
+            '\u1E51' | '\u1E53' | '\u1ECD' | '\u1ECF' | '\u1ED1' | '\u1ED3' | '\u1ED5' | '\u1ED7' | '\u1ED9' |
+            '\u1EDB' | '\u1EDD' | '\u1EDF' | '\u1EE1' | '\u1EE3' | '\u2092' | '\u24DE' | '\u2C7A' | '\uA74B' |
+            '\uA74D' | '\uFF4F' =>
+          "o"
 
         // ASCII: oe
 
@@ -3444,7 +3687,9 @@ object ASCIIUtil {
         // ꝕ  [LATIN SMALL LETTER P WITH SQUIRREL TAIL]
         // ꟼ  [LATIN EPIGRAPHIC LETTER REVERSED P]
         // ｐ  [FULLWIDTH LATIN SMALL LETTER P]
-        case '\u01A5' | '\u1D71' | '\u1D7D' | '\u1D88' | '\u1E55' | '\u1E57' | '\u24DF' | '\uA751' | '\uA753' | '\uA755' | '\uA7FC' | '\uFF50' => "p"
+        case '\u01A5' | '\u1D71' | '\u1D7D' | '\u1D88' | '\u1E55' | '\u1E57' | '\u24DF' | '\uA751' | '\uA753' |
+            '\uA755' | '\uA7FC' | '\uFF50' =>
+          "p"
 
         // ASCII: q
 
@@ -3486,7 +3731,10 @@ object ASCIIUtil {
         // ꝛ  [LATIN SMALL LETTER R ROTUNDA]
         // ꞃ  [LATIN SMALL LETTER INSULAR R]
         // ｒ  [FULLWIDTH LATIN SMALL LETTER R]
-        case '\u0155' | '\u0157' | '\u0159' | '\u0211' | '\u0213' | '\u024D' | '\u027C' | '\u027D' | '\u027E' | '\u027F' | '\u1D63' | '\u1D72' | '\u1D73' | '\u1D89' | '\u1E59' | '\u1E5B' | '\u1E5D' | '\u1E5F' | '\u24E1' | '\uA75B' | '\uA783' | '\uFF52' => "r"
+        case '\u0155' | '\u0157' | '\u0159' | '\u0211' | '\u0213' | '\u024D' | '\u027C' | '\u027D' | '\u027E' |
+            '\u027F' | '\u1D63' | '\u1D72' | '\u1D73' | '\u1D89' | '\u1E59' | '\u1E5B' | '\u1E5D' | '\u1E5F' |
+            '\u24E1' | '\uA75B' | '\uA783' | '\uFF52' =>
+          "r"
 
         // ASCII: s
 
@@ -3510,7 +3758,10 @@ object ASCIIUtil {
         // ⓢ  [CIRCLED LATIN SMALL LETTER S]
         // Ꞅ  [LATIN CAPITAL LETTER INSULAR S]
         // ｓ  [FULLWIDTH LATIN SMALL LETTER S]
-        case '\u015B' | '\u015D' | '\u015F' | '\u0161' | '\u017F' | '\u0219' | '\u023F' | '\u0282' | '\u1D74' | '\u1D8A' | '\u1E61' | '\u1E63' | '\u1E65' | '\u1E67' | '\u1E69' | '\u1E9C' | '\u1E9D' | '\u24E2' | '\uA784' | '\uFF53' => "s"
+        case '\u015B' | '\u015D' | '\u015F' | '\u0161' | '\u017F' | '\u0219' | '\u023F' | '\u0282' | '\u1D74' |
+            '\u1D8A' | '\u1E61' | '\u1E63' | '\u1E65' | '\u1E67' | '\u1E69' | '\u1E9C' | '\u1E9D' | '\u24E2' |
+            '\uA784' | '\uFF53' =>
+          "s"
 
         // ASCII: ss
 
@@ -3542,7 +3793,9 @@ object ASCIIUtil {
         // ⓣ  [CIRCLED LATIN SMALL LETTER T]
         // ⱦ  [LATIN SMALL LETTER T WITH DIAGONAL STROKE]
         // ｔ  [FULLWIDTH LATIN SMALL LETTER T]
-        case '\u0163' | '\u0165' | '\u0167' | '\u01AB' | '\u01AD' | '\u021B' | '\u0236' | '\u0287' | '\u0288' | '\u1D75' | '\u1E6B' | '\u1E6D' | '\u1E6F' | '\u1E71' | '\u1E97' | '\u24E3' | '\u2C66' | '\uFF54' => "t"
+        case '\u0163' | '\u0165' | '\u0167' | '\u01AB' | '\u01AD' | '\u021B' | '\u0236' | '\u0287' | '\u0288' |
+            '\u1D75' | '\u1E6B' | '\u1E6D' | '\u1E6F' | '\u1E71' | '\u1E97' | '\u24E3' | '\u2C66' | '\uFF54' =>
+          "t"
 
         // ASCII: tc
 
@@ -3603,7 +3856,11 @@ object ASCIIUtil {
         // ự  [LATIN SMALL LETTER U WITH HORN AND DOT BELOW]
         // ⓤ  [CIRCLED LATIN SMALL LETTER U]
         // ｕ  [FULLWIDTH LATIN SMALL LETTER U]
-        case '\u00F9' | '\u00FA' | '\u00FB' | '\u00FC' | '\u0169' | '\u016B' | '\u016D' | '\u016F' | '\u0171' | '\u0173' | '\u01B0' | '\u01D4' | '\u01D6' | '\u01D8' | '\u01DA' | '\u01DC' | '\u0215' | '\u0217' | '\u0289' | '\u1D64' | '\u1D99' | '\u1E73' | '\u1E75' | '\u1E77' | '\u1E79' | '\u1E7B' | '\u1EE5' | '\u1EE7' | '\u1EE9' | '\u1EEB' | '\u1EED' | '\u1EEF' | '\u1EF1' | '\u24E4' | '\uFF55' => "u"
+        case '\u00F9' | '\u00FA' | '\u00FB' | '\u00FC' | '\u0169' | '\u016B' | '\u016D' | '\u016F' | '\u0171' |
+            '\u0173' | '\u01B0' | '\u01D4' | '\u01D6' | '\u01D8' | '\u01DA' | '\u01DC' | '\u0215' | '\u0217' |
+            '\u0289' | '\u1D64' | '\u1D99' | '\u1E73' | '\u1E75' | '\u1E77' | '\u1E79' | '\u1E7B' | '\u1EE5' |
+            '\u1EE7' | '\u1EE9' | '\u1EEB' | '\u1EED' | '\u1EEF' | '\u1EF1' | '\u24E4' | '\uFF55' =>
+          "u"
 
         // ASCII: ue
 
@@ -3623,7 +3880,9 @@ object ASCIIUtil {
         // ⱴ  [LATIN SMALL LETTER V WITH CURL]
         // ꝟ  [LATIN SMALL LETTER V WITH DIAGONAL STROKE]
         // ｖ  [FULLWIDTH LATIN SMALL LETTER V]
-        case '\u028B' | '\u028C' | '\u1D65' | '\u1D8C' | '\u1E7D' | '\u1E7F' | '\u24E5' | '\u2C71' | '\u2C74' | '\uA75F' | '\uFF56' => "v"
+        case '\u028B' | '\u028C' | '\u1D65' | '\u1D8C' | '\u1E7D' | '\u1E7F' | '\u24E5' | '\u2C71' | '\u2C74' |
+            '\uA75F' | '\uFF56' =>
+          "v"
 
         // ASCII: vy
 
@@ -3644,7 +3903,9 @@ object ASCIIUtil {
         // ⓦ  [CIRCLED LATIN SMALL LETTER W]
         // ⱳ  [LATIN SMALL LETTER W WITH HOOK]
         // ｗ  [FULLWIDTH LATIN SMALL LETTER W]
-        case '\u0175' | '\u01BF' | '\u028D' | '\u1E81' | '\u1E83' | '\u1E85' | '\u1E87' | '\u1E89' | '\u1E98' | '\u24E6' | '\u2C73' | '\uFF57' => "w"
+        case '\u0175' | '\u01BF' | '\u028D' | '\u1E81' | '\u1E83' | '\u1E85' | '\u1E87' | '\u1E89' | '\u1E98' |
+            '\u24E6' | '\u2C73' | '\uFF57' =>
+          "w"
 
         // ASCII: x
 
@@ -3674,7 +3935,9 @@ object ASCIIUtil {
         // ỿ  [LATIN SMALL LETTER Y WITH LOOP]
         // ⓨ  [CIRCLED LATIN SMALL LETTER Y]
         // ｙ  [FULLWIDTH LATIN SMALL LETTER Y]
-        case '\u00FD' | '\u00FF' | '\u0177' | '\u01B4' | '\u0233' | '\u024F' | '\u028E' | '\u1E8F' | '\u1E99' | '\u1EF3' | '\u1EF5' | '\u1EF7' | '\u1EF9' | '\u1EFF' | '\u24E8' | '\uFF59' => "y"
+        case '\u00FD' | '\u00FF' | '\u0177' | '\u01B4' | '\u0233' | '\u024F' | '\u028E' | '\u1E8F' | '\u1E99' |
+            '\u1EF3' | '\u1EF5' | '\u1EF7' | '\u1EF9' | '\u1EFF' | '\u24E8' | '\uFF59' =>
+          "y"
 
         // ASCII: z
 
@@ -3696,7 +3959,9 @@ object ASCIIUtil {
         // ⱬ  [LATIN SMALL LETTER Z WITH DESCENDER]
         // ꝣ  [LATIN SMALL LETTER VISIGOTHIC Z]
         // ｚ  [FULLWIDTH LATIN SMALL LETTER Z]
-        case '\u017A' | '\u017C' | '\u017E' | '\u01B6' | '\u021D' | '\u0225' | '\u0240' | '\u0290' | '\u0291' | '\u1D76' | '\u1D8E' | '\u1E91' | '\u1E93' | '\u1E95' | '\u24E9' | '\u2C6C' | '\uA763' | '\uFF5A' => "z"
+        case '\u017A' | '\u017C' | '\u017E' | '\u01B6' | '\u021D' | '\u0225' | '\u0240' | '\u0290' | '\u0291' |
+            '\u1D76' | '\u1D8E' | '\u1E91' | '\u1E93' | '\u1E95' | '\u24E9' | '\u2C6C' | '\uA763' | '\uFF5A' =>
+          "z"
 
         // ASCII: {
 
@@ -3716,5 +3981,3 @@ object ASCIIUtil {
   }
 
 }
-
-

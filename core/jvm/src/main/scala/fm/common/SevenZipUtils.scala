@@ -1,5 +1,7 @@
 /*
- * Copyright 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.io.{File, FileFilter, FileNotFoundException, IOException, InputStream}
@@ -23,7 +26,7 @@ object SevenZipUtils {
    * Open a 7-Zip File with support for multi-part archives (with names like file.7z.001)
    */
   def open(file: File): SevenZFile = {
-    if (file.extension.exists{ _.isInt }) {
+    if (file.extension.exists { _.isInt }) {
       // Check for multi-part - stripping off the numeric extension for the passed in file
       openMultiPart(findMultiPartFiles(file.getParentFile, file.nameWithoutExtension))
     } else if (file.isFile) {
@@ -42,20 +45,24 @@ object SevenZipUtils {
   private def findMultiPartFiles(dir: File, baseName: String): Seq[File] = {
     require(dir.isDirectory, s"Expected a directory: $dir")
 
-    dir.listFiles(new FileFilter {
-      override def accept(file: File): Boolean = file.isFile && file.getName.startsWith(baseName) && file.extension.exists{ _.isInt }
-    }).toIndexedSeq.sortBy{ _.extension.map{ _.toInt }.get }
+    dir
+      .listFiles(new FileFilter {
+        override def accept(file: File): Boolean =
+          file.isFile && file.getName.startsWith(baseName) && file.extension.exists { _.isInt }
+      })
+      .toIndexedSeq
+      .sortBy { _.extension.map { _.toInt }.get }
   }
 
   def inputStreamResourceForEntry(seven7File: File, entryName: String): InputStreamResource = {
-    val resource: MultiUseResource[InputStream] = MultiUseResource{ inputStreamForEntry(seven7File, entryName) }
+    val resource: MultiUseResource[InputStream] = MultiUseResource { inputStreamForEntry(seven7File, entryName) }
     InputStreamResource(resource = resource, fileName = entryName)
   }
 
   def getInputStreamResourceForEntry(seven7File: File, entryName: String): Option[InputStreamResource] = {
     if (!entryExists(seven7File, entryName)) return None
 
-    val resource: MultiUseResource[InputStream] = MultiUseResource{ inputStreamForEntry(seven7File, entryName) }
+    val resource: MultiUseResource[InputStream] = MultiUseResource { inputStreamForEntry(seven7File, entryName) }
     Some(InputStreamResource(resource = resource, fileName = entryName))
   }
 
@@ -65,7 +72,9 @@ object SevenZipUtils {
    * The caller is responsible for closing the returned InputStream
    */
   def inputStreamForEntry(seven7File: File, entryName: String): InputStream = {
-    getInputStreamForEntry(seven7File, entryName).getOrElse{ throw new FileNotFoundException(s"Missing $seven7File or $entryName within $seven7File") }
+    getInputStreamForEntry(seven7File, entryName).getOrElse {
+      throw new FileNotFoundException(s"Missing $seven7File or $entryName within $seven7File")
+    }
   }
 
   /**
@@ -74,11 +83,12 @@ object SevenZipUtils {
    * The caller is responsible for closing the returned InputStream
    */
   def getInputStreamForEntry(seven7File: File, entryName: String): Option[InputStream] = {
-    val file: SevenZFile = try {
-      new SevenZFile(seven7File)
-    } catch {
-      case _: IOException => return None
-    }
+    val file: SevenZFile =
+      try {
+        new SevenZFile(seven7File)
+      } catch {
+        case _: IOException => return None
+      }
 
     try {
       var entry: SevenZArchiveEntry = file.getNextEntry()
@@ -104,11 +114,12 @@ object SevenZipUtils {
   }
 
   def entryExists(seven7File: File, entryName: String): Boolean = {
-    val file: SevenZFile = try {
-      new SevenZFile(seven7File)
-    } catch {
-      case _: IOException => return false
-    }
+    val file: SevenZFile =
+      try {
+        new SevenZFile(seven7File)
+      } catch {
+        case _: IOException => return false
+      }
 
     try {
       var entry: SevenZArchiveEntry = file.getNextEntry()

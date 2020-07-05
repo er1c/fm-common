@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import org.scalatest.funsuite.AnyFunSuite
@@ -23,7 +26,7 @@ class TestIP extends AnyFunSuite with Matchers {
   test("get") {
     IP.get("") should equal(None)
   }
-  
+
   test("New IP") {
     val str = "255.255.255.255"
 
@@ -31,16 +34,16 @@ class TestIP extends AnyFunSuite with Matchers {
     IP.toLong(str) should equal(IP.MAX_IP)
   }
 
-  testIpConversions("216.9.0.141", 3624468621L, Array(216,9,0,141))
+  testIpConversions("216.9.0.141", 3624468621L, Array(216, 9, 0, 141))
 
-  testIpConversions("65.249.66.235", 1106854635L, Array(65,249,66,235))
-  testIpConversions("66.249.66.235", 1123631851L, Array(66,249,66,235))
+  testIpConversions("65.249.66.235", 1106854635L, Array(65, 249, 66, 235))
+  testIpConversions("66.249.66.235", 1123631851L, Array(66, 249, 66, 235))
 
-  testIpConversions("0.0.0.0", 0L, Array(0,0,0,0))
-  testIpConversions("127.127.127.127", 2139062143L, Array(127,127,127,127))
-  testIpConversions("126.127.128.129", 2122285185L, Array(126,127,128,129))
-  testIpConversions("1.2.3.4", 16909060L, Array(1,2,3,4))
-  testIpConversions("255.255.255.255", 4294967295L, Array(255,255,255,255))
+  testIpConversions("0.0.0.0", 0L, Array(0, 0, 0, 0))
+  testIpConversions("127.127.127.127", 2139062143L, Array(127, 127, 127, 127))
+  testIpConversions("126.127.128.129", 2122285185L, Array(126, 127, 128, 129))
+  testIpConversions("1.2.3.4", 16909060L, Array(1, 2, 3, 4))
+  testIpConversions("255.255.255.255", 4294967295L, Array(255, 255, 255, 255))
 
   test("Equals") {
     val ip1 = IP("65.249.66.235")
@@ -54,11 +57,11 @@ class TestIP extends AnyFunSuite with Matchers {
   }
 
   test("isValid") {
-    def check(ip: String, valid: Boolean): Unit = TestHelpers.withCallerInfo{ IP.isValid(ip) should equal(valid) }
+    def check(ip: String, valid: Boolean): Unit = TestHelpers.withCallerInfo { IP.isValid(ip) should equal(valid); () }
 
     check("", false)
-    check("1", false)  // Might work in the apply method but isValid only checks for xxx.xxx.xxx.xxx notation
-    
+    check("1", false) // Might work in the apply method but isValid only checks for xxx.xxx.xxx.xxx notation
+
     check("1.2", false)
     check("1.2.3", false)
     check("123.123.123", false)
@@ -67,7 +70,7 @@ class TestIP extends AnyFunSuite with Matchers {
     check("1.1.1.1", true)
     check("123.123.123.123", true)
     check("255.255.255.255", true)
-    
+
     check("a.b.c.d", false)
 
     check("256.256.256.256", false)
@@ -77,10 +80,11 @@ class TestIP extends AnyFunSuite with Matchers {
     check("-1.1.1.1", false)
     check("1.1.1.-1", false)
   }
-  
+
   test("findAllIPsIn") {
-    def check(str: String, matches: Seq[String]): Unit = TestHelpers.withCallerInfo{ IP.findAllIPsIn(str) should equal(matches.map{IP.apply}.toIndexedSeq) }
-    
+    def check(str: String, matches: Seq[String]): Unit =
+      TestHelpers.withCallerInfo { IP.findAllIPsIn(str) should equal(matches.map { IP.apply }.toIndexedSeq); () }
+
     check("", Nil)
     check("1.2.3", Nil)
     check("1.2.3.4", Seq("1.2.3.4"))
@@ -96,7 +100,7 @@ class TestIP extends AnyFunSuite with Matchers {
   }
 
   def testIpConversions(ipStr: String, ipLong: Long, ipOctets: Array[Int]): Unit = {
-    test("IP Conversions - "+ipStr) {
+    test("IP Conversions - " + ipStr) {
       IP.toLong(IP.toInt(ipLong)) should equal(ipLong)
 
       IP.toLong(ipStr) shouldBe ipLong

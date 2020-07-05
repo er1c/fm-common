@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import org.scalatest.exceptions.ModifiableMessage
 
 object TestHelpers {
-  final def withCallerInfo[T](fun: => T): T = try {
-    fun
-  } catch {
-    case ex: ModifiableMessage[_] => throw ex.modifyMessage(modifyMsg(getStackInfo()))
-  }
+  final def withCallerInfo[T](fun: => T): T =
+    try {
+      fun
+    } catch {
+      case ex: ModifiableMessage[_] => throw ex.modifyMessage(modifyMsg(getStackInfo()))
+    }
 
   private def getStackInfo(): String = {
     val elements: Array[StackTraceElement] = Thread.currentThread().getStackTrace()
 
-    val idx: Int = elements.lastIndexWhere{ _.getMethodName() == "withCallerInfo" }
+    val idx: Int = elements.lastIndexWhere { _.getMethodName() == "withCallerInfo" }
 
     if (-1 == idx) return "<unknown>"
 
@@ -46,8 +50,9 @@ object TestHelpers {
     s"$file:$line"
   }
 
-  private def modifyMsg(stackInfo: String)(currentMessage: Option[String]): Option[String] = currentMessage.map { msg: String =>
-    val toAdd = " (Caller: "+stackInfo+")"
-    if (msg.contains(toAdd)) msg else msg+toAdd
-  }.orElse{ Some(stackInfo) }
+  private def modifyMsg(stackInfo: String)(currentMessage: Option[String]): Option[String] =
+    currentMessage.map { msg: String =>
+      val toAdd = " (Caller: " + stackInfo + ")"
+      if (msg.contains(toAdd)) msg else msg + toAdd
+    }.orElse { Some(stackInfo) }
 }

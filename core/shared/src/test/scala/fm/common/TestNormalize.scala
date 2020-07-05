@@ -1,5 +1,7 @@
 /*
- * Copyright 2016 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
 class TestNormalize extends AnyFunSuite with Matchers {
-  
+
   test("lowerAlphanumericWithSpaces") {
-    def t(pair: (String,String)): Unit = TestHelpers.withCallerInfo {
-      val (str, urlName) = pair
-      Normalize.lowerAlphanumericWithSpaces(str) shouldBe urlName
-    }
+    def t(pair: (String, String)): Unit =
+      TestHelpers.withCallerInfo {
+        val (str, urlName) = pair
+        Normalize.lowerAlphanumericWithSpaces(str) shouldBe urlName
+
+        ()
+      }
 
     t((null: String) -> "")
     t("" -> "")
@@ -45,15 +51,22 @@ class TestNormalize extends AnyFunSuite with Matchers {
     t("Æ-" -> "ae") // Æ -> ae
     t("-Æ-" -> "ae") // Æ -> ae
     t("Foo \u00F1 Bar" -> "foo n bar")
-    t("Foo \u006E\u0303 Bar" -> "foo n bar") // unicode normalization converts "\u006E\u0303" to "\u00F1" which ASCII folding converts to "n"
+    t(
+      "Foo \u006E\u0303 Bar" -> "foo n bar"
+    ) // unicode normalization converts "\u006E\u0303" to "\u00F1" which ASCII folding converts to "n"
     t("\uD83D\uDCA5" -> "") // "💥"
+
+    ()
   }
-  
+
   test("lowerAlphanumeric") {
-    def t(pair: (String,String)): Unit = TestHelpers.withCallerInfo{
-      val (str, urlName) = pair
-      Normalize.lowerAlphanumeric(str) shouldBe urlName
-    }
+    def t(pair: (String, String)): Unit =
+      TestHelpers.withCallerInfo {
+        val (str, urlName) = pair
+        Normalize.lowerAlphanumeric(str) shouldBe urlName
+
+        ()
+      }
 
     t((null: String) -> "")
     t("" -> "")
@@ -76,11 +89,15 @@ class TestNormalize extends AnyFunSuite with Matchers {
     t("-Æ" -> "ae") // Æ -> ae
     t("-Æ-" -> "ae") // Æ -> ae
     t("Foo \u00F1 Bar" -> "foonbar")
-    t("Foo \u006E\u0303 Bar" -> "foonbar") // unicode normalization converts "\u006E\u0303" to "\u00F1" which ASCII folding converts to "n"
+    t(
+      "Foo \u006E\u0303 Bar" -> "foonbar"
+    ) // unicode normalization converts "\u006E\u0303" to "\u00F1" which ASCII folding converts to "n"
     t("\uD83D\uDCA5" -> "") // "💥"
 
     // RFC3492 Example A - Arabic (Egyptian) - Last character gets stripped
-    t("\u0644\u064A\u0647\u0645\u0627\u0628\u062A\u0643\u0644\u0645\u0648\u0634\u0639\u0631\u0628\u064A\u061F" -> "\u0644\u064A\u0647\u0645\u0627\u0628\u062A\u0643\u0644\u0645\u0648\u0634\u0639\u0631\u0628\u064A") // Last character gets removed (it must be a symbol?)
+    t(
+      "\u0644\u064A\u0647\u0645\u0627\u0628\u062A\u0643\u0644\u0645\u0648\u0634\u0639\u0631\u0628\u064A\u061F" -> "\u0644\u064A\u0647\u0645\u0627\u0628\u062A\u0643\u0644\u0645\u0648\u0634\u0639\u0631\u0628\u064A"
+    ) // Last character gets removed (it must be a symbol?)
 
     // RFC3492 Example B - Chinese (simplified) - Unmodified
     t("\u4ED6\u4EEC\u4E3A\u4EC0\u4E48\u4E0D\u8BF4\u4E2D\u6587" -> "\u4ED6\u4EEC\u4E3A\u4EC0\u4E48\u4E0D\u8BF4\u4E2D\u6587")
@@ -136,58 +153,78 @@ class TestNormalize extends AnyFunSuite with Matchers {
     // RFC3492 Example S - -> $1.00 <- - Symbols/spaces stripped
     t("\u002D\u003E\u0020\u0024\u0031\u002E\u0030\u0030\u0020\u003C\u002D" -> "100")
   }
-  
+
   test("lowerAlphanumericWithPositions") {
-    def t(str: String, normalized: String, positions: Array[Int]): Unit = TestHelpers.withCallerInfo {
-      val res: (String,Array[Int]) = Normalize.lowerAlphanumericWithPositions(str)
-      
-      (res._1, res._2.toIndexedSeq) shouldBe ((normalized, positions.toIndexedSeq))
-    }
+    def t(str: String, normalized: String, positions: Array[Int]): Unit =
+      TestHelpers.withCallerInfo {
+        val res: (String, Array[Int]) = Normalize.lowerAlphanumericWithPositions(str)
+        (res._1, res._2.toIndexedSeq) shouldBe ((normalized, positions.toIndexedSeq))
+
+        ()
+      }
 
     t((null: String), "", Array())
     t("", "", Array())
-    t("Foo", "foo", Array(0,1,2))
-    t("  Foo  ", "foo", Array(2,3,4))
-    t(" - Foo - ", "foo", Array(3,4,5))
-    t("foo BAR", "foobar", Array(0,1,2,4,5,6))
-    t("  foo  BAR  ", "foobar", Array(2,3,4,7,8,9))
-    t("Dorman HELP!", "dormanhelp", Array(0,1,2,3,4,5,7,8,9,10))
-    t("Dorman HELP\\!", "dormanhelp", Array(0,1,2,3,4,5,7,8,9,10))
-    t("dorman HELP\\!", "dormanhelp", Array(0,1,2,3,4,5,7,8,9,10))
-    t("doRman HELP\\!", "dormanhelp", Array(0,1,2,3,4,5,7,8,9,10))
-    
-    t("foo", "foo", Array(0,1,2))
-    t("dormanhelp", "dormanhelp", Array(0,1,2,3,4,5,6,7,8,9))
-    t("dorman123help", "dorman123help", Array(0,1,2,3,4,5,6,7,8,9,10,11,12))
-    t("\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5", "aaaaaa", Array(0,1,2,3,4,5))
+    t("Foo", "foo", Array(0, 1, 2))
+    t("  Foo  ", "foo", Array(2, 3, 4))
+    t(" - Foo - ", "foo", Array(3, 4, 5))
+    t("foo BAR", "foobar", Array(0, 1, 2, 4, 5, 6))
+    t("  foo  BAR  ", "foobar", Array(2, 3, 4, 7, 8, 9))
+    t("Dorman HELP!", "dormanhelp", Array(0, 1, 2, 3, 4, 5, 7, 8, 9, 10))
+    t("Dorman HELP\\!", "dormanhelp", Array(0, 1, 2, 3, 4, 5, 7, 8, 9, 10))
+    t("dorman HELP\\!", "dormanhelp", Array(0, 1, 2, 3, 4, 5, 7, 8, 9, 10))
+    t("doRman HELP\\!", "dormanhelp", Array(0, 1, 2, 3, 4, 5, 7, 8, 9, 10))
 
-    t("Foo Æ Bar", "fooaebar", Array(0,1,2,4,4,6,7,8)) // Æ -> ae (both with position 4)
-    t("Æ Æ Æ", "aeaeae", Array(0,0,2,2,4,4))
+    t("foo", "foo", Array(0, 1, 2))
+    t("dormanhelp", "dormanhelp", Array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
+    t("dorman123help", "dorman123help", Array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12))
+    t("\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5", "aaaaaa", Array(0, 1, 2, 3, 4, 5))
 
-    t("Foo \u00F1 Bar", "foonbar", Array(0,1,2,4,6,7,8))
-    t("Foo \u006E\u0303 Bar", "foonbar", Array(0,1,2,4,6,7,8)) // Note: positions are only accurate against the normalized unicode input
+    t("Foo Æ Bar", "fooaebar", Array(0, 1, 2, 4, 4, 6, 7, 8)) // Æ -> ae (both with position 4)
+    t("Æ Æ Æ", "aeaeae", Array(0, 0, 2, 2, 4, 4))
 
-    t("Foo \u00F1 Bar \u00F1", "foonbarn", Array(0,1,2,4,6,7,8,10))
-    t("Foo \u006E\u0303 Bar \u006E\u0303", "foonbarn", Array(0,1,2,4,6,7,8,10)) // Note: positions are only accurate against the normalized unicode input
+    t("Foo \u00F1 Bar", "foonbar", Array(0, 1, 2, 4, 6, 7, 8))
+    t(
+      "Foo \u006E\u0303 Bar",
+      "foonbar",
+      Array(0, 1, 2, 4, 6, 7, 8)
+    ) // Note: positions are only accurate against the normalized unicode input
 
-    t("Foo \u00F1 Æ Bar \u00F1", "foonaebarn", Array(0,1,2,4,6,6,8,9,10,12))
-    t("Foo \u006E\u0303 Æ Bar \u006E\u0303", "foonaebarn", Array(0,1,2,4,6,6,8,9,10,12)) // Note: positions are only accurate against the normalized unicode input
+    t("Foo \u00F1 Bar \u00F1", "foonbarn", Array(0, 1, 2, 4, 6, 7, 8, 10))
+    t(
+      "Foo \u006E\u0303 Bar \u006E\u0303",
+      "foonbarn",
+      Array(0, 1, 2, 4, 6, 7, 8, 10)
+    ) // Note: positions are only accurate against the normalized unicode input
+
+    t("Foo \u00F1 Æ Bar \u00F1", "foonaebarn", Array(0, 1, 2, 4, 6, 6, 8, 9, 10, 12))
+    t(
+      "Foo \u006E\u0303 Æ Bar \u006E\u0303",
+      "foonaebarn",
+      Array(0, 1, 2, 4, 6, 6, 8, 9, 10, 12)
+    ) // Note: positions are only accurate against the normalized unicode input
 
     // Supplementary characters should only count as a single character position
-    t("\uD83D\uDCA5 Foo \u006E\u0303 Æ Bar \u006E\u0303 \uD83D\uDCA5", "foonaebarn", Array(3,4,5,7,9,9,11,12,13,15)) // Note: positions are only accurate against the normalized unicode input
+    t(
+      "\uD83D\uDCA5 Foo \u006E\u0303 Æ Bar \u006E\u0303 \uD83D\uDCA5",
+      "foonaebarn",
+      Array(3, 4, 5, 7, 9, 9, 11, 12, 13, 15)
+    ) // Note: positions are only accurate against the normalized unicode input
   }
-  
+
   test("lowerAlphanumeric - Already Normalized - Should eq the original string") {
-    def t(str: String): Unit = TestHelpers.withCallerInfo {
-      Normalize.lowerAlphanumeric(str) should be theSameInstanceAs(str)
-    }
-    
+    def t(str: String): Unit =
+      TestHelpers.withCallerInfo {
+        Normalize.lowerAlphanumeric(str) should be theSameInstanceAs (str)
+        ()
+      }
+
     t("")
     t("foo")
     t("dormanhelp")
     t("dorman123help")
   }
-  
+
   test("reverseLowerAlphanumeric") {
     Normalize.reverseLowerAlphanumeric(null, null) shouldBe None
     Normalize.reverseLowerAlphanumeric("", "") shouldBe None
@@ -200,11 +237,11 @@ class TestNormalize extends AnyFunSuite with Matchers {
     Normalize.reverseLowerAlphanumeric("FooB.O.S.C.H. ", "bosch") shouldBe Some("B.O.S.C.H.")
     Normalize.reverseLowerAlphanumeric("B.O.S.C.H.", "bosch") shouldBe Some("B.O.S.C.H.")
     Normalize.reverseLowerAlphanumeric(" B.O.S.C.H. ", "bosch") shouldBe Some("B.O.S.C.H.")
-    
+
     Normalize.reverseLowerAlphanumeric("5S1988", "5s1988") shouldBe Some("5S1988")
     Normalize.reverseLowerAlphanumeric("AIR5S1988", "5s1988") shouldBe Some("5S1988")
     Normalize.reverseLowerAlphanumeric("5S1988AIR", "5s1988") shouldBe Some("5S1988")
-    
+
     Normalize.reverseLowerAlphanumeric("BOSCH .....", "bosch") shouldBe Some("BOSCH")
     Normalize.reverseLowerAlphanumeric("BOSCH.....", "bosch") shouldBe Some("BOSCH.....") // We keep trailing symbols
     Normalize.reverseLowerAlphanumeric("BOSCH -", "bosch") shouldBe Some("BOSCH")
@@ -212,9 +249,11 @@ class TestNormalize extends AnyFunSuite with Matchers {
     Normalize.reverseLowerAlphanumeric(" - BOSCH - ", "bosch") shouldBe Some("BOSCH")
     Normalize.reverseLowerAlphanumeric(" -BOSCH- ", "bosch") shouldBe Some("BOSCH-") // We keep trailing symbols
     Normalize.reverseLowerAlphanumeric(" -BOSCH---- ", "bosch") shouldBe Some("BOSCH----") // We keep trailing symbols
-    
-    Normalize.reverseLowerAlphanumeric(" - \u00C0\u00C1\u00C2\u00C3\u00C4\u00C5 - ", "aaaaaa") shouldBe Some("\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5")
-    Normalize.reverseLowerAlphanumeric(" - -\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5- - ", "aaaaaa") shouldBe Some("\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5-")
+
+    Normalize.reverseLowerAlphanumeric(" - \u00C0\u00C1\u00C2\u00C3\u00C4\u00C5 - ", "aaaaaa") shouldBe Some(
+      "\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5")
+    Normalize.reverseLowerAlphanumeric(" - -\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5- - ", "aaaaaa") shouldBe Some(
+      "\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5-")
 
     Normalize.reverseLowerAlphanumeric(" - Foo Æ Bar - ", "fooaebar") shouldBe Some("Foo Æ Bar")
     Normalize.reverseLowerAlphanumeric(" - Æ Æ Æ - ", "aeaeae") shouldBe Some("Æ Æ Æ")
@@ -222,25 +261,42 @@ class TestNormalize extends AnyFunSuite with Matchers {
     Normalize.reverseLowerAlphanumeric(" foo - Æ", "ae") shouldBe Some("Æ")
 
     Normalize.reverseLowerAlphanumeric(" - Foo \u00F1 Bar - ", "foonbar") shouldBe Some("Foo \u00F1 Bar")
-    Normalize.reverseLowerAlphanumeric(" - Foo \u006E\u0303 Bar - ", "foonbar") shouldBe Some("Foo \u00F1 Bar") // Reverses to the normalized unicode version only (not the original "\u006E\u0303"
+    Normalize.reverseLowerAlphanumeric(" - Foo \u006E\u0303 Bar - ", "foonbar") shouldBe Some(
+      "Foo \u00F1 Bar"
+    ) // Reverses to the normalized unicode version only (not the original "\u006E\u0303"
 
     Normalize.reverseLowerAlphanumeric(" - Foo \u00F1 Bar \u00F1 - ", "foonbarn") shouldBe Some("Foo \u00F1 Bar \u00F1")
-    Normalize.reverseLowerAlphanumeric(" - Foo \u006E\u0303 Bar \u006E\u0303 - ", "foonbarn") shouldBe Some("Foo \u00F1 Bar \u00F1")  // Reverses to the normalized unicode version only (not to the original "\u006E\u0303")
+    Normalize.reverseLowerAlphanumeric(" - Foo \u006E\u0303 Bar \u006E\u0303 - ", "foonbarn") shouldBe Some(
+      "Foo \u00F1 Bar \u00F1"
+    ) // Reverses to the normalized unicode version only (not to the original "\u006E\u0303")
 
-    Normalize.reverseLowerAlphanumeric(" - Foo \u00F1 Æ Bar \u00F1 - ", "foonaebarn") shouldBe Some("Foo \u00F1 Æ Bar \u00F1")
-    Normalize.reverseLowerAlphanumeric(" - Foo \u006E\u0303 Æ Bar \u006E\u0303 - ", "foonaebarn") shouldBe Some("Foo \u00F1 Æ Bar \u00F1")  // Reverses to the normalized unicode version only (not to the original "\u006E\u0303")
+    Normalize.reverseLowerAlphanumeric(" - Foo \u00F1 Æ Bar \u00F1 - ", "foonaebarn") shouldBe Some(
+      "Foo \u00F1 Æ Bar \u00F1")
+    Normalize.reverseLowerAlphanumeric(" - Foo \u006E\u0303 Æ Bar \u006E\u0303 - ", "foonaebarn") shouldBe Some(
+      "Foo \u00F1 Æ Bar \u00F1"
+    ) // Reverses to the normalized unicode version only (not to the original "\u006E\u0303")
     Normalize.reverseLowerAlphanumeric(" - Æ \u006E\u0303 Æ - ", "aenae") shouldBe Some("Æ \u00F1 Æ")
 
-    Normalize.reverseLowerAlphanumeric("\uD83D\uDCA5 - Æ \u006E\u0303 \uD83D\uDCA5 Æ \uD83D\uDCA5 - ", "aenae") shouldBe Some("Æ \u00F1 \uD83D\uDCA5 Æ")
-    Normalize.reverseLowerAlphanumeric("\uD83D\uDCA5 - Æ \uD83D\uDCA5 \u006E\u0303 \uD83D\uDCA5 \uD83D\uDCA5 Æ \uD83D\uDCA5 - ", "aenae") shouldBe Some("Æ \uD83D\uDCA5 \u00F1 \uD83D\uDCA5 \uD83D\uDCA5 Æ")
-    Normalize.reverseLowerAlphanumeric("\uD83D\uDCA5 - Æ \u006E\u0303 \uD83D\uDCA5 Æ\uD83D\uDCA5 - ", "aenae") shouldBe Some("Æ \u00F1 \uD83D\uDCA5 Æ\uD83D\uDCA5")
+    Normalize.reverseLowerAlphanumeric(
+      "\uD83D\uDCA5 - Æ \u006E\u0303 \uD83D\uDCA5 Æ \uD83D\uDCA5 - ",
+      "aenae") shouldBe Some("Æ \u00F1 \uD83D\uDCA5 Æ")
+    Normalize.reverseLowerAlphanumeric(
+      "\uD83D\uDCA5 - Æ \uD83D\uDCA5 \u006E\u0303 \uD83D\uDCA5 \uD83D\uDCA5 Æ \uD83D\uDCA5 - ",
+      "aenae") shouldBe Some("Æ \uD83D\uDCA5 \u00F1 \uD83D\uDCA5 \uD83D\uDCA5 Æ")
+    Normalize.reverseLowerAlphanumeric(
+      "\uD83D\uDCA5 - Æ \u006E\u0303 \uD83D\uDCA5 Æ\uD83D\uDCA5 - ",
+      "aenae") shouldBe Some("Æ \u00F1 \uD83D\uDCA5 Æ\uD83D\uDCA5")
+
+    ()
   }
-  
+
   test("urlname") {
-    def t(pair: (String,String)): Unit = TestHelpers.withCallerInfo {
-      val (str, urlName) = pair
-      Normalize.urlName(str) shouldBe urlName
-    }
+    def t(pair: (String, String)): Unit =
+      TestHelpers.withCallerInfo {
+        val (str, urlName) = pair
+        Normalize.urlName(str) shouldBe urlName
+        ()
+      }
 
     t((null: String) -> "")
     t("" -> "")
@@ -257,13 +313,15 @@ class TestNormalize extends AnyFunSuite with Matchers {
     t("\\\\foo_bar\\asd//\\" -> "foo-bar-asd")
     t("\\\\foo_bar\\\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5\\asd//\\" -> "foo-bar-aaaaaa-asd")
   }
-  
+
   test("unicodeNormalization") {
-    def t(pair: (String,String)): Unit = TestHelpers.withCallerInfo {
-      val (str, urlName) = pair
-      Normalize.unicodeNormalization(str) shouldBe urlName
-    }
-    
+    def t(pair: (String, String)): Unit =
+      TestHelpers.withCallerInfo {
+        val (str, urlName) = pair
+        Normalize.unicodeNormalization(str) shouldBe urlName
+        ()
+      }
+
     t("" -> "")
     t("foo" -> "foo")
     t("Æ" -> "Æ")

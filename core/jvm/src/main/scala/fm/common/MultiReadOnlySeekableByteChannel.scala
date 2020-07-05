@@ -1,5 +1,7 @@
 /*
- * Copyright 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.io.File
@@ -24,7 +27,7 @@ import scala.util.Try
 
 object MultiReadOnlySeekableByteChannel {
   def forFiles(files: Seq[File]): SeekableByteChannel = {
-    forSeekableByteChannels(files.map{ f: File => Files.newByteChannel(f.toPath, StandardOpenOption.READ) })
+    forSeekableByteChannels(files.map { f: File => Files.newByteChannel(f.toPath, StandardOpenOption.READ) })
   }
 
   def forSeekableByteChannels(channels: Seq[SeekableByteChannel]): SeekableByteChannel = {
@@ -41,15 +44,17 @@ object MultiReadOnlySeekableByteChannel {
  * parts of the 7 Zip archive into a single SeekableByteChannel which can then be used with the commons-compress
  * SevenZFile class.
  */
-final class MultiReadOnlySeekableByteChannel private (channels: Array[SeekableByteChannel]) extends SeekableByteChannel {
+final class MultiReadOnlySeekableByteChannel private (channels: Array[SeekableByteChannel])
+  extends SeekableByteChannel {
   private[this] var currentChannelIdx: Int = 0
   private[this] var globalPosition: Long = 0
 
-  override def read(dst: ByteBuffer): Int = synchronized {
-    val bytesRead: Int = read0(dst, 0)
-    if (bytesRead > 0) globalPosition += bytesRead
-    bytesRead
-  }
+  override def read(dst: ByteBuffer): Int =
+    synchronized {
+      val bytesRead: Int = read0(dst, 0)
+      if (bytesRead > 0) globalPosition += bytesRead
+      bytesRead
+    }
 
   @tailrec
   private def read0(dst: ByteBuffer, totalBytesRead: Int): Int = {
@@ -79,45 +84,46 @@ final class MultiReadOnlySeekableByteChannel private (channels: Array[SeekableBy
     }
   }
 
-  override def position(newPosition: Long): SeekableByteChannel = synchronized {
-    if (!isOpen) throw new ClosedChannelException()
-    if (newPosition < 0) throw new IllegalArgumentException("Negative position: "+newPosition)
+  override def position(newPosition: Long): SeekableByteChannel =
+    synchronized {
+      if (!isOpen) throw new ClosedChannelException()
+      if (newPosition < 0) throw new IllegalArgumentException("Negative position: " + newPosition)
 
-    globalPosition = newPosition
+      globalPosition = newPosition
 
-    var i: Int = 0
-    var pos: Long = newPosition
+      var i: Int = 0
+      var pos: Long = newPosition
 
-    while (i < channels.size) {
-      val currentChannel: SeekableByteChannel = channels(i)
-      val size: Long = currentChannel.size()
+      while (i < channels.size) {
+        val currentChannel: SeekableByteChannel = channels(i)
+        val size: Long = currentChannel.size()
 
-      val newChannelPos: Long = if (pos === -1L) {
-        // Position is already set for the correct channel, the rest of the channels get reset to 0
-        0
-      } else if (pos <= size) {
-        // This channel is where we want to be
-        currentChannelIdx = i
-        val tmp: Long = pos
-        pos = -1L // Mark pos as already being set
-        tmp
-      } else {
-        // newPosition is past this channel.  Set channel position to the end and substract channel size from pos
-        pos -= size
-        size
+        val newChannelPos: Long = if (pos === -1L) {
+          // Position is already set for the correct channel, the rest of the channels get reset to 0
+          0
+        } else if (pos <= size) {
+          // This channel is where we want to be
+          currentChannelIdx = i
+          val tmp: Long = pos
+          pos = -1L // Mark pos as already being set
+          tmp
+        } else {
+          // newPosition is past this channel.  Set channel position to the end and substract channel size from pos
+          pos -= size
+          size
+        }
+
+        currentChannel.position(newChannelPos)
+        i += 1
       }
 
-      currentChannel.position(newChannelPos)
-      i += 1
+      this
     }
 
-    this
-  }
-
-  override def close(): Unit = channels.foreach{ ch: SeekableByteChannel => Try{ ch.close() } }
-  override def isOpen: Boolean = channels.forall{ _.isOpen }
+  override def close(): Unit = channels.foreach { ch: SeekableByteChannel => Try { ch.close() } }
+  override def isOpen: Boolean = channels.forall { _.isOpen }
   override def position(): Long = globalPosition
-  override def size(): Long = channels.map{ _.size() }.sum
+  override def size(): Long = channels.map { _.size() }.sum
   override def truncate(size: Long): SeekableByteChannel = throwReadOnly()
   override def write(src: ByteBuffer): Int = throwReadOnly()
 

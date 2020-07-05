@@ -1,5 +1,7 @@
 /*
- * Copyright 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.lang.{StringBuilder => JavaStringBuilder}
@@ -47,7 +50,7 @@ abstract class Bootstring(
 ) {
   val base: Int = alphabet.length
 
-  private val EmptyPair: (String,String) = ("","")
+  private val EmptyPair: (String, String) = ("", "")
 
   // Conditions that should hold true according to rfc3492
   require(0 <= tmin && tmin <= tmax && tmax <= base - 1, "Expected: 0 <= tmin <= tmax <= base-1")
@@ -57,18 +60,20 @@ abstract class Bootstring(
 
   private def ASCIIMax: Int = 127
 
-  require(alphabet.forall{ ch: Char => ch <= ASCIIMax }, "Expected ASCII Alphabet")
-  require(alphabet.forall{ ch: Char => !ch.isControl }, "Expected non-control alphabet characters")
+  require(alphabet.forall { ch: Char => ch <= ASCIIMax }, "Expected ASCII Alphabet")
+  require(alphabet.forall { ch: Char => !ch.isControl }, "Expected non-control alphabet characters")
 
   private val isMixedCase: Boolean = {
-    val hasUpper: Boolean = alphabet.exists{ ch: Char => ch.isLetter && ch.isUpper }
-    val hasLower: Boolean = alphabet.exists{ ch: Char => ch.isLetter && ch.isLower }
+    val hasUpper: Boolean = alphabet.exists { ch: Char => ch.isLetter && ch.isUpper }
+    val hasLower: Boolean = alphabet.exists { ch: Char => ch.isLetter && ch.isLower }
     hasUpper && hasLower
   }
 
   // We will use these for the encode digit method
-  private val lowerDigitEncoder: ImmutableArray[Char] = ImmutableArray.wrap((if (isMixedCase) alphabet else alphabet.toLowerCase).toCharArray)
-  private val upperDigitEncoder: ImmutableArray[Char] = if (isMixedCase) lowerDigitEncoder else ImmutableArray.wrap(alphabet.toUpperCase.toCharArray)
+  private val lowerDigitEncoder: ImmutableArray[Char] =
+    ImmutableArray.wrap((if (isMixedCase) alphabet else alphabet.toLowerCase).toCharArray)
+  private val upperDigitEncoder: ImmutableArray[Char] =
+    if (isMixedCase) lowerDigitEncoder else ImmutableArray.wrap(alphabet.toUpperCase.toCharArray)
 
   /**
    * Maps ASCII Characters to their corresponding digit (or -1 if they do not have one)
@@ -82,10 +87,10 @@ abstract class Bootstring(
       val ch: Char = lowerDigitEncoder(i)
 
       if (isMixedCase) {
-        arr(ch) = i
+        arr(ch.toInt) = i
       } else {
-        arr(ch.toUpper) = i
-        arr(ch.toLower) = i
+        arr(ch.toUpper.toInt) = i
+        arr(ch.toLower.toInt) = i
       }
 
       i += 1
@@ -104,14 +109,16 @@ abstract class Bootstring(
   final def isDelimiter(codepoint: Int): Boolean = codepoint === delimiter.toInt
 
   final def decodeDigit(codepoint: Int): Int = {
-    if (codepoint < 0 || codepoint > ASCIIMax) throw new IllegalArgumentException("Invalid digit for decoding: "+codepoint)
+    if (codepoint < 0 || codepoint > ASCIIMax)
+      throw new IllegalArgumentException("Invalid digit for decoding: " + codepoint)
     val res: Int = digitDecoder(codepoint)
-    if (res === -1) throw new IllegalArgumentException("Invalid digit for decoding: "+codepoint)
+    if (res === -1) throw new IllegalArgumentException("Invalid digit for decoding: " + codepoint)
     res
   }
 
   final def encodeDigit(digit: Int, uppercase: Boolean): Char = {
-    if (digit < 0 || digit > base) throw new IllegalArgumentException(s"Expected digit ($digit) to be >= 0 and <= base ($base)")
+    if (digit < 0 || digit > base)
+      throw new IllegalArgumentException(s"Expected digit ($digit) to be >= 0 and <= base ($base)")
     if (uppercase) upperDigitEncoder(digit) else lowerDigitEncoder(digit)
   }
 
@@ -151,10 +158,10 @@ abstract class Bootstring(
   }
 
   final def formatPair(basicChars: String, encodedChars: String): String = {
-    if (basicChars.length === 0) encodedChars else basicChars+delimiter+encodedChars
+    if (basicChars.length === 0) encodedChars else basicChars + delimiter + encodedChars
   }
 
-  final def encodeToPair(input: String): (String,String) = {
+  final def encodeToPair(input: String): (String, String) = {
     if (null == input || input.length === 0) return EmptyPair
 
     var basicChars: JavaStringBuilder = null
@@ -169,8 +176,8 @@ abstract class Bootstring(
     while (j < input.length) {
       val ch: Char = input.charAt(j)
 
-      if (isBasicCodePoint(ch)) {
-        if (null != basicChars) basicChars.append(encodeBasic(ch, isBasicUpperCase(ch)))
+      if (isBasicCodePoint(ch.toInt)) {
+        if (null != basicChars) basicChars.append(encodeBasic(ch.toInt, isBasicUpperCase(ch)))
       } else if (null == basicChars) {
         // Lazy initialize the StringBuilder only if we have any non-basic chars
         basicChars = new JavaStringBuilder(j)
@@ -206,10 +213,13 @@ abstract class Bootstring(
 
           // Supplementary character handling
           if (Character.isSurrogate(firstChar)) {
-            require(Character.isHighSurrogate(firstChar), "Expected isHighSurrogate to be true for: "+firstChar.toInt)
+            require(Character.isHighSurrogate(firstChar), "Expected isHighSurrogate to be true for: " + firstChar.toInt)
             j += 1
             val secondChar: Char = input.charAt(j)
-            require(Character.isLowSurrogate(secondChar), "Expected isLowSurrogate to be true for: "+secondChar.toInt+" firstChar: "+firstChar.toInt+"  secondChar: "+secondChar.toInt)
+            require(
+              Character.isLowSurrogate(secondChar),
+              "Expected isLowSurrogate to be true for: " + secondChar.toInt + " firstChar: " + firstChar.toInt + "  secondChar: " + secondChar.toInt
+            )
             Character.toCodePoint(firstChar, secondChar)
           } else {
             firstChar.toInt
@@ -234,10 +244,13 @@ abstract class Bootstring(
 
           // Supplementary character handling
           if (Character.isSurrogate(firstChar)) {
-            require(Character.isHighSurrogate(firstChar), "Expected isHighSurrogate to be true for: "+firstChar.toInt)
+            require(Character.isHighSurrogate(firstChar), "Expected isHighSurrogate to be true for: " + firstChar.toInt)
             j += 1
             val secondChar: Char = input.charAt(j)
-            require(Character.isLowSurrogate(secondChar), "Expected isLowSurrogate to be true for: "+secondChar.toInt+" firstChar: "+firstChar.toInt+"  secondChar: "+secondChar.toInt)
+            require(
+              Character.isLowSurrogate(secondChar),
+              "Expected isLowSurrogate to be true for: " + secondChar.toInt + " firstChar: " + firstChar.toInt + "  secondChar: " + secondChar.toInt
+            )
             Character.toCodePoint(firstChar, secondChar)
           } else {
             firstChar.toInt
@@ -294,7 +307,7 @@ abstract class Bootstring(
     // Find the last occurrence of the delimiter
     while (j < input.length) {
       val ch: Char = input.charAt(j)
-      if (isDelimiter(ch)) b = j
+      if (isDelimiter(ch.toInt)) b = j
       j += 1
     }
 
@@ -335,7 +348,7 @@ abstract class Bootstring(
 
       while (!done) {
         if (in >= encodedChars.length) throw new IllegalArgumentException("Bad input")
-        val digit: Int = decodeDigit(encodedChars.charAt(in))
+        val digit: Int = decodeDigit(encodedChars.charAt(in).toInt)
         in += 1
         if (digit >= base) throw new IllegalArgumentException("Bad input")
         if (digit > (maxint - i) / w) throw new Exception("overflow")

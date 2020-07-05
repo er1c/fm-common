@@ -1,5 +1,7 @@
 /*
- * Copyright 2016 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
 final class TestStringEscapeUtils extends AnyFunSuite with Matchers {
-  
+
   test("escapeHTML") {
     h("<foo>") shouldBe "&lt;foo&gt;"
     h("<<<") shouldBe "&lt;&lt;&lt;"
@@ -30,7 +33,7 @@ final class TestStringEscapeUtils extends AnyFunSuite with Matchers {
     j("Hello\"World") shouldBe "Hello\\\"World"
     j("Multi\nLine") shouldBe "Multi\\nLine"
   }
-  
+
   private def h(s: String): String = StringEscapeUtils.escapeHTML(s)
   private def j(s: String): String = StringEscapeUtils.escapeECMAScript(s)
 }

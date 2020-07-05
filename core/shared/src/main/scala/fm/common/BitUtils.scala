@@ -1,5 +1,7 @@
 /*
- * Copyright 2016 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 object BitUtils {
   /**
    * Create a long out of 2 ints such that the first int is the upper 32 bits of the long
    * and the second int is the lower 32 bits of the long.
-   * 
-   * [a - upper 32 bits][b - lower 32 bits]
+   *
+    * [a - upper 32 bits][b - lower 32 bits]
    */
-  def makeLong(a: Int, b: Int): Long = ((a: Long) << 32) | (b & 0xffffffffL)
+  def makeLong(a: Int, b: Int): Long = (a.toLong << 32) | (b & 0xffffffffL)
 
-  def makeInt(a: Short, b: Short): Int = ((a: Int) << 16) | (b & 0xffff)
-  
+  def makeInt(a: Short, b: Short): Int = (a.toInt << 16) | (b & 0xffff)
+
   /**
    * Split a long into 2 ints (the reverse of makeLong())
    */
@@ -35,7 +38,7 @@ object BitUtils {
    * Split an int into 2 shorts (the reverse of makeInt())
    */
   def splitInt(int: Int): (Short, Short) = (getUpper(int), getLower(int))
-  
+
   /**
    * Get the upper 32 bits of the long
    */
@@ -84,7 +87,7 @@ object BitUtils {
    */
   def makeIntWithUpper24Bits(a: Int, b: Short): Int = {
     if (!isWithin24Bits(a) || !isWithin8Bits(b)) throw new IllegalArgumentException("Arguments out of range")
-    (a << 8) | ((b: Int) & 0xff)
+    (a << 8) | (b.toInt & 0xff)
   }
 
   /**
@@ -95,7 +98,7 @@ object BitUtils {
    */
   def makeIntWithLower24Bits(a: Short, b: Int): Int = {
     if (!isWithin8Bits(a) || !isWithin24Bits(b)) throw new IllegalArgumentException("Arguments out of range")
-    ((a: Int) << 24) | (b & 0xffffff)
+    (a.toInt << 24) | (b & 0xffffff)
   }
 
   private def isWithin24Bits(a: Int): Boolean = (a & 0xffffff) == a

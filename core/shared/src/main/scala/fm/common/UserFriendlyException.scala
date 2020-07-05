@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +15,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 object UserFriendlyException {
-  def apply(friendlyTitle: String, friendlyMessage: String): UserFriendlyException = apply(friendlyTitle, friendlyMessage, null)
-  
-  def apply(friendlyTitle: String, friendlyMessage: String, cause: Throwable): UserFriendlyException = SimpleUserFriendlyException(friendlyTitle, friendlyMessage, cause)
-  
+  def apply(friendlyTitle: String, friendlyMessage: String): UserFriendlyException =
+    apply(friendlyTitle, friendlyMessage, null)
+
+  def apply(friendlyTitle: String, friendlyMessage: String, cause: Throwable): UserFriendlyException =
+    SimpleUserFriendlyException(friendlyTitle, friendlyMessage, cause)
+
   /** Extract a UserFriendlyException from a Throwable (if possible) */
   def unapply(throwable: Throwable): Option[UserFriendlyException] = {
     if (null == throwable) None
-    else throwable match {
-      case ex: UserFriendlyException => Some(ex)
-      case _ => unapply(throwable.getCause)
-    }
+    else
+      throwable match {
+        case ex: UserFriendlyException => Some(ex)
+        case _ => unapply(throwable.getCause)
+      }
   }
 
-  private case class SimpleUserFriendlyException(friendlyTitle: String, friendlyMessage: String, cause: Throwable) extends UserFriendlyException(s"$friendlyTitle - $friendlyMessage", cause)
+  private case class SimpleUserFriendlyException(friendlyTitle: String, friendlyMessage: String, cause: Throwable)
+    extends UserFriendlyException(s"$friendlyTitle - $friendlyMessage", cause)
 }
 
-abstract class UserFriendlyException (message: String, cause: Throwable) extends Exception(message, cause) {
+abstract class UserFriendlyException(message: String, cause: Throwable) extends Exception(message, cause) {
   def this(message: String) = this(message, null)
-  def this(cause: Throwable) = this(Option(cause).map{ _.toString }.orNull, cause)
-  
+  def this(cause: Throwable) = this(Option(cause).map { _.toString }.orNull, cause)
+
   def friendlyTitle: String
   def friendlyMessage: String
 }

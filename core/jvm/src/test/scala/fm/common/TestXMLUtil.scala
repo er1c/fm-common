@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.io.ByteArrayInputStream
@@ -21,15 +24,15 @@ import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
 final class TestXMLUtil extends AnyFunSuite with Matchers {
-  
+
   test("isXml") {
     def isXML(s: String): Boolean = {
       XMLUtil.isXML(s) && XMLUtil.isXML(new ByteArrayInputStream(s.getBytes(UTF_8)))
     }
-    
+
     isXML("foo") shouldBe false
     isXML("foo<hello>") shouldBe false
-    
+
     isXML("<hello>") shouldBe true // This looks like XML which is why it's true
     isXML("<!-- foo --><hello>") shouldBe true
     isXML("""<?xml version="1.0" encoding="ISO-8859-1"?><ACES version="2.0">""") shouldBe true

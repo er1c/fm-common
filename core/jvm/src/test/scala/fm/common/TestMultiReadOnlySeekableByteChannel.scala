@@ -1,5 +1,7 @@
 /*
- * Copyright 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.nio.ByteBuffer
@@ -25,12 +28,12 @@ import org.scalatest.matchers.should.Matchers
 final class TestMultiReadOnlySeekableByteChannel extends AnyFunSuite with Matchers {
 
   test("Empty") {
-    an [IllegalArgumentException] shouldBe thrownBy { MultiReadOnlySeekableByteChannel.forSeekableByteChannels(Nil) }
+    an[IllegalArgumentException] shouldBe thrownBy { MultiReadOnlySeekableByteChannel.forSeekableByteChannels(Nil) }
   }
 
   test("Single - Identity") {
     val channel: SeekableByteChannel = makeEmpty()
-    MultiReadOnlySeekableByteChannel.forSeekableByteChannels(Seq(channel)) shouldBe theSameInstanceAs (channel)
+    MultiReadOnlySeekableByteChannel.forSeekableByteChannels(Seq(channel)) shouldBe theSameInstanceAs(channel)
   }
 
   test("Empty InMemorySeekableByteChannel - Reference Behavior") {
@@ -38,7 +41,8 @@ final class TestMultiReadOnlySeekableByteChannel extends AnyFunSuite with Matche
   }
 
   test("Empty SeekableByteChannel") {
-    val channel: SeekableByteChannel = MultiReadOnlySeekableByteChannel.forSeekableByteChannels(Seq(makeEmpty(), makeEmpty()))
+    val channel: SeekableByteChannel =
+      MultiReadOnlySeekableByteChannel.forSeekableByteChannels(Seq(makeEmpty(), makeEmpty()))
     checkEmpty(channel)
   }
 
@@ -68,8 +72,10 @@ final class TestMultiReadOnlySeekableByteChannel extends AnyFunSuite with Matche
     channel.close()
     channel.isOpen() shouldBe false
 
-    an [ClosedChannelException] shouldBe thrownBy { channel.read(buf) }
-    an [ClosedChannelException] shouldBe thrownBy { channel.position(100) }
+    an[ClosedChannelException] shouldBe thrownBy { channel.read(buf) }
+    an[ClosedChannelException] shouldBe thrownBy { channel.position(100) }
+
+    ()
   }
 
   private def check(expected: Array[Byte]): Unit = {
@@ -83,7 +89,7 @@ final class TestMultiReadOnlySeekableByteChannel extends AnyFunSuite with Matche
   }
 
   private def check(expected: Array[Byte], channel: SeekableByteChannel): Unit = {
-    (1 to expected.length + 5).foreach{ readBufferSize: Int =>
+    (1 to expected.length + 5).foreach { readBufferSize: Int =>
       check(expected, channel, readBufferSize)
     }
   }
@@ -122,6 +128,8 @@ final class TestMultiReadOnlySeekableByteChannel extends AnyFunSuite with Matche
     resultBuffer.get(arr)
 
     arr.toIndexedSeq shouldBe expected.toIndexedSeq
+
+    ()
   }
 
   private def makeEmpty(): SeekableByteChannel = {
@@ -133,6 +141,6 @@ final class TestMultiReadOnlySeekableByteChannel extends AnyFunSuite with Matche
   }
 
   private def makeMulti(arr: Iterator[Array[Byte]]): SeekableByteChannel = {
-    MultiReadOnlySeekableByteChannel.forSeekableByteChannels(arr.map{ makeSingle }.toSeq)
+    MultiReadOnlySeekableByteChannel.forSeekableByteChannels(arr.map { makeSingle }.toSeq)
   }
 }

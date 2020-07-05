@@ -1,5 +1,7 @@
 /*
- * Copyright 2020 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import fm.common.TaskRunnerBase.{ClearingBlockRunnable, ClearingBlockRunnableWithResult}
@@ -23,12 +26,13 @@ abstract class TaskRunnerNonPriority(name: String) extends TaskRunnerBase(name) 
   /**
    * Attempt to submit this job to the queue.  Returns true if successful or false if the queue is full
    */
-  final def tryExecute(f: => Unit): Boolean = try {
-    execute(f)
-    true
-  } catch {
-    case _: RejectedExecutionException => false
-  }
+  final def tryExecute(f: => Unit): Boolean =
+    try {
+      execute(f)
+      true
+    } catch {
+      case _: RejectedExecutionException => false
+    }
 
   final def execute(f: => Unit): Unit = {
     executor.execute(new ClearingBlockRunnable(f))
@@ -37,11 +41,12 @@ abstract class TaskRunnerNonPriority(name: String) extends TaskRunnerBase(name) 
   /**
    * Attempt to submit this job to the queue.  Returns Some(...) if successful or None if the queue is full
    */
-  final def trySubmit[T](f: => T): Option[Future[T]] = try {
-    Some(submit(f))
-  } catch {
-    case _: RejectedExecutionException => None
-  }
+  final def trySubmit[T](f: => T): Option[Future[T]] =
+    try {
+      Some(submit(f))
+    } catch {
+      case _: RejectedExecutionException => None
+    }
 
   final def submit[T](f: => T): Future[T] = {
     val promise = Promise[T]()

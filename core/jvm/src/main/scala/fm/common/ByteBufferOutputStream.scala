@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.io.OutputStream
@@ -22,15 +25,19 @@ import java.nio.{ByteBuffer, MappedByteBuffer}
  * A Simple OutputStream wrapper around a ByteBuffer
  */
 final class ByteBufferOutputStream(buf: ByteBuffer) extends OutputStream {
-  def write(b: Int): Unit = buf.put(b.toByte)
-  
-  override def write(bytes: Array[Byte], off: Int, len: Int): Unit = buf.put(bytes, off, len)
-  
+  def write(b: Int): Unit = { buf.put(b.toByte); () }
+
+  override def write(bytes: Array[Byte], off: Int, len: Int): Unit = {
+    buf.put(bytes, off, len)
+    ()
+  }
+
   /**
    * If this is a MappedByteBuffer then force() is called to cause changes to be written to disk
    */
-  override def flush(): Unit = buf match {
-    case mapped: MappedByteBuffer => mapped.force()
-    case _ => // Do nothing
-  }
+  override def flush(): Unit =
+    buf match {
+      case mapped: MappedByteBuffer => mapped.force(); ()
+      case _ => // Do nothing
+    }
 }

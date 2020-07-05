@@ -1,5 +1,7 @@
 /*
- * Copyright 2015 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import scala.collection.{concurrent, mutable}
@@ -36,7 +39,6 @@ private[common] trait JavaConvertersBase extends DecorateAsJava with DecorateAsS
   def asJavaCollection[A](i: Iterable[A]): Collection[A] = asJavaCollectionConverter(i).asJavaCollection
   def asJavaDictionary[K, V](m: mutable.Map[K, V]): Dictionary[K, V] = asJavaDictionaryConverter(m).asJavaDictionary
   def asJavaEnumeration[A](i: Iterator[A]): java.util.Enumeration[A] = asJavaEnumerationConverter(i).asJavaEnumeration
-
 
   // Implement the 2.13 AsScalaConverters new method names
   def asScala(p: Properties): mutable.Map[String, String] = propertiesAsScalaMapConverter(p).asScala

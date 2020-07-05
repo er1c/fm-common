@@ -16,15 +16,6 @@
  * limitations under the License.
  */
 
-package fm.common.rich
+package fm.common
 
-import fm.common.Implicits._
-import org.scalajs.dom.raw.Node
-
-final class RichNodeTraversable(val elems: Traversable[Node]) extends AnyVal {
-  def textContent: IndexedSeq[String] = elems.map { _.textContent }.toVector
-
-  def textContent_=(value: String): Unit = elems.foreach { _.textContent = value }
-
-  def remove(): Unit = elems.foreach { _.remove() }
-}
+trait PackageBase

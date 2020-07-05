@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.io.{File, OutputStream, PrintStream}
@@ -31,24 +34,24 @@ final case class LoggingCaptureConfig(logger: org.slf4j.Logger, pattern: String,
 
 /**
  * This has SLF4J/Logback Helpers that depend on SLF4j/Logback
- * 
- * TODO: Clean this up!!
+ *
+  * TODO: Clean this up!!
  */
 object Logging {
-  
+
   // Some helpers to set the logging level at runtime
   def setLevelToTrace(logger: AnyRef): Unit = setLevel(logger, LogbackLevel.TRACE)
   def setLevelToDebug(logger: AnyRef): Unit = setLevel(logger, LogbackLevel.DEBUG)
-  def setLevelToInfo(logger: AnyRef):  Unit = setLevel(logger, LogbackLevel.INFO)
-  def setLevelToWarn(logger: AnyRef):  Unit = setLevel(logger, LogbackLevel.WARN)
+  def setLevelToInfo(logger: AnyRef): Unit = setLevel(logger, LogbackLevel.INFO)
+  def setLevelToWarn(logger: AnyRef): Unit = setLevel(logger, LogbackLevel.WARN)
   def setLevelToError(logger: AnyRef): Unit = setLevel(logger, LogbackLevel.ERROR)
   def setLevelToOff(logger: AnyRef): Unit = setLevel(logger, LogbackLevel.OFF)
 
   // Set the ROOT logger
   def setRootLevelToTrace(): Unit = setRootLevel(LogbackLevel.TRACE)
   def setRootLevelToDebug(): Unit = setRootLevel(LogbackLevel.DEBUG)
-  def setRootLevelToInfo():  Unit = setRootLevel(LogbackLevel.INFO)
-  def setRootLevelToWarn():  Unit = setRootLevel(LogbackLevel.WARN)
+  def setRootLevelToInfo(): Unit = setRootLevel(LogbackLevel.INFO)
+  def setRootLevelToWarn(): Unit = setRootLevel(LogbackLevel.WARN)
   def setRootLevelToError(): Unit = setRootLevel(LogbackLevel.ERROR)
   def setRootLevelToOff(): Unit = setRootLevel(LogbackLevel.OFF)
 
@@ -56,11 +59,13 @@ object Logging {
   def setRootLevel(level: LogbackLevel): Unit = setLevel(ROOT_LOGGER_NAME, level)
 
   // Private to avoid exposing LogbackLevel which causes ProGuard issues
-  private def setLevel(logger: AnyRef, level: LogbackLevel): Unit = setLevel(Logger.SLF4JLogger(logger).underlying, level)
+  private def setLevel(logger: AnyRef, level: LogbackLevel): Unit =
+    setLevel(Logger.SLF4JLogger(logger).underlying, level)
 
   // Private to avoid exposing org.slf4j.Logger which causes ProGuard issues
-  private def setLevel(logger: org.slf4j.Logger, level: LogbackLevel): Unit = logger match { case logback: LogbackLogger => logback.setLevel(level) }
-  
+  private def setLevel(logger: org.slf4j.Logger, level: LogbackLevel): Unit =
+    logger match { case logback: LogbackLogger => logback.setLevel(level) }
+
   /**
    * Capture logging to a file
    *
@@ -72,9 +77,11 @@ object Logging {
     file: File,
     overwrite: Boolean
   )(fun: => T): T = {
-    FileUtil.writeFile(file, overwrite){ os => capture(logger.asInstanceOf[ch.qos.logback.classic.Logger], pattern, os)(fun) }
+    FileUtil.writeFile(file, overwrite) { os =>
+      capture(logger.asInstanceOf[ch.qos.logback.classic.Logger], pattern, os)(fun)
+    }
   }
-  
+
   /**
    * Capture logging based on a LoggingCaptureConfig
    * Note: Private to avoid exposing org.slf4j.Logger (via LoggingCaptureConfig) which causes ProGuard issues
@@ -84,11 +91,10 @@ object Logging {
 
     val head: LoggingCaptureConfig = configs.head
     capture(head.logger, head.pattern, head.file, head.overwrite) {
-      capture(configs.tail:_*)(fun)
+      capture(configs.tail: _*)(fun)
     }
   }
 
-  
   /**
    * Capture logging to an output stream
    *
@@ -96,13 +102,13 @@ object Logging {
    */
   private def capture[T](logger: ch.qos.logback.classic.Logger, pattern: String, os: OutputStream)(fun: => T): T = {
     import ch.qos.logback.classic.LoggerContext
-    
+
     val ctx = org.slf4j.LoggerFactory.getILoggerFactory.asInstanceOf[LoggerContext]
     val encoder = new ch.qos.logback.classic.encoder.PatternLayoutEncoder
     encoder.setContext(ctx)
     encoder.setPattern(pattern)
     encoder.start
-    
+
     val osAppender = new ch.qos.logback.core.OutputStreamAppender[ch.qos.logback.classic.spi.ILoggingEvent]
     osAppender.setContext(ctx)
     osAppender.setLayout(encoder.getLayout)
@@ -121,35 +127,38 @@ object Logging {
   /**
    * Capture Standard Out and Standard Error to a file
    */
-  def captureStdOutStdErr[T](file: File, overwrite: Boolean, append: Boolean = false, useTmpFile: Boolean = true)(fun: => T): T = {
-    FileOutputStreamResource(file, overwrite = overwrite, append = append, useTmpFile = useTmpFile).use{ os => captureStdOutStdErr(os)(fun) }
+  def captureStdOutStdErr[T](file: File, overwrite: Boolean, append: Boolean = false, useTmpFile: Boolean = true)(
+    fun: => T): T = {
+    FileOutputStreamResource(file, overwrite = overwrite, append = append, useTmpFile = useTmpFile).use { os =>
+      captureStdOutStdErr(os)(fun)
+    }
   }
 
   /**
    * Capture Standard Out and Standard Error to an Output Stream
    */
   def captureStdOutStdErr[T](os: OutputStream)(f: => T): T = {
-    captureScalaStdOutStdErr(os){ captureJavaStdOutStdErr(os)(f) }
+    captureScalaStdOutStdErr(os) { captureJavaStdOutStdErr(os)(f) }
   }
-  
+
   /**
    * Capture Java's Standard Out and Standard Error to an Output Stream
    */
   private def captureJavaStdOutStdErr[T](os: OutputStream)(f: => T): T = {
     val out: PrintStream = System.out
     val err: PrintStream = System.err
-    
+
     try {
       System.setOut(new PrintStream(new TeeOutputStream(out, os), true, "UTF-8"))
       System.setErr(new PrintStream(new TeeOutputStream(err, os), true, "UTF-8"))
-      
+
       f
     } finally {
       System.setOut(out)
       System.setErr(err)
     }
   }
-  
+
   /**
    * Capture Scala's Standard Out and Standard Error (Console.out and Console.err) to an Output Stream
    */
@@ -160,13 +169,16 @@ object Logging {
       }
     }
   }
-  
-  private def withAppender[T](logger: ch.qos.logback.classic.Logger, appender: ch.qos.logback.core.Appender[ch.qos.logback.classic.spi.ILoggingEvent])(fun: => T): T = {
+
+  private def withAppender[T](
+    logger: ch.qos.logback.classic.Logger,
+    appender: ch.qos.logback.core.Appender[ch.qos.logback.classic.spi.ILoggingEvent])(fun: => T): T = {
     try {
       logger.addAppender(appender)
       fun
     } finally {
       logger.detachAppender(appender)
+      ()
     }
   }
 }

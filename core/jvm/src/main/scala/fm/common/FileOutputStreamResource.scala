@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.io.{File, FileOutputStream, OutputStream}
@@ -31,7 +34,7 @@ object FileOutputStreamResource {
     buffered: Boolean = true,
     internalArchiveFileName: Option[String] = None
   ): OutputStreamResource = {
-    val finalFileName: String = fileName.toBlankOption.getOrElse{ file.getName }
+    val finalFileName: String = fileName.toBlankOption.getOrElse { file.getName }
 
     val resource: Resource[OutputStream] = new FileOutputStreamResource(
       file = file,
@@ -39,7 +42,7 @@ object FileOutputStreamResource {
       append = append,
       useTmpFile = useTmpFile
     )
-    
+
     OutputStreamResource(
       resource = resource,
       fileName = finalFileName,
@@ -60,33 +63,37 @@ final private class FileOutputStreamResource private (
   useTmpFile: Boolean
 ) extends Resource[OutputStream] with Logging {
   if (overwrite) require(!append, "You've specified both append and overwrite!")
-  
+
   def isUsable: Boolean = true
   def isMultiUse: Boolean = true
-  
-  def use[T](f: OutputStream => T): T = {   
-    require(!file.exists || (file.exists && (overwrite || append)), s"File (${file.getAbsolutePath()}) already exists and overwrite is false: "+f)
-    
+
+  def use[T](f: OutputStream => T): T = {
+    require(
+      !file.exists || (file.exists && (overwrite || append)),
+      s"File (${file.getAbsolutePath()}) already exists and overwrite is false: " + f)
+
     val usingTmpFile: Boolean = useTmpFile && !(append && file.exists)
-    
-    logger.debug(s"Writing to file: $file  Overwrite: $overwrite  Append: $append  useTmpFile: $useTmpFile   usingTmpFile: $usingTmpFile")
-    
+
+    logger.debug(
+      s"Writing to file: $file  Overwrite: $overwrite  Append: $append  useTmpFile: $useTmpFile   usingTmpFile: $usingTmpFile")
+
     val outFile: File = if (usingTmpFile) {
       val tmp = File.createTempFile(".fm_tmp", file.getName, getDirectoryForFile(file))
       // DO NOT USE File.deleteOnExit() since it uses an append-only LinkedHashSet
       //tmp.deleteOnExit()
       tmp
     } else file
-    
-    val res: T = try {
-      SingleUseResource(new FileOutputStream(outFile, append)).use { f }
-    } catch {
-      case ex: Throwable =>
-        logger.error(s"Caught Exception Writing File: $file")
-        if (usingTmpFile) outFile.delete()
-        throw ex
-    }
-    
+
+    val res: T =
+      try {
+        SingleUseResource(new FileOutputStream(outFile, append)).use { f }
+      } catch {
+        case ex: Throwable =>
+          logger.error(s"Caught Exception Writing File: $file")
+          if (usingTmpFile) outFile.delete()
+          throw ex
+      }
+
     // Do an atomic move to the final location
     if (usingTmpFile) {
       try {
@@ -98,14 +105,13 @@ final private class FileOutputStreamResource private (
           throw ex
       }
     }
-    
+
     res
   }
-  
+
   private def getDirectoryForFile(f: File): File = {
-    val tmp = if(f.isDirectory) f else f.getParentFile
+    val tmp = if (f.isDirectory) f else f.getParentFile
     assert(tmp.isDirectory, s"$tmp must be a directory")
     tmp
   }
 }
-

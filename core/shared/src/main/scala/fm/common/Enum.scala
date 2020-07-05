@@ -1,32 +1,24 @@
 /*
- * The MIT License (MIT)
- * 
- * Copyright (c) 2016 by Lloyd Chan
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- * 
- * This is from: https://github.com/lloydmeta/enumeratum
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package fm.common
 
 import scala.collection.immutable._
-import scala.language.experimental.macros
 
 /**
  * All the cool kids have their own Enumeration implementation, most of which try to
@@ -37,9 +29,8 @@ import scala.language.experimental.macros
  * Example:
  *
  * {{{
- * scala> import enumeratum._
- *
  * scala> sealed trait DummyEnum extends EnumEntry
+ * defined trait DummyEnum
  *
  * scala> object DummyEnum extends Enum[DummyEnum] {
  *      |   val values = findValues
@@ -60,25 +51,25 @@ import scala.language.experimental.macros
 trait Enum[A <: EnumEntry] {
 
   /**
-   * Map of [[A]] object names to [[A]]s
+   * Map of `A` object names to `A`s
    */
   lazy val namesToValuesMap: Map[String, A] =
     values.map(v => v.entryName -> v).toMap
 
   /**
-   * Map of [[A]] object names in lower case to [[A]]s for case-insensitive comparison
+   * Map of `A` object names in lower case to `A`s for case-insensitive comparison
    */
   lazy final val lowerCaseNamesToValuesMap: Map[String, A] =
     namesToValuesMap.map { case (k, v) => k.toLowerCase -> v }
 
   /**
-   * Map of [[A]] object names in upper case to [[A]]s for case-insensitive comparison
+   * Map of `A` object names in upper case to `A`s for case-insensitive comparison
    */
   lazy final val upperCaseNameValuesToMap: Map[String, A] =
     namesToValuesMap.map { case (k, v) => k.toUpperCase() -> v }
 
   /**
-   * Map of [[A]] to their index in the values sequence.
+   * Map of `A` to their index in the values sequence.
    *
    * A performance optimisation so that indexOf can be found in constant time.
    */
@@ -92,74 +83,68 @@ trait Enum[A <: EnumEntry] {
    * Feel free to implement this however you'd like (including messing around with ordering, etc) if that
    * fits your needs better.
    */
-  def values: scala.IndexedSeq[A] // Note: Changed back (by Eluvio) to using scala.collection.IndexedSeq instead of immutable.IndexedSeq
+  def values: scala.IndexedSeq[A]
+  // Note: Changed back (by Eluvio) to using scala.collection.IndexedSeq instead of immutable.IndexedSeq
 
   /**
-   * Tries to get an [[A]] by the supplied name. The name corresponds to the .name
-   * of the case objects implementing [[A]]
+   * Tries to get an `A` by the supplied name. The name corresponds to the .name
+   * of the case objects implementing `A`
    *
-   * Like [[Enumeration]]'s `withName`, this method will throw if the name does not match any of the values'
+   * Like [[withName]], this method will throw if the name does not match any of the values'
    * .entryName values.
    */
-  @SuppressWarnings(Array("org.wartremover.warts.Throw"))
   def withName(name: String): A =
     withNameOption(name).getOrElse(throw new NoSuchElementException(buildNotFoundMessage(name)))
 
   /**
-   * Optionally returns an [[A]] for a given name.
+   * Optionally returns an `A` for a given name.
    */
   def withNameOption(name: String): Option[A] = namesToValuesMap.get(name)
 
   /**
-   * Tries to get an [[A]] by the supplied name. The name corresponds to the .name
-   * of the case objects implementing [[A]], disregarding case
+   * Tries to get an `A` by the supplied name. The name corresponds to the .name
+   * of the case objects implementing `A`, disregarding case
    *
-   * Like [[Enumeration]]'s `withName`, this method will throw if the name does not match any of the values'
+   * Like [[withName]], this method will throw if the name does not match any of the values'
    * .entryName values.
    */
-  @SuppressWarnings(Array("org.wartremover.warts.Throw"))
   def withNameInsensitive(name: String): A =
-    withNameInsensitiveOption(name).getOrElse(
-      throw new NoSuchElementException(buildNotFoundMessage(name)))
+    withNameInsensitiveOption(name).getOrElse(throw new NoSuchElementException(buildNotFoundMessage(name)))
 
   /**
-   * Tries to get an [[A]] by the supplied name. The name corresponds to the .name
-   * of the case objects implementing [[A]] transformed to upper case
+   * Tries to get an `A` by the supplied name. The name corresponds to the .name
+   * of the case objects implementing `A` transformed to upper case
    *
-   * Like [[Enumeration]]'s `withName`, this method will throw if the name does not match any of the values'
+   * Like [[withName]], this method will throw if the name does not match any of the values'
    * .entryName values.
    */
-  @SuppressWarnings(Array("org.wartremover.warts.Throw"))
   def withNameUppercaseOnly(name: String): A =
-    withNameUppercaseOnlyOption(name).getOrElse(
-      throw new NoSuchElementException(buildNotFoundMessage(name)))
+    withNameUppercaseOnlyOption(name).getOrElse(throw new NoSuchElementException(buildNotFoundMessage(name)))
 
   /**
-   * Tries to get an [[A]] by the supplied name. The name corresponds to the .name
-   * of the case objects implementing [[A]] transformed to lower case
+   * Tries to get an `A` by the supplied name. The name corresponds to the .name
+   * of the case objects implementing `A` transformed to lower case
    *
-   * Like [[Enumeration]]'s `withName`, this method will throw if the name does not match any of the values'
+   * Like [[withName]], this method will throw if the name does not match any of the values'
    * .entryName values.
    */
-  @SuppressWarnings(Array("org.wartremover.warts.Throw"))
   def withNameLowercaseOnly(name: String): A =
-    withNameLowercaseOnlyOption(name).getOrElse(
-      throw new NoSuchElementException(buildNotFoundMessage(name)))
+    withNameLowercaseOnlyOption(name).getOrElse(throw new NoSuchElementException(buildNotFoundMessage(name)))
 
   /**
-   * Optionally returns an [[A]] for a given name, disregarding case
+   * Optionally returns an `A` for a given name, disregarding case
    */
   def withNameInsensitiveOption(name: String): Option[A] =
     lowerCaseNamesToValuesMap.get(name.toLowerCase)
 
   /**
-   * Optionally returns an [[A]] for a given name assuming the value is upper case
+   * Optionally returns an `A` for a given name assuming the value is upper case
    */
   def withNameUppercaseOnlyOption(name: String): Option[A] =
     upperCaseNameValuesToMap.get(name)
 
   /**
-   * Optionally returns an [[A]] for a given name assuming the value is lower case
+   * Optionally returns an `A` for a given name assuming the value is lower case
    */
   def withNameLowercaseOnlyOption(name: String): Option[A] =
     lowerCaseNamesToValuesMap.get(name)
@@ -167,15 +152,15 @@ trait Enum[A <: EnumEntry] {
   /**
    * Returns the index number of the member passed in the values picked up by this enum
    *
-   * @param member the member you want to check the index of
+    * @param member the member you want to check the index of
    * @return the index of the first element of values that is equal (as determined by ==) to member, or -1, if none exists.
    */
   def indexOf(member: A): Int = valuesToIndex.getOrElse(member, -1)
 
   /**
-   * Method that returns a Seq of [[A]] objects that the macro was able to find.
+   * Method that returns a Seq of `A` objects that the macro was able to find.
    *
-   * You will want to use this in some way to implement your [[values]] method. In fact,
+    * You will want to use this in some way to implement your [[values]] method. In fact,
    * if you aren't using this method...why are you even bothering with this lib?
    */
   protected def findValues: IndexedSeq[A] = macro EnumMacros.findValuesImpl[A]

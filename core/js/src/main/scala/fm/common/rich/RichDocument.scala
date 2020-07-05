@@ -1,5 +1,7 @@
 /*
- * Copyright 2016 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import fm.common.ElementType
 import org.scalajs.dom.raw.{Document, Element}
 
 final class RichDocument(val document: Document) extends AnyVal {
-  
+
   /**
    * val option: Option = document.createElement(ElementType.Option)
    */
   def createElement[T <: Element](tpe: ElementType[T]): T = document.createElement(tpe.name).asInstanceOf[T]
-  
+
   /**
    * val option: Option = document.newElement[Option]
    */

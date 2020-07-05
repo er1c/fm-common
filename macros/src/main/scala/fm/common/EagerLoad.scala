@@ -26,7 +26,7 @@ object EagerLoad {
   def eagerLoadNestedObjectsMacro(c: Context): c.Tree = {
     import c.universe._
 
-    val enclosingModule: ModuleDef = c.internal.enclosingOwner match {
+    val enclosingModule: ModuleDef = c.enclosingClass match {
       case mod: ModuleDef => mod
       case _ => c.abort(c.enclosingPosition, "Eager Loading of nested objects only works inside of an object")
     }
@@ -37,7 +37,7 @@ object EagerLoad {
 
 //    println("Idents: "+nestedModuleExprs)
 
-    q"..$nestedModuleExprs"
+    q"..$nestedModuleExprs; ()"
   }
 
   private def getNestedModuleExprs(

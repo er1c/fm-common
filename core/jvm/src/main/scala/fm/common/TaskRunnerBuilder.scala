@@ -1,5 +1,7 @@
 /*
- * Copyright 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 object TaskRunnerBuilder {
@@ -20,11 +23,11 @@ object TaskRunnerBuilder {
 }
 
 final class TaskRunnerBuilder {
-  var name: String              = TaskRunnerBuilder.defaultName
-  var threads: Int              = TaskRunner.defaultThreads
-  var queueSize: Int            = TaskRunner.defaultQueueSize
-  var coreThreads: Int          = TaskRunner.defaultCoreThreads
-  var maxThreads: Int           = TaskRunner.defaultMaxThreads
+  var name: String = TaskRunnerBuilder.defaultName
+  var threads: Int = TaskRunner.defaultThreads
+  var queueSize: Int = TaskRunner.defaultQueueSize
+  var coreThreads: Int = TaskRunner.defaultCoreThreads
+  var maxThreads: Int = TaskRunner.defaultMaxThreads
   var blockOnFullQueue: Boolean = TaskRunner.defaultBlockOnFullQueue
 
   def withName(name: String): this.type = {
@@ -67,13 +70,13 @@ final class TaskRunnerBuilder {
     this
   }
 
-  def result(): TaskRunner = TaskRunner(
-    name = name,
-    threads = threads,
-    queueSize = queueSize,
-    coreThreads = coreThreads,
-    maxThreads = maxThreads,
-    blockOnFullQueue = blockOnFullQueue
-  )
+  def result(): TaskRunner =
+    TaskRunner(
+      name = name,
+      threads = threads,
+      queueSize = queueSize,
+      coreThreads = coreThreads,
+      maxThreads = maxThreads,
+      blockOnFullQueue = blockOnFullQueue
+    )
 }
-

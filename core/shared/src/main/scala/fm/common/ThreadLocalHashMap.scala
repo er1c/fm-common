@@ -1,5 +1,7 @@
 /*
- * Copyright 2016 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import scala.collection.mutable
@@ -28,21 +31,22 @@ import scala.collection.mutable
  * @tparam K The HashMap Key
  * @tparam V The HashMap Value
  */
-class ThreadLocalHashMap[K,V] {
-  private val threadLocal: ThreadLocal[mutable.HashMap[K,V]] = new ThreadLocal[mutable.HashMap[K,V]]{
-    override def initialValue: mutable.HashMap[K,V] = new mutable.HashMap[K,V]
+class ThreadLocalHashMap[K, V] {
+  private val threadLocal: ThreadLocal[mutable.HashMap[K, V]] = new ThreadLocal[mutable.HashMap[K, V]] {
+    override def initialValue: mutable.HashMap[K, V] = new mutable.HashMap[K, V]
   }
 
-  private def getMap: mutable.HashMap[K,V] = threadLocal.get()
+  private def getMap: mutable.HashMap[K, V] = threadLocal.get()
 
-  final def apply(key: K): V = get(key).getOrElse{ throw new NoSuchElementException(key.toString) }
+  final def apply(key: K): V = get(key).getOrElse { throw new NoSuchElementException(key.toString) }
 
   final def get(key: K): Option[V] = {
-    val m: mutable.HashMap[K,V] = getMap
+    val m: mutable.HashMap[K, V] = getMap
 
     val res: Option[V] = m.get(key)
 
-    if (res.isDefined) res else {
+    if (res.isDefined) res
+    else {
       val init: Option[V] = initialValue(key)
       if (init.nonEmpty) m(key) = init.get
       init
@@ -51,5 +55,5 @@ class ThreadLocalHashMap[K,V] {
 
   final def update(key: K, value: V): Unit = getMap.update(key, value)
 
-  protected def initialValue(key: K): Option[V] = None
+  protected def initialValue(key: K): Option[V] = { void(key); None }
 }

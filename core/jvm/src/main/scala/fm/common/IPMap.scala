@@ -1,5 +1,7 @@
 /*
- * Copyright 2015 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import it.unimi.dsi.fastutil.ints.{Int2IntAVLTreeMap, IntComparator, IntIterator}
-import it.unimi.dsi.fastutil.longs.{LongIterator, Long2ObjectOpenHashMap}
+import it.unimi.dsi.fastutil.longs.{Long2ObjectOpenHashMap, LongIterator}
 
 object IPMap {
   def newBuilder[T]: IPMapMutable[T] = IPMapMutable()
 
   def empty[T]: IPMapImmutable[T] = IPMapImmutable.empty[T]
 
-  def apply[T](ips: TraversableOnce[(IPOrSubnet, T)]): IPMapImmutable[T] = IPMapImmutable(ips)
+  def apply[T](ips: IterableOnce[(IPOrSubnet, T)]): IPMapImmutable[T] = IPMapImmutable(ips)
 
   private[common] val leadingBitsFirstComparator: IntComparator = new IntComparator() {
     def compare(a: Int, b: Int): Int = {
@@ -111,7 +114,7 @@ final class IPMapMutable[T] extends IPMap[T] with IPMapMutableBase[T] {
   private[common] val ipsWithMaskMap: Long2ObjectOpenHashMap[T] = new Long2ObjectOpenHashMap()
   private[common] val maskToCountMap: Int2IntAVLTreeMap = new Int2IntAVLTreeMap(IPMap.leadingBitsFirstComparator)
 
-  def toImmutable: IPMapImmutable[T] = result
+  def toImmutable: IPMapImmutable[T] = result()
   def toMutable: IPMapMutable[T] = this
 
   def +=(ip: String, value: T): this.type = +=(IPSubnet.parse(ip), value)
@@ -144,6 +147,7 @@ final class IPMapMutable[T] extends IPMap[T] with IPMapMutableBase[T] {
     }
 
     ipsWithMaskMap.put(key, value)
+    ()
   }
 
   def clear(): Unit = {
@@ -151,14 +155,14 @@ final class IPMapMutable[T] extends IPMap[T] with IPMapMutableBase[T] {
     maskToCountMap.clear()
   }
 
-  def result: IPMapImmutable[T] = new IPMapImmutable(this)
+  def result(): IPMapImmutable[T] = new IPMapImmutable(this)
 }
 
 object IPMapImmutable {
-  def apply[T](ips: TraversableOnce[(IPOrSubnet, T)]): IPMapImmutable[T] = {
+  def apply[T](ips: IterableOnce[(IPOrSubnet, T)]): IPMapImmutable[T] = {
     val builder: IPMapMutable[T] = IPMap.newBuilder
-    ips.foreach{ builder += _ }
-    builder.result
+    ips.iterator.foreach { builder += _ }
+    builder.result()
   }
 
   def empty[T]: IPMapImmutable[T] = _empty.asInstanceOf[IPMapImmutable[T]]
@@ -176,5 +180,5 @@ final class IPMapImmutable[T](map: IPMapMutable[T]) extends IPMap[T] {
     IPMap.newBuilder ++= this
   }
 
-  def ++(other: IPMap[T]): IPMapImmutable[T] = (toMutable ++= other).result
+  def ++(other: IPMap[T]): IPMapImmutable[T] = (toMutable ++= other).result()
 }

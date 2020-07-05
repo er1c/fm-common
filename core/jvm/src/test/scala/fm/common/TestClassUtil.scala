@@ -1,5 +1,7 @@
 /*
- * Copyright 2016 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.io.File
@@ -21,14 +24,15 @@ import org.scalatest.matchers.should.Matchers
 
 final class TestClassUtil extends AnyFunSuite with Matchers {
   import fm.common.test.classutil._
-  
+
   private val testDirPath: String = "fm/common/test/classutil"
-  private val testDirPaths: Seq[String] = Seq(testDirPath, testDirPath+"/", "/"+testDirPath, "/"+testDirPath+"/")
-  private val testDirFiles: Seq[File] = testDirPaths.map{ new File(_) }
+  private val testDirPaths: Seq[String] =
+    Seq(testDirPath, testDirPath + "/", "/" + testDirPath, "/" + testDirPath + "/")
+  private val testDirFiles: Seq[File] = testDirPaths.map { new File(_) }
 
   private val testPath: String = "fm/common/test/classutil/lorem %20ipsum.txt"
-  private val testPaths: Seq[String] = Seq(testPath, "/"+testPath)
-  private val testFiles: Seq[File] = testPaths.map{ new File(_) }
+  private val testPaths: Seq[String] = Seq(testPath, "/" + testPath)
+  private val testFiles: Seq[File] = testPaths.map { new File(_) }
 
   private val testClasses: Set[String] = Set(
     "fm.common.test.classutil.TestClass",
@@ -99,8 +103,8 @@ final class TestClassUtil extends AnyFunSuite with Matchers {
     // ls -al lorem-ipsum.txt
     // -rw-r--r--@ 1 eric  staff  2771 Aug  8 13:27 lorem-ipsum.txt
 
-    testPaths.foreach{ ClassUtil.classpathContentLength(_) shouldBe 2771 }
-    testFiles.foreach{ ClassUtil.classpathContentLength(_) shouldBe 2771 }
+    testPaths.foreach { ClassUtil.classpathContentLength(_) shouldBe 2771 }
+    testFiles.foreach { ClassUtil.classpathContentLength(_) shouldBe 2771 }
   }
 
   // classpathDirExists
@@ -111,16 +115,16 @@ final class TestClassUtil extends AnyFunSuite with Matchers {
   }
 
   test("classpathDirExists - files") {
-    testPaths.foreach{ ClassUtil.classpathDirExists(_) shouldBe false }
-    testFiles.foreach{ ClassUtil.classpathDirExists(_) shouldBe false }
+    testPaths.foreach { ClassUtil.classpathDirExists(_) shouldBe false }
+    testFiles.foreach { ClassUtil.classpathDirExists(_) shouldBe false }
   }
 
   // classpathFileExists
 
   test("classpathFileExists - directories") {
     // Test Directories
-    testDirPaths.foreach{ ClassUtil.classpathFileExists(_) shouldBe false }
-    testDirFiles.foreach{ ClassUtil.classpathFileExists(_) shouldBe false }
+    testDirPaths.foreach { ClassUtil.classpathFileExists(_) shouldBe false }
+    testDirFiles.foreach { ClassUtil.classpathFileExists(_) shouldBe false }
   }
 
   test("classpathFileExists - files") {
@@ -142,7 +146,7 @@ final class TestClassUtil extends AnyFunSuite with Matchers {
   }*/
 
   test("classpathLastModified - files") {
-    val f: File = new File(s"jvm/src/test/resources/$testPath")
+    val f: File = new File(s"src/test/resources/$testPath")
     assert(f.isFile, s"$f must be a file (is the working directory the project home?)")
 
     testPaths.foreach { ClassUtil.classpathLastModified(_) shouldBe f.lastModified }
@@ -150,7 +154,8 @@ final class TestClassUtil extends AnyFunSuite with Matchers {
   }
 
   test("findAnnotatedClasses") {
-    ClassUtil.findAnnotatedClasses("fm.common.test.classutil", classOf[java.lang.Deprecated]) shouldBe Set(classOf[TestJavaAnnotatedClass])
+    ClassUtil.findAnnotatedClasses("fm.common.test.classutil", classOf[java.lang.Deprecated]) shouldBe Set(
+      classOf[TestJavaAnnotatedClass])
   }
 
   test("findClassNames") {
@@ -158,16 +163,17 @@ final class TestClassUtil extends AnyFunSuite with Matchers {
   }
 
   test("findClassNames - defaultClassLoader - jar file") {
-    ClassUtil.findClassNames("scala.collection.immutable") should contain ("scala.collection.immutable.List")
+    ClassUtil.findClassNames("scala.collection.immutable") should contain("scala.collection.immutable.List")
   }
 
   // Includes recursive file(s)
   test("findClasspathFiles") {
     // Normal Resource Diretory + Class Files
     val expectedFiles: Set[File] = {
-      testClasses.map{ _.replace(".", "/") + ".class" } ++ Set(testPath, "fm/common/test/classutil/subdirectory/subfile.txt")
-    }.map{ new File(_) }
-
+      testClasses.map { _.replace(".", "/") + ".class" } ++ Set(
+        testPath,
+        "fm/common/test/classutil/subdirectory/subfile.txt")
+    }.map { new File(_) }
 
     ClassUtil.findClasspathFiles("fm.common.test.classutil") shouldBe expectedFiles
 
@@ -176,7 +182,7 @@ final class TestClassUtil extends AnyFunSuite with Matchers {
     ClassUtil.findClasspathFiles("/") should not be empty
 
     // Jar Files
-    ClassUtil.findClasspathFiles("scala.collection") should contain (new File("scala/collection/immutable/List.class"))
+    ClassUtil.findClasspathFiles("scala.collection") should contain(new File("scala/collection/immutable/List.class"))
   }
 
   test("findImplementingObjects") {
@@ -184,25 +190,30 @@ final class TestClassUtil extends AnyFunSuite with Matchers {
     ClassUtil.findImplementingObjects("fm.common.test.classutil", TestObject.getClass) shouldBe Set(TestObject)
   }
 
-
   test("findImplementingClasses") {
-    ClassUtil.findImplementingClasses("fm.common.test.classutil", classOf[TestTrait]) shouldBe Set(classOf[TestClassExtendsTestTrait], TestObjectExtendsTestTrait.getClass)
+    ClassUtil.findImplementingClasses("fm.common.test.classutil", classOf[TestTrait]) shouldBe Set(
+      classOf[TestClassExtendsTestTrait],
+      TestObjectExtendsTestTrait.getClass)
   }
 
   /*
     test("def findLoadedClass(cls: String, classLoader: ClassLoader = defaultClassLoader): Option[Class[_]]") { }
 
     test("def isClassLoaded(cls: String, classLoader: ClassLoader = defaultClassLoader): Boolean") { }
-  */
+   */
 
   // Does NOT include recursive file(s)
   test("listClasspathFiles - defaultClassLoader") {
     // Normal Resource Diretory + Class Files
-    val updatedTestClasses: Set[String] = testClasses - "fm.common.test.classutil.subpackage.TestSubPackageClass" // don't include subpackage class
+    val updatedTestClasses: Set[String] =
+      testClasses - "fm.common.test.classutil.subpackage.TestSubPackageClass" // don't include subpackage class
 
     val expectedFiles: Set[File] = {
-      updatedTestClasses.map{ _.replace(".", "/") + ".class" } ++ Set(testPath, "fm/common/test/classutil/subpackage", "fm/common/test/classutil/subdirectory")
-    }.map{ new File(_) }
+      updatedTestClasses.map { _.replace(".", "/") + ".class" } ++ Set(
+        testPath,
+        "fm/common/test/classutil/subpackage",
+        "fm/common/test/classutil/subdirectory")
+    }.map { new File(_) }
 
     ClassUtil.listClasspathFiles("fm.common.test.classutil") shouldBe expectedFiles
 
@@ -211,8 +222,9 @@ final class TestClassUtil extends AnyFunSuite with Matchers {
     ClassUtil.listClasspathFiles("/") should not be empty
 
     // Jar Files
-    ClassUtil.listClasspathFiles("scala.collection") should contain (new File("scala/collection/Seq.class"))
-    ClassUtil.listClasspathFiles("scala.collection") should not contain (new File("scala/collection/immutable/List.class"))
+    ClassUtil.listClasspathFiles("scala.collection") should contain(new File("scala/collection/Seq.class"))
+    ClassUtil.listClasspathFiles("scala.collection") should not contain (new File(
+      "scala/collection/immutable/List.class"))
   }
 
   test("requireClass") {

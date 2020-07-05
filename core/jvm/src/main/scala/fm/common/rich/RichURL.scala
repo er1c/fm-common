@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import fm.common.{Interner, QueryParams, URI, URL}
@@ -31,9 +34,9 @@ final class RichURL(val self: URL) extends AnyVal with RichURIBase[URL] {
   def fragment: Option[String] = Option(self.getRef)
   def queryParams: QueryParams = QueryParams(self)
   protected def make(s: String): URL = new URL(s)
-  
+
   protected def toURI: URI = self.toURI()
 //  protected def toURL: URL = self
-  
+
   def intern: URL = RichURL.interner(self)
 }

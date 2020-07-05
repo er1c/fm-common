@@ -1,5 +1,7 @@
 /*
- * Copyright 2018 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import scala.scalajs.js
@@ -23,7 +26,8 @@ sealed trait UndefNullOr[+A] extends js.Any
 
 object UndefNullOr {
   implicit def toUndefOrOps[A](self: UndefNullOr[A]): js.UndefOrOps[A] = {
-    val undef: js.UndefOr[A] = if (self.isNull || js.isUndefined(self)) js.undefined else self.asInstanceOf[js.UndefOr[A]]
+    val undef: js.UndefOr[A] =
+      if (self.isNull || js.isUndefined(self)) js.undefined else self.asInstanceOf[js.UndefOr[A]]
 
     undef: js.UndefOrOps[A]
   }

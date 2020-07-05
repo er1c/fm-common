@@ -1,5 +1,7 @@
 /*
- * Copyright 2015 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 object IPOrSubnet {
   def get(ip: String): Option[IPOrSubnet] = IP.get(ip) orElse IPSubnet.get(ip)
-  
-  def apply(ip: String): IPOrSubnet = get(ip).getOrElse{ throw new InvalidIPException(ip) }
+
+  def apply(ip: String): IPOrSubnet = get(ip).getOrElse { throw new InvalidIPException(ip) }
 
   def apply(start: IP, end: IP): IPOrSubnet = if (start === end) start else IPSubnet.forRange(start, end)
 }
@@ -27,8 +30,8 @@ trait IPOrSubnet extends Any {
   def start: IP
   def end: IP
   def mask: Int
-  
+
   def toIPSubnet: IPSubnet
-  
+
   def contains(other: IP): Boolean
 }

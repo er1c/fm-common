@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 object OrderingImplicits extends OrderingImplicits
@@ -21,8 +24,18 @@ object OrderingImplicits extends OrderingImplicits
  * scala.math.Ordering only goes up to Tuple9
  */
 trait OrderingImplicits {
-  implicit def Tuple10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10](implicit ord1: Ordering[T1], ord2: Ordering[T2], ord3: Ordering[T3], ord4: Ordering[T4], ord5: Ordering[T5], ord6: Ordering[T6], ord7: Ordering[T7], ord8 : Ordering[T8], ord9: Ordering[T9], ord10: Ordering[T10]): Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)] =
-    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)]{
+  implicit def Tuple10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10](implicit
+    ord1: Ordering[T1],
+    ord2: Ordering[T2],
+    ord3: Ordering[T3],
+    ord4: Ordering[T4],
+    ord5: Ordering[T5],
+    ord6: Ordering[T6],
+    ord7: Ordering[T7],
+    ord8: Ordering[T8],
+    ord9: Ordering[T9],
+    ord10: Ordering[T10]): Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)] =
+    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)] {
       def compare(x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10), y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)): Int = {
         val compare1 = ord1.compare(x._1, y._1)
         if (compare1 != 0) return compare1
@@ -47,10 +60,23 @@ trait OrderingImplicits {
         0
       }
     }
-  
-  implicit def Tuple11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11](implicit ord1: Ordering[T1], ord2: Ordering[T2], ord3: Ordering[T3], ord4: Ordering[T4], ord5: Ordering[T5], ord6: Ordering[T6], ord7: Ordering[T7], ord8 : Ordering[T8], ord9: Ordering[T9], ord10: Ordering[T10], ord11: Ordering[T11]): Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)] =
-    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)]{
-      def compare(x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11), y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)): Int = {
+
+  implicit def Tuple11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11](implicit
+    ord1: Ordering[T1],
+    ord2: Ordering[T2],
+    ord3: Ordering[T3],
+    ord4: Ordering[T4],
+    ord5: Ordering[T5],
+    ord6: Ordering[T6],
+    ord7: Ordering[T7],
+    ord8: Ordering[T8],
+    ord9: Ordering[T9],
+    ord10: Ordering[T10],
+    ord11: Ordering[T11]): Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)] =
+    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)] {
+      def compare(
+        x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11),
+        y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)): Int = {
         val compare1 = ord1.compare(x._1, y._1)
         if (compare1 != 0) return compare1
         val compare2 = ord2.compare(x._2, y._2)
@@ -76,10 +102,24 @@ trait OrderingImplicits {
         0
       }
     }
-  
-  implicit def Tuple12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12](implicit ord1: Ordering[T1], ord2: Ordering[T2], ord3: Ordering[T3], ord4: Ordering[T4], ord5: Ordering[T5], ord6: Ordering[T6], ord7: Ordering[T7], ord8 : Ordering[T8], ord9: Ordering[T9], ord10: Ordering[T10], ord11: Ordering[T11], ord12: Ordering[T12]): Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)] =
-    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)]{
-      def compare(x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12), y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)): Int = {
+
+  implicit def Tuple12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12](implicit
+    ord1: Ordering[T1],
+    ord2: Ordering[T2],
+    ord3: Ordering[T3],
+    ord4: Ordering[T4],
+    ord5: Ordering[T5],
+    ord6: Ordering[T6],
+    ord7: Ordering[T7],
+    ord8: Ordering[T8],
+    ord9: Ordering[T9],
+    ord10: Ordering[T10],
+    ord11: Ordering[T11],
+    ord12: Ordering[T12]): Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)] =
+    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)] {
+      def compare(
+        x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12),
+        y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)): Int = {
         val compare1 = ord1.compare(x._1, y._1)
         if (compare1 != 0) return compare1
         val compare2 = ord2.compare(x._2, y._2)
@@ -107,10 +147,25 @@ trait OrderingImplicits {
         0
       }
     }
-  
-  implicit def Tuple13[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13](implicit ord1: Ordering[T1], ord2: Ordering[T2], ord3: Ordering[T3], ord4: Ordering[T4], ord5: Ordering[T5], ord6: Ordering[T6], ord7: Ordering[T7], ord8 : Ordering[T8], ord9: Ordering[T9], ord10: Ordering[T10], ord11: Ordering[T11], ord12: Ordering[T12], ord13: Ordering[T13]): Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13)] =
-    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13)]{
-      def compare(x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13), y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13)): Int = {
+
+  implicit def Tuple13[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13](implicit
+    ord1: Ordering[T1],
+    ord2: Ordering[T2],
+    ord3: Ordering[T3],
+    ord4: Ordering[T4],
+    ord5: Ordering[T5],
+    ord6: Ordering[T6],
+    ord7: Ordering[T7],
+    ord8: Ordering[T8],
+    ord9: Ordering[T9],
+    ord10: Ordering[T10],
+    ord11: Ordering[T11],
+    ord12: Ordering[T12],
+    ord13: Ordering[T13]): Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13)] =
+    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13)] {
+      def compare(
+        x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13),
+        y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13)): Int = {
         val compare1 = ord1.compare(x._1, y._1)
         if (compare1 != 0) return compare1
         val compare2 = ord2.compare(x._2, y._2)
@@ -140,10 +195,26 @@ trait OrderingImplicits {
         0
       }
     }
-  
-  implicit def Tuple14[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14](implicit ord1: Ordering[T1], ord2: Ordering[T2], ord3: Ordering[T3], ord4: Ordering[T4], ord5: Ordering[T5], ord6: Ordering[T6], ord7: Ordering[T7], ord8 : Ordering[T8], ord9: Ordering[T9], ord10: Ordering[T10], ord11: Ordering[T11], ord12: Ordering[T12], ord13: Ordering[T13], ord14: Ordering[T14]): Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14)] =
-    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14)]{
-      def compare(x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14), y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14)): Int = {
+
+  implicit def Tuple14[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14](implicit
+    ord1: Ordering[T1],
+    ord2: Ordering[T2],
+    ord3: Ordering[T3],
+    ord4: Ordering[T4],
+    ord5: Ordering[T5],
+    ord6: Ordering[T6],
+    ord7: Ordering[T7],
+    ord8: Ordering[T8],
+    ord9: Ordering[T9],
+    ord10: Ordering[T10],
+    ord11: Ordering[T11],
+    ord12: Ordering[T12],
+    ord13: Ordering[T13],
+    ord14: Ordering[T14]): Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14)] =
+    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14)] {
+      def compare(
+        x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14),
+        y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14)): Int = {
         val compare1 = ord1.compare(x._1, y._1)
         if (compare1 != 0) return compare1
         val compare2 = ord2.compare(x._2, y._2)
@@ -175,10 +246,27 @@ trait OrderingImplicits {
         0
       }
     }
-  
-  implicit def Tuple15[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15](implicit ord1: Ordering[T1], ord2: Ordering[T2], ord3: Ordering[T3], ord4: Ordering[T4], ord5: Ordering[T5], ord6: Ordering[T6], ord7: Ordering[T7], ord8 : Ordering[T8], ord9: Ordering[T9], ord10: Ordering[T10], ord11: Ordering[T11], ord12: Ordering[T12], ord13: Ordering[T13], ord14: Ordering[T14], ord15: Ordering[T15]): Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15)] =
-    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15)]{
-      def compare(x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15), y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15)): Int = {
+
+  implicit def Tuple15[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15](implicit
+    ord1: Ordering[T1],
+    ord2: Ordering[T2],
+    ord3: Ordering[T3],
+    ord4: Ordering[T4],
+    ord5: Ordering[T5],
+    ord6: Ordering[T6],
+    ord7: Ordering[T7],
+    ord8: Ordering[T8],
+    ord9: Ordering[T9],
+    ord10: Ordering[T10],
+    ord11: Ordering[T11],
+    ord12: Ordering[T12],
+    ord13: Ordering[T13],
+    ord14: Ordering[T14],
+    ord15: Ordering[T15]): Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15)] =
+    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15)] {
+      def compare(
+        x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15),
+        y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15)): Int = {
         val compare1 = ord1.compare(x._1, y._1)
         if (compare1 != 0) return compare1
         val compare2 = ord2.compare(x._2, y._2)
@@ -212,10 +300,28 @@ trait OrderingImplicits {
         0
       }
     }
-  
-  implicit def Tuple16[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16](implicit ord1: Ordering[T1], ord2: Ordering[T2], ord3: Ordering[T3], ord4: Ordering[T4], ord5: Ordering[T5], ord6: Ordering[T6], ord7: Ordering[T7], ord8 : Ordering[T8], ord9: Ordering[T9], ord10: Ordering[T10], ord11: Ordering[T11], ord12: Ordering[T12], ord13: Ordering[T13], ord14: Ordering[T14], ord15: Ordering[T15], ord16: Ordering[T16]): Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16)] =
-    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16)]{
-      def compare(x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16), y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16)): Int = {
+
+  implicit def Tuple16[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16](implicit
+    ord1: Ordering[T1],
+    ord2: Ordering[T2],
+    ord3: Ordering[T3],
+    ord4: Ordering[T4],
+    ord5: Ordering[T5],
+    ord6: Ordering[T6],
+    ord7: Ordering[T7],
+    ord8: Ordering[T8],
+    ord9: Ordering[T9],
+    ord10: Ordering[T10],
+    ord11: Ordering[T11],
+    ord12: Ordering[T12],
+    ord13: Ordering[T13],
+    ord14: Ordering[T14],
+    ord15: Ordering[T15],
+    ord16: Ordering[T16]): Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16)] =
+    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16)] {
+      def compare(
+        x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16),
+        y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16)): Int = {
         val compare1 = ord1.compare(x._1, y._1)
         if (compare1 != 0) return compare1
         val compare2 = ord2.compare(x._2, y._2)
@@ -251,10 +357,29 @@ trait OrderingImplicits {
         0
       }
     }
-  
-  implicit def Tuple17[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17](implicit ord1: Ordering[T1], ord2: Ordering[T2], ord3: Ordering[T3], ord4: Ordering[T4], ord5: Ordering[T5], ord6: Ordering[T6], ord7: Ordering[T7], ord8 : Ordering[T8], ord9: Ordering[T9], ord10: Ordering[T10], ord11: Ordering[T11], ord12: Ordering[T12], ord13: Ordering[T13], ord14: Ordering[T14], ord15: Ordering[T15], ord16: Ordering[T16], ord17: Ordering[T17]): Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17)] =
-    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17)]{
-      def compare(x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17), y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17)): Int = {
+
+  implicit def Tuple17[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17](implicit
+    ord1: Ordering[T1],
+    ord2: Ordering[T2],
+    ord3: Ordering[T3],
+    ord4: Ordering[T4],
+    ord5: Ordering[T5],
+    ord6: Ordering[T6],
+    ord7: Ordering[T7],
+    ord8: Ordering[T8],
+    ord9: Ordering[T9],
+    ord10: Ordering[T10],
+    ord11: Ordering[T11],
+    ord12: Ordering[T12],
+    ord13: Ordering[T13],
+    ord14: Ordering[T14],
+    ord15: Ordering[T15],
+    ord16: Ordering[T16],
+    ord17: Ordering[T17]): Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17)] =
+    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17)] {
+      def compare(
+        x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17),
+        y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17)): Int = {
         val compare1 = ord1.compare(x._1, y._1)
         if (compare1 != 0) return compare1
         val compare2 = ord2.compare(x._2, y._2)
@@ -292,10 +417,30 @@ trait OrderingImplicits {
         0
       }
     }
-  
-  implicit def Tuple18[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18](implicit ord1: Ordering[T1], ord2: Ordering[T2], ord3: Ordering[T3], ord4: Ordering[T4], ord5: Ordering[T5], ord6: Ordering[T6], ord7: Ordering[T7], ord8 : Ordering[T8], ord9: Ordering[T9], ord10: Ordering[T10], ord11: Ordering[T11], ord12: Ordering[T12], ord13: Ordering[T13], ord14: Ordering[T14], ord15: Ordering[T15], ord16: Ordering[T16], ord17: Ordering[T17], ord18: Ordering[T18]): Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18)] =
-    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18)]{
-      def compare(x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18), y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18)): Int = {
+
+  implicit def Tuple18[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18](implicit
+    ord1: Ordering[T1],
+    ord2: Ordering[T2],
+    ord3: Ordering[T3],
+    ord4: Ordering[T4],
+    ord5: Ordering[T5],
+    ord6: Ordering[T6],
+    ord7: Ordering[T7],
+    ord8: Ordering[T8],
+    ord9: Ordering[T9],
+    ord10: Ordering[T10],
+    ord11: Ordering[T11],
+    ord12: Ordering[T12],
+    ord13: Ordering[T13],
+    ord14: Ordering[T14],
+    ord15: Ordering[T15],
+    ord16: Ordering[T16],
+    ord17: Ordering[T17],
+    ord18: Ordering[T18]): Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18)] =
+    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18)] {
+      def compare(
+        x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18),
+        y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18)): Int = {
         val compare1 = ord1.compare(x._1, y._1)
         if (compare1 != 0) return compare1
         val compare2 = ord2.compare(x._2, y._2)
@@ -335,10 +480,32 @@ trait OrderingImplicits {
         0
       }
     }
-  
-  implicit def Tuple19[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19](implicit ord1: Ordering[T1], ord2: Ordering[T2], ord3: Ordering[T3], ord4: Ordering[T4], ord5: Ordering[T5], ord6: Ordering[T6], ord7: Ordering[T7], ord8 : Ordering[T8], ord9: Ordering[T9], ord10: Ordering[T10], ord11: Ordering[T11], ord12: Ordering[T12], ord13: Ordering[T13], ord14: Ordering[T14], ord15: Ordering[T15], ord16: Ordering[T16], ord17: Ordering[T17], ord18: Ordering[T18], ord19: Ordering[T19]): Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19)] =
-    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19)]{
-      def compare(x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19), y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19)): Int = {
+
+  implicit def Tuple19[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19](implicit
+    ord1: Ordering[T1],
+    ord2: Ordering[T2],
+    ord3: Ordering[T3],
+    ord4: Ordering[T4],
+    ord5: Ordering[T5],
+    ord6: Ordering[T6],
+    ord7: Ordering[T7],
+    ord8: Ordering[T8],
+    ord9: Ordering[T9],
+    ord10: Ordering[T10],
+    ord11: Ordering[T11],
+    ord12: Ordering[T12],
+    ord13: Ordering[T13],
+    ord14: Ordering[T14],
+    ord15: Ordering[T15],
+    ord16: Ordering[T16],
+    ord17: Ordering[T17],
+    ord18: Ordering[T18],
+    ord19: Ordering[T19])
+    : Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19)] =
+    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19)] {
+      def compare(
+        x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19),
+        y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19)): Int = {
         val compare1 = ord1.compare(x._1, y._1)
         if (compare1 != 0) return compare1
         val compare2 = ord2.compare(x._2, y._2)
@@ -380,10 +547,34 @@ trait OrderingImplicits {
         0
       }
     }
-  
-  implicit def Tuple20[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20](implicit ord1: Ordering[T1], ord2: Ordering[T2], ord3: Ordering[T3], ord4: Ordering[T4], ord5: Ordering[T5], ord6: Ordering[T6], ord7: Ordering[T7], ord8 : Ordering[T8], ord9: Ordering[T9], ord10: Ordering[T10], ord11: Ordering[T11], ord12: Ordering[T12], ord13: Ordering[T13], ord14: Ordering[T14], ord15: Ordering[T15], ord16: Ordering[T16], ord17: Ordering[T17], ord18: Ordering[T18], ord19: Ordering[T19], ord20: Ordering[T20]): Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20)] =
-    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20)]{
-      def compare(x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20), y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20)): Int = {
+
+  implicit def Tuple20[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20](
+    implicit
+    ord1: Ordering[T1],
+    ord2: Ordering[T2],
+    ord3: Ordering[T3],
+    ord4: Ordering[T4],
+    ord5: Ordering[T5],
+    ord6: Ordering[T6],
+    ord7: Ordering[T7],
+    ord8: Ordering[T8],
+    ord9: Ordering[T9],
+    ord10: Ordering[T10],
+    ord11: Ordering[T11],
+    ord12: Ordering[T12],
+    ord13: Ordering[T13],
+    ord14: Ordering[T14],
+    ord15: Ordering[T15],
+    ord16: Ordering[T16],
+    ord17: Ordering[T17],
+    ord18: Ordering[T18],
+    ord19: Ordering[T19],
+    ord20: Ordering[T20])
+    : Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20)] =
+    new Ordering[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20)] {
+      def compare(
+        x: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20),
+        y: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20)): Int = {
         val compare1 = ord1.compare(x._1, y._1)
         if (compare1 != 0) return compare1
         val compare2 = ord2.compare(x._2, y._2)

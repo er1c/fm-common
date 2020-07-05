@@ -1,5 +1,7 @@
 /*
- * Copyright 2016 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
-import java.net.{URLDecoder,URLEncoder}
-import org.apache.commons.lang3.{StringEscapeUtils => Apache}
+import java.net.{URLDecoder, URLEncoder}
+import org.apache.commons.text.{StringEscapeUtils => Apache}
 
 object StringEscapeUtils extends StringEscapeUtilsBase {
   def escapeJSON(s: String): String = Apache.escapeJson(s)
-  
+
   def escapeHTML(s: String): String = Apache.escapeHtml4(s)
-  
+
   def escapeXML(s: String): String = Apache.escapeXml11(s)
-  
+
   def escapeECMAScript(s: String): String = Apache.escapeEcmaScript(s)
-  
+
   def escapeJava(s: String): String = Apache.escapeJava(s)
-  
+
   def encodeURIComponent(s: String): String = URLEncoder.encode(s, "UTF-8")
-  
+
   def decodeURIComponent(s: String): String = URLDecoder.decode(s, "UTF-8")
 }

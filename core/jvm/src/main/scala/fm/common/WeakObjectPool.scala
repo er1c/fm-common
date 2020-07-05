@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.lang.ref.WeakReference
@@ -20,8 +23,8 @@ import java.util.WeakHashMap
 
 /**
  * DEPRECATED - Should use fm.common.Intern instead
- * 
- * An object pool based on a WeakHashMap (using weak key AND weak values) that can be used to
+ *
+  * An object pool based on a WeakHashMap (using weak key AND weak values) that can be used to
  * return canonical versions of objects.  Once all references to the object go away the WeakHashMap
  * entry will be GC'd.
  *
@@ -29,25 +32,26 @@ import java.util.WeakHashMap
  */
 @Deprecated
 final class WeakObjectPool[T] {
-  private[this] val map: WeakHashMap[T,WeakReference[T]] = new WeakHashMap[T,WeakReference[T]]
+  private[this] val map: WeakHashMap[T, WeakReference[T]] = new WeakHashMap[T, WeakReference[T]]
 
   /**
    * Returns the canonical version of T
    */
-  def apply(value: T): T = synchronized {
-    val weakRef: WeakReference[T] = map.get(value)
+  def apply(value: T): T =
+    synchronized {
+      val weakRef: WeakReference[T] = map.get(value)
 
-    if (null != weakRef) {
-      val canonical: T = weakRef.get
-      if (null != canonical) return canonical
+      if (null != weakRef) {
+        val canonical: T = weakRef.get
+        if (null != canonical) return canonical
+      }
+
+      map.put(value, new WeakReference(value))
+
+      value
     }
 
-    map.put(value, new WeakReference(value))
+  def contains(value: T): Boolean = synchronized { map.containsKey(value) }
 
-    value
-  }
-
-  def contains(value: T): Boolean = synchronized{ map.containsKey(value) }
-
-  def clear(): Unit = synchronized{ map.clear() }
+  def clear(): Unit = synchronized { map.clear() }
 }

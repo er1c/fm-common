@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.nio.charset.StandardCharsets.UTF_8
 import scala.util.control.Breaks._
 
 object MessageCrypto {
-  def apply(key: String, json: Boolean = false) = new MessageCrypto(key,json)
+  def apply(key: String, json: Boolean = false) = new MessageCrypto(key, json)
 }
 
 /**
@@ -33,23 +36,23 @@ object MessageCrypto {
  * MessageEncryptor uses Marshal.dump and Marshal.load on whatever values you
  * are trying to encrypt/sign.  A subset of Marshal.dump and Marshal.load have
  * been implemented to support String values.
- * 
- * NOTE: This is a legacy class that was created when we switched from
+ *
+  * NOTE: This is a legacy class that was created when we switched from
  *       Rails to Scala.  It is still used in a few places but probably
  *       needs to be refactored to remove the old Ruby marshalling stuff.
  */
 final class MessageCrypto(key: Array[Byte], json: Boolean = false) {
   def this(key: String) = this(key.getBytes(UTF_8))
   def this(key: String, json: Boolean) = this(key.getBytes(UTF_8), json)
-  
+
   private[this] val crypto: Crypto = Crypto.defaultCipherForRawKey(key)
 
   def encryptAndSign(msg: String): String = sign(encrypt(msg))
-  def decryptAndVerify(msg: String): Option[String] = verify(msg).map{decrypt}
+  def decryptAndVerify(msg: String): Option[String] = verify(msg).map { decrypt }
 
   def encrypt(msg: String): String = {
     val (iv: Array[Byte], ciphertext: Array[Byte]) = crypto.encryptRaw(dump(msg))
-    Array(ciphertext,iv).map{s => Base64.encodeBytes(s)}.mkString("--")
+    Array(ciphertext, iv).map { s => Base64.encodeBytes(s) }.mkString("--")
   }
 
   def decrypt(msg: String): String = {
@@ -58,7 +61,7 @@ final class MessageCrypto(key: Array[Byte], json: Boolean = false) {
     if (-1 === lastIdx) throw new IllegalArgumentException("Message is in invalid format")
 
     val ciphertext: String = msg.substring(0, lastIdx)
-    val iv: String = msg.substring(lastIdx+2)
+    val iv: String = msg.substring(lastIdx + 2)
 
     val plaintext = crypto.decrypt(Base64.decode(iv), Base64.decode(ciphertext))
     load(plaintext)
@@ -66,7 +69,7 @@ final class MessageCrypto(key: Array[Byte], json: Boolean = false) {
 
   def sign(msg: String): String = {
     val data: String = Base64.encodeBytes(dump(msg))
-    data+"--"+hexHmac(data)
+    data + "--" + hexHmac(data)
   }
 
   def verify(msg: String): Option[String] = {
@@ -75,7 +78,7 @@ final class MessageCrypto(key: Array[Byte], json: Boolean = false) {
     if (-1 === lastIdx) return None
 
     val data: String = msg.substring(0, lastIdx)
-    val sig: String = msg.substring(lastIdx+2)
+    val sig: String = msg.substring(lastIdx + 2)
 
     if (sig != hexHmac(data)) {
       None
@@ -88,13 +91,13 @@ final class MessageCrypto(key: Array[Byte], json: Boolean = false) {
   def hexHmac(msg: String): String = crypto.macHex(msg)
 
   private def dump(s: String): Array[Byte] = if (json) jsonDump(s) else rubyMarshalDump(s)
-  
+
   private def load(b: Array[Byte]): String = {
     // If the byte array starts and ends with { and } then it's a JSON hash (currently unsupported)
-    if (b(0) === '{'.toByte && b(b.length-1) === '}'.toByte) return ""
+    if (b(0) === '{'.toByte && b(b.length - 1) === '}'.toByte) return ""
 
     // If the byte array starts and ends with quotes then it's json otherwise use the ruby unmarshal
-    if (b(0) === '"'.toByte && b(b.length-1) === '"'.toByte) jsonLoad(b) else rubyMarshalLoad(b)
+    if (b(0) === '"'.toByte && b(b.length - 1) === '"'.toByte) jsonLoad(b) else rubyMarshalLoad(b)
   }
 
   private def rubyMarshalDump(s: String): Array[Byte] = {
@@ -102,14 +105,14 @@ final class MessageCrypto(key: Array[Byte], json: Boolean = false) {
     marshal.writeString(s)
     marshal.out.toByteArray
   }
-  
-  private def rubyMarshalLoad(b: Array[Byte]):String = {
+
+  private def rubyMarshalLoad(b: Array[Byte]): String = {
     val unmarshal: RubyUnmarshalStream = new RubyUnmarshalStream(b)
-    unmarshal.readString
+    unmarshal.readString()
   }
 
-  private def jsonDump(s: String): Array[Byte] = ("\""+s+"\"").getBytes(UTF_8)
-  private def jsonLoad(b: Array[Byte]): String = new String(b, 1, b.length-2, UTF_8)
+  private def jsonDump(s: String): Array[Byte] = ("\"" + s + "\"").getBytes(UTF_8)
+  private def jsonLoad(b: Array[Byte]): String = new String(b, 1, b.length - 2, UTF_8)
 
   // http://github.com/jruby/jruby/blob/master/src/org/jruby/runtime/marshal/MarshalStream.java
   private class RubyMarshalStream {
@@ -142,13 +145,13 @@ final class MessageCrypto(key: Array[Byte], json: Boolean = false) {
       } else {
         val buf = new Array[Byte](4)
         var i = 0
-        breakable{
-          while(i < buf.length) {
+        breakable {
+          while (i < buf.length) {
             buf(i) = (value & 0xff).toByte
 
             value = value >> 8
             if (value === 0 || value === -1) {
-              break
+              break()
             }
             i += 1
           }
@@ -168,7 +171,9 @@ final class MessageCrypto(key: Array[Byte], json: Boolean = false) {
 
     def readString(): String = {
       val ch: Char = in.read().toChar
-      assert(ch === '"', "Expecting to read a quote. ByteString: "+new String(bytes, UTF_8)+"  Bytes: "+bytes.toSeq)
+      assert(
+        ch === '"',
+        "Expecting to read a quote. ByteString: " + new String(bytes, UTF_8) + "  Bytes: " + bytes.toSeq)
       val len: Int = readInt()
       val buf = new Array[Byte](len)
       IOUtils.read(in, buf)
@@ -184,17 +189,17 @@ final class MessageCrypto(key: Array[Byte], json: Boolean = false) {
       var result: Long = 0L
       if (c > 0) {
         var i = 0
-        while(i < c) {
-          result |= readUnsignedByte.toLong << (8 * i)
+        while (i < c) {
+          result |= readUnsignedByte().toLong << (8 * i)
           i += 1
         }
       } else {
         c = -c
         result = -1
         var i = 0
-        while(i < c) {
+        while (i < c) {
           result &= ~(0xff.toLong << (8 * i))
-          result |= readUnsignedByte.toLong << (8 * i)
+          result |= readUnsignedByte().toLong << (8 * i)
           i += 1
         }
 

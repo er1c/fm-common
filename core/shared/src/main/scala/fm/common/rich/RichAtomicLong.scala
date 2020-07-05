@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import java.util.concurrent.atomic.AtomicLong
 
 final class RichAtomicLong(val self: AtomicLong) extends AnyVal with Ordered[Long] {
-  def +=(value: Long): Unit = self.addAndGet(value)
-  def -=(value: Long): Unit = self.addAndGet(-1*value)
-  
-  def +=(value: AtomicLong): Unit = self.addAndGet(value.get)
-  def -=(value: AtomicLong): Unit = self.addAndGet(-1*value.get)
-  
+  def +=(value: Long): Unit = { self.addAndGet(value); () }
+  def -=(value: Long): Unit = { self.addAndGet(-1 * value); () }
+
+  def +=(value: AtomicLong): Unit = { self.addAndGet(value.get); () }
+  def -=(value: AtomicLong): Unit = { self.addAndGet(-1 * value.get); () }
+
   def +(value: Long): Long = self.get() + value
   def -(value: Long): Long = self.get() - value
-  
+
   def +(value: AtomicLong): AtomicLong = new AtomicLong(self.get + value.get)
   def -(value: AtomicLong): AtomicLong = new AtomicLong(self.get - value.get)
-  
-  def compare(that: Long) = self.get.compare(that)
+
+  def compare(that: Long): Int = self.get.compare(that)
 }

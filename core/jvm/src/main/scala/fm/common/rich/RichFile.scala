@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import fm.common.ClassUtil
@@ -27,16 +30,16 @@ final class RichFile(val f: File) extends AnyVal {
 
   def isClasspathFile: Boolean = ClassUtil.classpathFileExists(f)
   def isClasspathFile(cl: ClassLoader): Boolean = ClassUtil.classpathFileExists(f, cl)
-  
+
   def isClasspathDirectory: Boolean = ClassUtil.classpathDirExists(f)
   def isClasspathDirectory(cl: ClassLoader): Boolean = ClassUtil.classpathDirExists(f, cl)
-  
+
   def classpathLastModified: Long = ClassUtil.classpathLastModified(f)
   def classpathLastModified(cl: ClassLoader): Long = ClassUtil.classpathLastModified(f, cl)
-  
+
   def classpathLength: Long = ClassUtil.classpathContentLength(f)
   def classpathLength(cl: ClassLoader): Long = ClassUtil.classpathContentLength(f, cl)
-  
+
   /**
    * The extension (if any) of this file
    */
@@ -45,9 +48,9 @@ final class RichFile(val f: File) extends AnyVal {
     //require(f.isFile, s"Not a file: $f")
     val name: String = f.getName()
     val indexOfDot: Int = name.lastIndexOf('.')
-    if (-1 == indexOfDot) None else Some(name.substring(indexOfDot+1))
+    if (-1 == indexOfDot) None else Some(name.substring(indexOfDot + 1))
   }
-  
+
   /**
    * The name of the file without it's extension
    */
@@ -58,37 +61,37 @@ final class RichFile(val f: File) extends AnyVal {
     val indexOfDot: Int = name.lastIndexOf('.')
     if (-1 == indexOfDot) name else name.substring(0, indexOfDot)
   }
-  
+
   /**
    * Change or Add an extension to this file
    */
   def withExtension(ext: String): File = {
-    new File(f.getParent(), nameWithoutExtension+ext.requireLeading("."))
+    new File(f.getParent(), nameWithoutExtension + ext.requireLeading("."))
   }
-  
+
   /** If this path starts with the passed in path then strip it */
   def stripLeading(path: File): File = f.toPath.stripLeading(path.toPath).toFile
-  
+
   /** If this path ends with the passed in path then strip it */
   def stripTrailing(path: File): File = f.toPath.stripTrailing(path.toPath).toFile
-  
+
   /**
    * Find all files under this directory (directories are not included in the result)
-   * 
-   * Deprecated due to ambiguity.  Prefer the fm.lazyseq.Implicits.RichLazySeqFile implementation
+   *
+    * Deprecated due to ambiguity.  Prefer the fm.lazyseq.Implicits.RichLazySeqFile implementation
    */
   @Deprecated
   def findFiles(recursive: Boolean = true): Vector[File] = {
     val builder: Builder[File, Vector[File]] = Vector.newBuilder[File]
     findFiles0(f, recursive, builder)
-    builder.result
+    builder.result()
   }
-  
+
   private def findFiles0(dir: File, recursive: Boolean, builder: Builder[File, Vector[File]]): Unit = {
     require(dir.isDirectory, s"Not a directory: $dir")
-    
+
     val children: Array[File] = dir.listFiles()
-    
+
     if (null != children) children.foreach { child: File =>
       if (child.isDirectory && recursive) findFiles0(child, recursive, builder)
       else if (child.isFile) builder += child

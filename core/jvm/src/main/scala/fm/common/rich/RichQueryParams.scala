@@ -1,5 +1,7 @@
 /*
- * Copyright 2016 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import fm.common.{QueryParams, URL}
@@ -22,8 +25,8 @@ import scala.util.Try
  * Adds JVM specific helpers for creating QueryParams from URI/URL instances
  */
 object RichQueryParams {
-  def get(url: URL): Option[QueryParams] = Try{ apply(url) }.toOption
-  
+  def get(url: URL): Option[QueryParams] = Try { apply(url) }.toOption
+
   /** Create Query Params form a URL */
   def apply(url: URL): QueryParams = QueryParams(url.getQuery)
 }

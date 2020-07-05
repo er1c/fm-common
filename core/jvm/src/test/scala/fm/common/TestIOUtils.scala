@@ -1,5 +1,7 @@
 /*
- * Copyright 2015 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.io.{BufferedInputStream, File}
@@ -21,27 +24,27 @@ import org.scalatest.matchers.should.Matchers
 
 final class TestIOUtils extends AnyFunSuite with Matchers {
   // Test detecting charset encoding
-  test("detectCharset - UTF-8 with BOM")    { checkDetectCharset("quickbrown-UTF-8-with-BOM.txt", "UTF-8") }
-  test("detectCharset - UTF-8 no BOM")      { checkDetectCharset("quickbrown-UTF-8-no-BOM.txt", "UTF-8") }
-  
+  test("detectCharset - UTF-8 with BOM") { checkDetectCharset("quickbrown-UTF-8-with-BOM.txt", "UTF-8") }
+  test("detectCharset - UTF-8 no BOM") { checkDetectCharset("quickbrown-UTF-8-no-BOM.txt", "UTF-8") }
+
   test("detectCharset - UTF-16BE with BOM") { checkDetectCharset("quickbrown-UTF-16BE-with-BOM.txt", "UTF-16BE") }
   //test("detectCharset - UTF-16BE no BOM")   { checkDetectCharset("quickbrown-UTF-16BE-no-BOM.txt", "UTF-16BE") }
-  
+
   test("detectCharset - UTF-16LE with BOM") { checkDetectCharset("quickbrown-UTF-16LE-with-BOM.txt", "UTF-16LE") }
   //test("detectCharset - UTF-16LE no BOM")   { checkDetectCharset("quickbrown-UTF-16LE-no-BOM.txt", "UTF-16LE") }
-  
+
   test("detectCharset - UTF-32BE with BOM") { checkDetectCharset("quickbrown-UTF-32BE-with-BOM.txt", "UTF-32BE") }
   //test("detectCharset - UTF-32BE no BOM")   { checkDetectCharset("quickbrown-UTF-32BE-no-BOM.txt", "UTF-32BE") }
-  
+
   test("detectCharset - UTF-32LE with BOM") { checkDetectCharset("quickbrown-UTF-32LE-with-BOM.txt", "UTF-32LE") }
   //test("detectCharset - UTF-32LE no BOM")   { checkDetectCharset("quickbrown-UTF-32LE-no-BOM.txt", "UTF-32LE") }
-  
-  test("detectCharset - Windows-1252")      { checkDetectCharset("quickbrown-modified-Windows-1252.txt", "Windows-1252") }
-  
-  private def checkDetectCharset(file: String, charsetName: String): Unit = {
-    InputStreamResource.forResource(new File(s"encoding/$file")).flatMap { _.toBufferedInputStream }.foreach { bis: BufferedInputStream =>
-      IOUtils.detectCharset(bis, true) shouldBe Some(CharsetUtil.forName(charsetName))
-    }
-  } 
-}
 
+  test("detectCharset - Windows-1252") { checkDetectCharset("quickbrown-modified-Windows-1252.txt", "Windows-1252") }
+
+  private def checkDetectCharset(file: String, charsetName: String): Unit = {
+    InputStreamResource.forResource(new File(s"encoding/$file")).flatMap { _.toBufferedInputStream }.foreach {
+      bis: BufferedInputStream =>
+        IOUtils.detectCharset(bis, true) shouldBe Some(CharsetUtil.forName(charsetName))
+    }
+  }
+}

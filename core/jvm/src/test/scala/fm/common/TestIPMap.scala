@@ -1,5 +1,7 @@
 /*
- * Copyright 2016 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import org.scalatest.funsuite.AnyFunSuite
@@ -20,29 +23,32 @@ import org.scalatest.matchers.should.Matchers
 
 final class TestIPMap extends AnyFunSuite with Matchers {
 
-  private def yes[T](map: IPMapMutable[T], ip: String, value: T): Unit = TestHelpers.withCallerInfo{ check(map, ip, Option(value)) }
-  private def no[T](map: IPMapMutable[T], ip: String): Unit = TestHelpers.withCallerInfo{ check(map, ip, None) }
+  private def yes[T](map: IPMapMutable[T], ip: String, value: T): Unit =
+    TestHelpers.withCallerInfo { check(map, ip, Option(value)) }
+  private def no[T](map: IPMapMutable[T], ip: String): Unit = TestHelpers.withCallerInfo { check(map, ip, None) }
 
   private def check[T](map: IPMapMutable[T], ip: String, res: Option[T]): Unit = {
     checkImpl(map, ip, res)
-    checkImpl(map.result, ip, res)
+    checkImpl(map.result(), ip, res)
   }
-  
+
   private def checkImpl[T](map: IPMap[T], ip: String, res: Option[T]): Unit = {
     map.get(ip) shouldBe res
     map.contains(ip) shouldBe res.isDefined
+
+    ()
   }
-  
+
   implicit class RichIPMapMutable(val map: IPMapMutable[String]) {
-    def += (ip: String): this.type = {
-      map += (ip, ip)
+    def +=(ip: String): this.type = {
+      map.+=(ip, ip)
       this
     }
   }
 
   test("Basic Operations") {
     val map = IPMapMutable[String]()
-    
+
     map += "192.168.0.123"
 
     def check192(): Unit = {

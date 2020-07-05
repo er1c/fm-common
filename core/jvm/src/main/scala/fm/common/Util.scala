@@ -1,5 +1,7 @@
 /*
- * Copyright 2014 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common
 
 import java.util.Date
@@ -28,41 +31,42 @@ object Util extends Logging {
     total
   }
 
-  @inline def time[T](f: => T): Tuple2[Long,T] = {
+  @inline def time[T](f: => T): Tuple2[Long, T] = {
     val start: Long = System.currentTimeMillis
     val result: T = f
     val end: Long = System.currentTimeMillis
     val total: Long = end - start
-    (total,result)
+    (total, result)
   }
-  
+
   @inline def statusMsg[T](msg: String, logger: Logger = logger)(f: => T): T = {
-    logger.info(msg+"... ")
-    val (total,result) = time(f)
-    logger.info(msg+"... Done.  "+total+"ms")
+    logger.info(msg + "... ")
+    val (total, result) = time(f)
+    logger.info(msg + "... Done.  " + total + "ms")
     result
   }
 
   @inline def benchmark[T](name: String, logger: Logger = logger)(f: => T): T = {
-    val (total,result) = time(f)
-    logger.info("[BENCHMARK] "+name+": "+total+"ms")
+    val (total, result) = time(f)
+    logger.info("[BENCHMARK] " + name + ": " + total + "ms")
     result
   }
-  
+
   def logAppStats[T](logger: Logger = logger)(f: => T): T = appStatsImpl(logger.info(_))(f)
-  
+
   def printAppStats[T](f: => T): T = appStatsImpl(println)(f)
-  
+
   private def appStatsImpl[T](out: String => Unit)(f: => T): T = {
     val start: Long = System.currentTimeMillis
     val res: T = f
     val end: Long = System.currentTimeMillis
     val totalTimeSecs: Long = (end - start) / 1000
-    
-    out("Started at: "+new Date(start))
-    out("  Ended at: "+new Date(end))
-    out("Total Time: "+totalTimeSecs+" seconds ("+((totalTimeSecs/60d*100).toInt/100d)+" minutes) ("+((totalTimeSecs/3600d*100).toInt/100d)+" hours)")
-    
+
+    out("Started at: " + new Date(start))
+    out("  Ended at: " + new Date(end))
+    out(
+      "Total Time: " + totalTimeSecs + " seconds (" + ((totalTimeSecs / 60d * 100).toInt / 100d) + " minutes) (" + ((totalTimeSecs / 3600d * 100).toInt / 100d) + " hours)")
+
     res
   }
 }

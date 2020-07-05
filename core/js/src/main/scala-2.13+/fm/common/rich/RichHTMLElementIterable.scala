@@ -1,5 +1,7 @@
 /*
- * Copyright 2016 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2019 Frugal Mechanic (http://frugalmechanic.com)
+ * Copyright (c) 2020 the fm-common contributors.
+ * See the project homepage at: https://er1c.github.io/fm-common/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fm.common.rich
 
 import fm.common.Implicits._
 import org.scalajs.dom.raw.HTMLElement
 
 final class RichHTMLElementIterable(val elems: Iterable[HTMLElement]) extends AnyVal {
-  
+
   /** Similar to jQuery.css */
-  def css(ruleName: String, value: String): Unit = elems.foreach{ _.css(ruleName, value) }
-  
-  def hide(): Unit = elems.foreach{ _.hide() }
-  
-  def show(): Unit = elems.foreach{ _.show() }
-  
+  def css(ruleName: String, value: String): Unit = elems.foreach { _.css(ruleName, value) }
+
+  def hide(): Unit = elems.foreach { _.hide() }
+
+  def show(): Unit = elems.foreach { _.show() }
+
   /** If the element is hidden then show it.  If the element is shown then hide it */
-  def toggle(): Unit = elems.foreach{ _.toggle() }
-  
+  def toggle(): Unit = elems.foreach { _.toggle() }
+
   /** Toggle visibility of the element based on the passed in boolean */
-  def toggle(showElem: Boolean): Unit = elems.foreach{ _.toggle(showElem) }
+  def toggle(showElem: Boolean): Unit = elems.foreach { _.toggle(showElem) }
 }

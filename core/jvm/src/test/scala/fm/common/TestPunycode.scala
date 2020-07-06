@@ -344,13 +344,13 @@ final class TestPunycode extends AnyFunSuite with Matchers {
 
   private def checkSunPunycode(original: String, encoded: String): Unit = {
     import sun.net.idn.{Punycode => SunPunycode}
-     
+
     // SunPunycode doesn't handle null input so ignore it
     if (null == original) return
-  
+
     SunPunycode.encode(new StringBuffer(original), null).toString shouldBe encoded
     SunPunycode.decode(new StringBuffer(encoded), null).toString shouldBe original
-  
+
     ()
   }
 

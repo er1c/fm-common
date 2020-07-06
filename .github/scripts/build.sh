@@ -23,4 +23,7 @@ if [[ -z "$SBT_COMMAND" ]]; then
 fi
 
 git add . && git reset --hard HEAD
+
+npm install jsdom
+
 exec sbt -J-Xmx6144m ++$SCALA_VERSION $SBT_COMMAND

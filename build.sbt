@@ -268,6 +268,7 @@ lazy val site = project.in(file("site"))
       libraryDependencies += "com.47deg" %% "github4s" % GitHub4sVersion,
       micrositePushSiteWith := GitHub4s,
       micrositeGithubToken := sys.env.get("GITHUB_TOKEN"),
+      micrositeExtraMdFilesOutput := (resourceManaged in Compile).value / "jekyll",
       micrositeExtraMdFiles := Map(
         file("README.md") -> ExtraMdFileConfig("index.md", "page", Map("title" -> "Home", "section" -> "home", "position" -> "100")),
         file("CHANGELOG.md") -> ExtraMdFileConfig("CHANGELOG.md", "page", Map("title" -> "Change Log", "section" -> "changelog", "position" -> "101")),
@@ -333,9 +334,8 @@ lazy val macros = crossProject(JSPlatform, JVMPlatform)
   .in(file("macros"))
   .configureCross(defaultCrossProjectConfiguration)
   .settings(sharedSettings)
-  .settings(doNotPublishArtifact)
   .settings(
-    name := "fm-macros",
+    name := "fm-common-macros",
     scalacOptions --= Seq(
       "-Xlint:deprecation",
       "-deprecation"
@@ -355,7 +355,7 @@ lazy val bench = project
   .settings(sharedSettings)
   .settings(doNotPublishArtifact)
   .settings(
-    name := "fm-bench"
+    name := "fm-common-bench"
   )
   .enablePlugins(JmhPlugin)
   .dependsOn(

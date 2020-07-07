@@ -51,6 +51,9 @@ jobs:
         with:
           java-version: "adopt@1.${{ matrix.java }}"
 
+      - name: Install jsdom
+        run: npm install jsdom@16.x
+
       - name: sbt ++${{ matrix.scala }} ${{ matrix.command }}
         run: |
           ./.github/scripts/build.sh
@@ -78,6 +81,9 @@ jobs:
         with:
           java-version: "adopt@1.${{ matrix.java }}"
 
+      - name: Install jsdom
+        run: npm install jsdom@16.x
+
       - name: sbt ++${{ matrix.scala }} ${{ matrix.command }}
         run: |
           ./.github/scripts/build.sh
@@ -104,6 +110,9 @@ jobs:
       - uses: er1c/setup-scala@v8
         with:
           java-version: "adopt@1.${{ matrix.java }}"
+
+      - name: Install jsdom
+        run: npm install jsdom@16.x
 
       - name: Set up Ruby 2.7 (for microsite)
         uses: actions/setup-ruby@v1

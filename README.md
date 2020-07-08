@@ -14,7 +14,7 @@ Links:
 Add this to your `build.sbt`:
 
 ```scala
-libraryDependencies += "io.github.er1c" %% "fm-common" % "1.0.0-RC1"
+libraryDependencies += "io.github.er1c" %% "fm-common" % "1.0.0-RC3"
 ```
 
 Cross-builds are available for Scala 2.11.12, 2.12.11 and 2.13.3.  Scala.js 1.x supported.

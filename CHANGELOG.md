@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.0] - 2020-07-09
+### Fixed
+- Compile macros with compile-internal/test-internal
+- Use README.md as main microsite home
+
 ## [1.0.0-RC1] - 2020-07-04
 ### Added
 - Scala 2.13 Support

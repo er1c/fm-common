@@ -164,13 +164,11 @@ object XMLUtil {
 
   // Note: This is duplicated in the fm-xml project
   def withXMLStreamReader2[T](s: String)(f: XMLStreamReader2 => T): T = {
-    import Resource._
     Resource.using(inputFactory.createXMLStreamReader(new StringReader(s)).asInstanceOf[XMLStreamReader2])(f)
   }
 
   // Note: This is duplicated in the fm-xml project
   def withXMLStreamReader2[T](is: InputStream)(f: XMLStreamReader2 => T): T = {
-    import Resource._
     Resource.using(inputFactory.createXMLStreamReader(is).asInstanceOf[XMLStreamReader2])(f)
   }
 

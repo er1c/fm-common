@@ -21,6 +21,9 @@ package fm
 import scala.util.Try
 
 package object common extends PackageBase with Implicits {
+  /** Structural type for close()able resources */
+  type ReflectiveCloseable = { def close(): Any }
+
   /** A type alias for java.net.URL */
   type URL = java.net.URL
 

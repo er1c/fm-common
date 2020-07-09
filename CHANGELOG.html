@@ -5,6 +5,17 @@
 <p>The format is based on <a href="http://keepachangelog.com/">Keep a Changelog</a>
 and this project adheres to <a href="http://semver.org/">Semantic Versioning</a>.</p>
 
+<h2 id="101---2020-07-09">[1.0.1] - 2020-07-09</h2>
+<h3 id="changed">Changed</h3>
+<ul>
+  <li>Updated Resource-related classes and methods’ underlying-resource type signature to use structural typing instead of AutoCloseable</li>
+</ul>
+
+<h3 id="removed">Removed</h3>
+<ul>
+  <li>Resource.toCloseable implicit</li>
+</ul>
+
 <h2 id="100---2020-07-09">[1.0.0] - 2020-07-09</h2>
 <h3 id="fixed">Fixed</h3>
 <ul>
@@ -24,13 +35,13 @@ and this project adheres to <a href="http://semver.org/">Semantic Versioning</a>
   <li>Use <a href="https://github.com/er1c/scala-typesafeequals">scala-typesafeequals</a> for <code class="highlighter-rouge">===</code> and <code class="highlighter-rouge">=!=</code> macros.</li>
 </ul>
 
-<h3 id="changed">Changed</h3>
+<h3 id="changed-1">Changed</h3>
 <ul>
   <li>Refactored Scala-version specific source code into 2.11/2.12/2.13-specific directories</li>
   <li>Upgrade to ScalaTest 3.2.0 and update</li>
 </ul>
 
-<h3 id="removed">Removed</h3>
+<h3 id="removed-1">Removed</h3>
 <ul>
   <li>TypeSafeEquals (moved to <a href="https://github.com/er1c/scala-typesafeequals">scala-typesafeequals</a></li>
   <li>AnyRefNullChecks (moved to <a href="https://github.com/er1c/scala-typesafeequals">scala-typesafeequals</a></li>
